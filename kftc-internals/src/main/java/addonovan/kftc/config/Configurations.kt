@@ -23,10 +23,10 @@
  */
 package addonovan.kftc.config
 
+import addonovan.kftc.ILog
+import addonovan.kftc.getLog
 import android.os.Environment
 import android.util.JsonWriter
-import com.addonovan.ftcext.*
-import com.addonovan.ftcext.control.AbstractOpMode
 import org.json.JSONObject
 import java.io.*
 import java.util.*

@@ -23,6 +23,8 @@
  */
 package addonovan.kftc.config
 
+import addonovan.kftc.ILog
+import addonovan.kftc.getLog
 import android.util.JsonWriter
 import android.util.MalformedJsonException
 import org.json.JSONObject

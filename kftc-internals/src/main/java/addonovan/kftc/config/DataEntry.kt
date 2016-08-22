@@ -25,7 +25,6 @@ package addonovan.kftc.config
 
 import android.util.JsonWriter
 import android.util.MalformedJsonException
-import com.addonovan.ftcext.config.Jsonable
 import org.json.JSONArray
 
 /**
