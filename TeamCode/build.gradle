@@ -13,3 +13,17 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+android {
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}

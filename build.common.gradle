@@ -14,10 +14,9 @@
  * which will pick up this file here. This approach allows makes it easier to integrate
  * updates to the FTC SDK into your code.
  */
+apply plugin: 'com.android.application'
 
 import java.util.regex.Pattern
-
-apply plugin: 'com.android.application'
 
 android {
 
