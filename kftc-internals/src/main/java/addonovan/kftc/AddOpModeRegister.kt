@@ -87,9 +87,6 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         // Vals
         //
 
-        /** */
-        private val Context = Class.forName( "android.app.ActivityThread" ).getMethod( "currentApplication" ).invoke( null ) as Context;
-
         /** The classes we're left with */
         private val classes: LinkedHashSet< Class< * > > = linkedSetOf();
 
