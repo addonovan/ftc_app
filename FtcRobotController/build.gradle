@@ -34,4 +34,5 @@ repositories {
 apply from: 'build.release.gradle'
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(path: ':kftc-internals')
 }
