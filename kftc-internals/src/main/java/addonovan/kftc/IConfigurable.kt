@@ -23,6 +23,8 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.Profile
+
 /**
  * An interface for stating that you would like to access the configuration
  * profiles for the OpMode. If an OpMode does not have this interface, it
@@ -33,6 +35,9 @@ package addonovan.kftc
  */
 interface IConfigurable
 {
+
+    /** The underlying profile that this configurable allows access to. */
+    val ConfigProfile: Profile;
 
     /**
      * Gets the boolean value from the active profile.
@@ -46,7 +51,7 @@ interface IConfigurable
      * @return The boolean value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: Boolean = false );
+    fun get( name: String, default: Boolean = false ) = ConfigProfile[ name, default ];
 
     /**
      * Gets the long value from the active profile.
@@ -60,7 +65,7 @@ interface IConfigurable
      * @return The long value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: Long = 0L );
+    fun get( name: String, default: Long = 0L ) = ConfigProfile[ name, default ];
 
     /**
      * Gets the double value from the active profile.
@@ -74,7 +79,7 @@ interface IConfigurable
      * @return The double value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: Double = 0.0 );
+    fun get( name: String, default: Double = 0.0 ) = ConfigProfile[ name, default ];
 
     /**
      * Gets the string value from the active profile.
@@ -88,6 +93,6 @@ interface IConfigurable
      * @return The string value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: String = "" );
+    fun get( name: String, default: String = "" ) = ConfigProfile[ name, default ];
 
 }
