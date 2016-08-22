@@ -23,7 +23,13 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.Configurations
+import android.content.Context
 import com.qualcomm.robotcore.eventloop.opmode.*
+import dalvik.system.DexFile
+import java.lang.reflect.Modifier
+import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * The entry point for the kftc library.
@@ -54,6 +60,9 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     {
         i( "Initializing kftc systems" );
 
+        d( "Init Configurations..." );
+        Configurations.load();
+
         d( "kftc systems initialized" );
     }
 
@@ -62,6 +71,111 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         i( "Initializing OpMode: ${clazz.simpleName}" );
 
         d( "OpMode initialized: ${clazz.simpleName}" );
+    }
+
+    //
+    // Companion
+    //
+
+    /**
+     * Companion object used to locate the OpMode classes.
+     */
+    private companion object OpModeFinder
+    {
+
+        //
+        // Vals
+        //
+
+        /** */
+        private val Context = Class.forName( "android.app.ActivityThread" ).getMethod( "currentApplication" ).invoke( null ) as Context;
+
+        /** The classes we're left with */
+        private val classes: LinkedHashSet< Class< * > > = linkedSetOf();
+
+        /**
+         * The classes that fit all of the criteria
+         */
+        val OpModeClasses by lazy {
+            val list = ArrayList< KClass< out OpMode > >();
+
+            for ( clazz in classes )
+            {
+                // it's a subclass
+                if ( !OpMode::class.java.isAssignableFrom( clazz ) ) continue;
+
+                // has one of the two annotations
+                if ( !clazz.isAnnotationPresent( TeleOp::class.java ) && !clazz.isAnnotationPresent( Autonomous::class.java ) ) continue;
+
+                // not disabled
+                if ( clazz.isAnnotationPresent( Disabled::class.java ) ) continue;
+
+                // checking is done at the first step
+                @Suppress( "unchecked_cast" )
+                list.add( clazz.kotlin as KClass< out OpMode > );
+            }
+
+            list;
+        }
+
+        //
+        // Constructors
+        //
+
+        init
+        {
+            // all the classes in this dex file
+            val classNames = Collections.list( DexFile( Context.packageCodePath ).entries() );
+
+            // modifiers that we won't allow
+            val prohibitedModifiers = Modifier.ABSTRACT or Modifier.INTERFACE;
+
+            // find the classes that are okay
+            for ( name in classNames )
+            {
+                if ( isBlacklisted( name ) ) continue; // skip classes that are in blacklisted packages
+
+                try
+                {
+                    val c = Class.forName( name, false, Context.classLoader );
+
+                    if ( c.modifiers and Modifier.PUBLIC == 0         // not public
+                            || c.modifiers and prohibitedModifiers != 0 )   // has a prohibited modifier
+                    {
+                        continue;
+                    }
+
+                    classes.add( c );
+                }
+                catch ( e: Exception )
+                {
+                    // then this class wasn't instantiable, so don't bother doing anything
+                }
+            }
+        }
+
+        /** A list of packages that are blacklisted to save time when loading the baseClasses */
+        private val blackList: LinkedHashSet< String > =
+                linkedSetOf( "com.google", "com.android", "dalvik", "android", // android packages
+                        "java", "kotlin",                                      // language packages
+                        "com.ftdi", "addonovan" );                             // some FTC packages
+
+        /**
+         * @param[name]
+         *          The full name of the class (package included).
+         * @return If the class name is in a blacklisted package.
+         */
+        private fun isBlacklisted( name: String ): Boolean
+        {
+            if ( name.contains( "$" ) ) return true;
+
+            for ( blacklisted in blackList )
+            {
+                if ( name.startsWith( blacklisted ) ) return true;
+            }
+            return false;
+        }
+
     }
 
 }
