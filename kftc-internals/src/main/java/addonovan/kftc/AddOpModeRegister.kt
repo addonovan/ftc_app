@@ -31,7 +31,7 @@ import com.qualcomm.robotcore.eventloop.opmode.*
  * @author addonovan
  * @since 8/21/16
  */
-class AddOpModeRegister : OpModeRegister
+class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::class )
 {
 
     //
@@ -40,7 +40,10 @@ class AddOpModeRegister : OpModeRegister
 
     override fun register( manager: OpModeManager )
     {
+        i( "Registering OpModes" );
         initSystems(); // initialize all of the systems that need to be
+
+        d( "OpModes registered" );
     }
 
     //
@@ -49,12 +52,16 @@ class AddOpModeRegister : OpModeRegister
 
     private fun initSystems()
     {
+        i( "Initializing kftc systems" );
 
+        d( "kftc systems initialized" );
     }
 
     private fun initializeOpMode( clazz: Class< out OpMode > )
     {
+        i( "Initializing OpMode: ${clazz.simpleName}" );
 
+        d( "OpMode initialized: ${clazz.simpleName}" );
     }
 
 }
