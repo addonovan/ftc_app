@@ -24,12 +24,10 @@
 package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
-import android.content.Context
 import com.qualcomm.robotcore.eventloop.opmode.*
 import dalvik.system.DexFile
 import java.lang.reflect.Modifier
 import java.util.*
-import kotlin.reflect.KClass
 
 /**
  * The entry point for the kftc library.
@@ -46,9 +44,32 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
     override fun register( manager: OpModeManager )
     {
-        i( "Registering OpModes" );
         initSystems(); // initialize all of the systems that need to be
 
+        i( "Registering OpModes" );
+        for ( clazz in OpModeClasses )
+        {
+            val teleOpAnnotation = clazz.getAnnotation( TeleOp::class.java ) ?: null;
+            val autoAnnotation = clazz.getAnnotation( Autonomous::class.java ) ?: null;
+
+            // nasty code
+
+            val flavor =
+                    if ( teleOpAnnotation != null )
+                    {
+                        OpModeMeta.Flavor.TELEOP;
+                    }
+                    else
+                    {
+                        OpModeMeta.Flavor.AUTONOMOUS;
+                    }
+
+            val name = teleOpAnnotation?.name ?: autoAnnotation!!.name;
+            val group = teleOpAnnotation?.group ?: autoAnnotation!!.group;
+
+            // actually register it
+            manager.register( OpModeMeta( name, flavor, group ), clazz );
+        }
         d( "OpModes registered" );
     }
 
@@ -56,6 +77,9 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     // Actions
     //
 
+    /**
+     * Initializes the other systems in this framework.
+     */
     private fun initSystems()
     {
         i( "Initializing kftc systems" );
@@ -64,13 +88,6 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         Configurations.load();
 
         d( "kftc systems initialized" );
-    }
-
-    private fun initializeOpMode( clazz: Class< out OpMode > )
-    {
-        i( "Initializing OpMode: ${clazz.simpleName}" );
-
-        d( "OpMode initialized: ${clazz.simpleName}" );
     }
 
     //
@@ -94,7 +111,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
          * The classes that fit all of the criteria
          */
         val OpModeClasses by lazy {
-            val list = ArrayList< KClass< out OpMode > >();
+            val list = ArrayList< Class< out OpMode > >();
 
             for ( clazz in classes )
             {
@@ -109,7 +126,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
                 // checking is done at the first step
                 @Suppress( "unchecked_cast" )
-                list.add( clazz.kotlin as KClass< out OpMode > );
+                list.add( clazz as Class< out OpMode > );
             }
 
             list;
