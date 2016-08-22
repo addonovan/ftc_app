@@ -54,7 +54,7 @@ interface IConfigurable
      * @return The boolean value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: Boolean = false ) = ConfigProfile[ name, default ];
+    fun get( name: String, default: Boolean ) = ConfigProfile[ name, default ];
 
     /**
      * Gets the long value from the active profile.
@@ -68,7 +68,7 @@ interface IConfigurable
      * @return The long value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: Long = 0L ) = ConfigProfile[ name, default ];
+    fun get( name: String, default: Long ) = ConfigProfile[ name, default ];
 
     /**
      * Gets the double value from the active profile.
@@ -82,7 +82,7 @@ interface IConfigurable
      * @return The double value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: Double = 0.0 ) = ConfigProfile[ name, default ];
+    fun get( name: String, default: Double ) = ConfigProfile[ name, default ];
 
     /**
      * Gets the string value from the active profile.
@@ -96,7 +96,7 @@ interface IConfigurable
      * @return The string value associated with the name, or the default
      *         if no value was found.
      */
-    fun get( name: String, default: String = "" ) = ConfigProfile[ name, default ];
+    fun get( name: String, default: String ) = ConfigProfile[ name, default ];
 
 }
 
