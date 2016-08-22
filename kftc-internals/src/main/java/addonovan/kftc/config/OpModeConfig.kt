@@ -63,7 +63,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     companion object
     {
         /** The name of the default profile. */
-        const val DEFAULT_NAME = "[default]";
+        const val DEFAULT_NAME = "default";
 
         /**
          * Creates a new OpModeConfig from the given JSONObject.
