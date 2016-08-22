@@ -126,6 +126,21 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
             return opModeConfig;
         }
 
+        /**
+         * Creates a new OpModeConfig completely from scratch.
+         *
+         * @param[name]
+         *          The name of the OpMode this services.
+         *
+         * @return The new OpModeConfig.
+         */
+        fun fromRaw( name: String ): OpModeConfig
+        {
+            val config = OpModeConfig( name );
+            config.insertDefaultProfile();
+            return config;
+        }
+
     }
 
     //

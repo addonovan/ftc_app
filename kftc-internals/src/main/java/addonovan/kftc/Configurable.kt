@@ -23,7 +23,10 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import kotlin.reflect.KClass
 
 /**
  * An interface for stating that you would like to access the configuration
@@ -96,3 +99,25 @@ interface IConfigurable
     fun get( name: String, default: String = "" ) = ConfigProfile[ name, default ];
 
 }
+
+/**
+ * The instance of the configurable that is actually used whenever
+ * the IConfigurable interface is delegated.
+ *
+ * @param[ConfigProfile]
+ *          The profile to use to back the getters.
+ */
+private class Configurable( override val ConfigProfile: Profile ) : IConfigurable;
+
+/**
+ * Gets the Configurable for the given class.
+ *
+ * The returned configurable is backed by the active profile for the given
+ * OpMode.
+ *
+ * @param[kClass]
+ *          The OpMode class.
+ *
+ * @return The Configurable for delegation.
+ */
+fun getConfig( kClass: KClass< out OpMode > ): IConfigurable = Configurable( Configurations.profileFor( kClass ) );

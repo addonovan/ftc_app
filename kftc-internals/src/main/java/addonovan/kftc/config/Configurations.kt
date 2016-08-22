@@ -27,9 +27,11 @@ import addonovan.kftc.ILog
 import addonovan.kftc.getLog
 import android.os.Environment
 import android.util.JsonWriter
+import com.qualcomm.robotcore.eventloop.opmode.*
 import org.json.JSONObject
 import java.io.*
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * !Description!
@@ -66,10 +68,10 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     //
 
     /** The location of the config file on the disk. */
-    val ConfigFile = File( Environment.getExternalStorageDirectory(), "/FIRST/profiles.ftcext" );
+    private val ConfigFile = File( Environment.getExternalStorageDirectory(), "/FIRST/profiles.ftcext" );
 
     /** A map of the OpModeConfigs for each OpMode. */
-    val OpModeConfigs = HashMap< String, OpModeConfig >();
+    private val OpModeConfigs = HashMap< String, OpModeConfig >();
 
     //
     // Shortcuts
@@ -83,12 +85,48 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
      * OpModeConfigs[ opMode.RegisteredName ]!!.ActiveProfile
      * ```
      *
-     * @param[opMode]
-     *          The [AbstractOpMode] to get the active profile for.
+     * @param[kClass]
+     *          The class of the OpMode to get the active profile for.
      *
      * @return The active profile for the given opmode.
      */
-//    fun profileFor( opMode: AbstractOpMode ) = OpModeConfigs[ opMode.RegisteredName ]!!.ActiveProfile;
+    fun profileFor( kClass: KClass< out OpMode > ): Profile
+    {
+        d( "Fetching active profile for ${kClass.simpleName}" );
+        kClass.annotations.forEach {
+            if ( it is TeleOp ) return getActiveProfile( it.name );
+            if ( it is Autonomous ) return getActiveProfile( it.name );
+        }
+
+        throw IllegalArgumentException( "Class '${kClass.qualifiedName}' is an OpMode but doesn't have a @Teleop or @Autonomous annotation!" );
+    }
+
+    /**
+     * Gets the active profile for the given name.
+     *
+     * Gets the active profile for the opmode with the given registered name,
+     * if one doesn't exist, then one is made and inserted into the map for
+     * serialization and later use.
+     *
+     * @param[name]
+     *          The name of the OpMode.
+     *
+     * @return The active profile for the OpMode.
+     */
+    private fun getActiveProfile( name: String ): Profile
+    {
+        v( "Finding active profile for $name" );
+        if ( OpModeConfigs[ name ] != null )
+        {
+            v( "Pre-existing profile found!" );
+            return OpModeConfigs[ name ]!!.ActiveProfile;
+        }
+
+        w( "Generating blank configuration for: $name" );
+        val omc = OpModeConfig.fromRaw( name );
+        OpModeConfigs[ name ] = omc; // add it to the map for future use
+        return omc.ActiveProfile;
+    }
 
     //
     // Serialization
