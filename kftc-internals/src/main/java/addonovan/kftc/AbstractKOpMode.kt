@@ -25,6 +25,8 @@ package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
 /**
  * !Description!
@@ -34,6 +36,64 @@ import addonovan.kftc.config.Profile
  */
 abstract class AbstractKOpMode : IConfigurable, ILog
 {
+
+    //
+    // Annotation Data
+    //
+
+    /**
+     * The name of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
+     *
+     * @throws IllegalArgumentException
+     *          If the class has neither annotation.
+     */
+    val AnnotatedName: String by lazy()
+    {
+        if ( javaClass.isAnnotationPresent( TeleOp::class.java ) )
+        {
+            d( "Grabbing annotated name from TeleOp annotation" );
+
+            return@lazy javaClass.getAnnotation( TeleOp::class.java )!!.name;
+        }
+        else if ( javaClass.isAnnotationPresent( Autonomous::class.java ) )
+        {
+            d( "Grabbing annotated name from Autonomous annotation" );
+
+            return@lazy javaClass.getAnnotation( Autonomous::class.java )!!.name;
+        }
+        else
+        {
+            e( "Dude, there are no annotations on this class. Why?" );
+            throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
+        }
+    }
+
+    /**
+     * The group of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
+     *
+     * @throws IllegalArgumentException
+     *          If the class has neither annotation.
+     */
+    val AnnotatedGroup: String by lazy()
+    {
+        if ( javaClass.isAnnotationPresent( TeleOp::class.java ) )
+        {
+            d( "Grabbing annotated group from TeleOp annotation" );
+
+            return@lazy javaClass.getAnnotation( TeleOp::class.java )!!.group;
+        }
+        else if ( javaClass.isAnnotationPresent( Autonomous::class.java ) )
+        {
+            d( "Grabbing annotated group from Autonomous annotation" );
+
+            return@lazy javaClass.getAnnotation( Autonomous::class.java )!!.group;
+        }
+        else
+        {
+            e( "Dude, there are no annotations on this class. Why?" );
+            throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
+        }
+    }
 
     //
     // IConfigurable
