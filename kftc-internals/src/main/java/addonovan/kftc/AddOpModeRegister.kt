@@ -25,6 +25,7 @@ package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
 import com.qualcomm.robotcore.eventloop.opmode.*
+import com.qualcomm.robotcore.util.Util
 import dalvik.system.DexFile
 import java.lang.reflect.Modifier
 import java.util.*
@@ -69,7 +70,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
             val group = teleOpAnnotation?.group ?: autoAnnotation!!.group;
 
             // actually register it
-            manager.register( OpModeMeta( name, flavor, group ), KOpModeWrapper( clazz ) );
+            manager.register( OpModeMeta( name, flavor, group ), wrap( clazz ) );
         }
         d( "OpModes registered" );
     }
@@ -92,28 +93,101 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     }
 
     //
-    // Nested classes
+    // Wrapping Nonsense
     //
 
     /**
-     * Wraps an [AbstractKOpMode] in the body of a regular [OpMode] so that it
-     * may be registered with the Qualcomm system.
+     * Wraps the given class in the correct wrapper based on its supertype.
      *
      * @param[clazz]
-     *          The class of the [AbstractKOpMode] to wrap.
+     *          The class to wrap in a OpMode wrapper.
+     *
+     * @throws IllegalArgumentException
+     *          If, somehow, the class isn't a subclass of either KOpMode or KLinearOpMode.
+     *
+     * @return The OpMode wrapper for registration.
      */
-    private class KOpModeWrapper( private val clazz: Class< out AbstractKOpMode > ) : OpMode()
+    @Suppress( "unchecked_cast" ) // checked via reflections
+    private fun wrap( clazz: Class< out AbstractKOpMode > ): OpMode
     {
-        private lateinit var instance: AbstractKOpMode;
+        if ( KOpMode::class.java.isAssignableFrom( clazz ) ) return KOpModeWrapper( clazz as Class< out KOpMode > );
+        if ( KLinearOpMode::class.java.isAssignableFrom( clazz ) ) return KLinearOpModeWrapper( clazz as Class< out KLinearOpMode > );
+
+        throw IllegalArgumentException( "How did this even happen? It was already checked before this?" );
+    }
+
+    /**
+     * Updates all the utilities with the given OpMode's.
+     *
+     * @param[opMode]
+     *          The OpMode to get utilities from.
+     */
+    private fun updateUtilities( opMode: OpMode )
+    {
+        UtilityContainer.HardwareMap = opMode.hardwareMap;
+        UtilityContainer.Gamepad1 = opMode.gamepad1;
+        UtilityContainer.Gamepad2 = opMode.gamepad2;
+        UtilityContainer.Telemetry = opMode.telemetry;
+    }
+
+    /**
+     * A wrapper that converts commands to a Qualcomm OpMode to a KOpMode.
+     *
+     * @param[clazz]
+     *          The KOpMode's class to wrap around.
+     */
+    private inner class KOpModeWrapper( private val clazz: Class< out KOpMode > ) : OpMode()
+    {
+        /**
+         * The instance we're wrapping around.
+         */
+        private lateinit var instance: KOpMode;
 
         override fun init()
         {
+            updateUtilities( this );
             instance = clazz.newInstance();
+            instance.init();
+        }
+
+        override fun start()
+        {
+            updateUtilities( this );
+            instance.start();
         }
 
         override fun loop()
         {
+            updateUtilities( this );
+            instance.loop();
+        }
 
+        override fun stop()
+        {
+            updateUtilities( this );
+            instance.stop();
+        }
+
+    }
+
+    /**
+     * A wrapper that converts commands to a Qualcomm LinearOpMode to a KLinearOpMode.
+     *
+     * @param[clazz]
+     *          The KLinearOpMode's class to wrap around.
+     */
+    private inner class KLinearOpModeWrapper( private val clazz: Class< out KLinearOpMode > ) : LinearOpMode()
+    {
+        /**
+         * The actual instance of the KLinearOpMode that we're wrapping around.
+         */
+        private lateinit var instance: KLinearOpMode;
+
+        override fun runOpMode()
+        {
+            updateUtilities( this );
+            instance = clazz.newInstance();
+            instance.runOpMode();
         }
 
     }
@@ -125,7 +199,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     /**
      * Companion object used to locate the OpMode classes.
      */
-    private companion object OpModeFinder
+    private companion object OpModeFinder : ILog by getLog( OpModeFinder::class )
     {
 
         //
@@ -145,6 +219,14 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
             {
                 // it's a subclass
                 if ( !AbstractKOpMode::class.java.isAssignableFrom( clazz ) ) continue;
+
+                if ( !KOpMode::class.java.isAssignableFrom( clazz ) && !KLinearOpMode::class.java.isAssignableFrom( clazz ) )
+                {
+                    // log it just to let them know if they forgot something
+                    w( "${clazz.canonicalName} illegally subclasses AbstractKOpMode but not KOpMode or KLinearOpMode!" );
+
+                    continue;
+                }
 
                 // has one of the two annotations
                 if ( !clazz.isAnnotationPresent( TeleOp::class.java ) && !clazz.isAnnotationPresent( Autonomous::class.java ) ) continue;
