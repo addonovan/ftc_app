@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.eventloop.opmode.*
 import dalvik.system.DexFile
 import java.lang.reflect.Modifier
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * The entry point for the kftc library.
@@ -68,7 +69,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
             val group = teleOpAnnotation?.group ?: autoAnnotation!!.group;
 
             // actually register it
-            manager.register( OpModeMeta( name, flavor, group ), clazz );
+            manager.register( OpModeMeta( name, flavor, group ), KOpModeWrapper( clazz ) );
         }
         d( "OpModes registered" );
     }
@@ -88,6 +89,33 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         Configurations.load();
 
         d( "kftc systems initialized" );
+    }
+
+    //
+    // Nested classes
+    //
+
+    /**
+     * Wraps an [AbstractKOpMode] in the body of a regular [OpMode] so that it
+     * may be registered with the Qualcomm system.
+     *
+     * @param[clazz]
+     *          The class of the [AbstractKOpMode] to wrap.
+     */
+    private class KOpModeWrapper( private val clazz: Class< out AbstractKOpMode > ) : OpMode()
+    {
+        private lateinit var instance: AbstractKOpMode;
+
+        override fun init()
+        {
+            instance = clazz.newInstance();
+        }
+
+        override fun loop()
+        {
+
+        }
+
     }
 
     //
@@ -111,12 +139,12 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
          * The classes that fit all of the criteria
          */
         val OpModeClasses by lazy {
-            val list = ArrayList< Class< out OpMode > >();
+            val list = ArrayList< Class< out AbstractKOpMode > >();
 
             for ( clazz in classes )
             {
                 // it's a subclass
-                if ( !OpMode::class.java.isAssignableFrom( clazz ) ) continue;
+                if ( !AbstractKOpMode::class.java.isAssignableFrom( clazz ) ) continue;
 
                 // has one of the two annotations
                 if ( !clazz.isAnnotationPresent( TeleOp::class.java ) && !clazz.isAnnotationPresent( Autonomous::class.java ) ) continue;
@@ -126,7 +154,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
                 // checking is done at the first step
                 @Suppress( "unchecked_cast" )
-                list.add( clazz as Class< out OpMode > );
+                list.add( clazz as Class< out AbstractKOpMode > );
             }
 
             list;
