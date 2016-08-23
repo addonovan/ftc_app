@@ -86,40 +86,19 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
      * OpModeConfigs[ opMode.RegisteredName ]!!.ActiveProfile
      * ```
      *
-     * @param[kClass]
-     *          The class of the OpMode to get the active profile for.
+     * @param[opMode]
+     *          The OpMode to get the active profile for.
      *
      * @return The active profile for the given opmode.
      */
-    fun profileFor( kClass: KClass< out KAbstractOpMode> ): Profile
+    fun profileFor( opMode: KAbstractOpMode ): Profile
     {
-        d( "Fetching active profile for ${kClass.simpleName}" );
-        kClass.annotations.forEach {
-            if ( it is TeleOp ) return getActiveProfile( it.name );
-            if ( it is Autonomous ) return getActiveProfile( it.name );
-        }
+        val name = opMode.AnnotatedName; // minimizes method calls to the lazy getter
+        d( "Finding active profile for $name" );
 
-        throw IllegalArgumentException( "Class '${kClass.qualifiedName}' is an OpMode but doesn't have a @Teleop or @Autonomous annotation!" );
-    }
-
-    /**
-     * Gets the active profile for the given name.
-     *
-     * Gets the active profile for the opmode with the given registered name,
-     * if one doesn't exist, then one is made and inserted into the map for
-     * serialization and later use.
-     *
-     * @param[name]
-     *          The name of the OpMode.
-     *
-     * @return The active profile for the OpMode.
-     */
-    private fun getActiveProfile( name: String ): Profile
-    {
-        v( "Finding active profile for $name" );
+        // if one exists, just return it
         if ( OpModeConfigs[ name ] != null )
         {
-            v( "Pre-existing profile found!" );
             return OpModeConfigs[ name ]!!.ActiveProfile;
         }
 
