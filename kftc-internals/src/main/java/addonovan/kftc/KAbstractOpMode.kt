@@ -37,7 +37,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  * @author addonovan
  * @since 8/22/2016
  */
-abstract class AbstractKOpMode : IConfigurable, ILog
+abstract class KAbstractOpMode : IConfigurable, ILog
 {
 
     //

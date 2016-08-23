@@ -29,7 +29,7 @@ package addonovan.kftc
  * @author addonovan
  * @since 8/22/2016
  */
-abstract class KOpMode : AbstractKOpMode()
+abstract class KOpMode : KAbstractOpMode()
 {
 
     open fun init() {}

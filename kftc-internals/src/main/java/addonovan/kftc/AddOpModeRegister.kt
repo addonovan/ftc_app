@@ -108,7 +108,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
      * @return The OpMode wrapper for registration.
      */
     @Suppress( "unchecked_cast" ) // checked via reflections
-    private fun wrap( clazz: Class< out AbstractKOpMode > ): OpMode
+    private fun wrap( clazz: Class< out KAbstractOpMode> ): OpMode
     {
         if ( KOpMode::class.java.isAssignableFrom( clazz ) ) return KOpModeWrapper( clazz as Class< out KOpMode > );
         if ( KLinearOpMode::class.java.isAssignableFrom( clazz ) ) return KLinearOpModeWrapper( clazz as Class< out KLinearOpMode > );
@@ -213,17 +213,17 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
          * The classes that fit all of the criteria
          */
         val OpModeClasses by lazy {
-            val list = ArrayList< Class< out AbstractKOpMode > >();
+            val list = ArrayList< Class< out KAbstractOpMode> >();
 
             for ( clazz in classes )
             {
                 // it's a subclass
-                if ( !AbstractKOpMode::class.java.isAssignableFrom( clazz ) ) continue;
+                if ( !KAbstractOpMode::class.java.isAssignableFrom( clazz ) ) continue;
 
                 if ( !KOpMode::class.java.isAssignableFrom( clazz ) && !KLinearOpMode::class.java.isAssignableFrom( clazz ) )
                 {
                     // log it just to let them know if they forgot something
-                    w( "${clazz.canonicalName} illegally subclasses AbstractKOpMode but not KOpMode or KLinearOpMode!" );
+                    w( "${clazz.canonicalName} illegally subclasses KAbstractOpMode but not KOpMode or KLinearOpMode!" );
 
                     continue;
                 }
@@ -236,7 +236,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
                 // checking is done at the first step
                 @Suppress( "unchecked_cast" )
-                list.add( clazz as Class< out AbstractKOpMode > );
+                list.add( clazz as Class< out KAbstractOpMode> );
             }
 
             list;
