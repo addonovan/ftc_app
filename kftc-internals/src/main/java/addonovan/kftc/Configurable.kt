@@ -120,4 +120,4 @@ private class Configurable( override val ConfigProfile: Profile ) : IConfigurabl
  *
  * @return The Configurable for delegation.
  */
-fun getConfig( kClass: KClass< out OpMode > ): IConfigurable = Configurable( Configurations.profileFor( kClass ) );
+fun getConfig( kClass: KClass< out AbstractKOpMode > ): IConfigurable = Configurable( Configurations.profileFor( kClass ) );
