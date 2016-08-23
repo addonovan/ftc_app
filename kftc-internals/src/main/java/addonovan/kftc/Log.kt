@@ -96,7 +96,7 @@ private class Log private constructor( override val LogTag: String ) : ILog
  */
 fun getLogTag( kClass: KClass< * >? = null, id: String? = null ): String
 {
-    var tag = "ftcext.";
+    var tag = "kftc.";
 
     if ( kClass != null )
     {
