@@ -27,6 +27,9 @@ import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.Gamepad
+import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.robotcore.external.Telemetry
 
 /**
  * !Description!
@@ -94,6 +97,34 @@ abstract class AbstractKOpMode : IConfigurable, ILog
             throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
         }
     }
+
+    //
+    // UtilityContainer mirror
+    //
+
+    /**
+     * Provides access to all of the hardware devices loaded.
+     */
+    val HardwareMap: HardwareMap
+        get() = UtilityContainer.HardwareMap;
+
+    /**
+     * The first controller's digital representation.
+     */
+    val Gamepad1: Gamepad
+        get() = UtilityContainer.Gamepad1;
+
+    /**
+     * The second controller's digital representation.
+     */
+    val Gamepad2: Gamepad
+        get() = UtilityContainer.Gamepad2;
+
+    /**
+     * Telemetry object used to relay information back to the controller.
+     */
+    val Telemetry: Telemetry
+        get() = UtilityContainer.Telemetry;
 
     //
     // IConfigurable
