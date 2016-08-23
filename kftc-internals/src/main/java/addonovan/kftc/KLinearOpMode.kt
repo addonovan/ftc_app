@@ -24,7 +24,7 @@
 package addonovan.kftc
 
 /**
- * !Description!
+ * The kotlin equivalent of the Qualcomm LinearOpMode.
  *
  * @author addonovan
  * @since 8/22/2016
