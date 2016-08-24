@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title= "General">
+
+        <PreferenceScreen
+            android:title="Delete this profile"
+            android:key="delete_variant">
+
+            <!-- When clicked, a dialog will pop up to confirm deletion -->
+
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="Reset this profile"
+            android:key="reset_variant">
+
+            <!-- When clicked, a dialog will pop up to confirm the reset -->
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Preferences"
+        android:key="config_list">
+
+        <!-- Populated programmatically -->
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
