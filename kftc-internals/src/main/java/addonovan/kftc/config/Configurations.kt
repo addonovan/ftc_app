@@ -23,6 +23,7 @@
  */
 package addonovan.kftc.config
 
+import addonovan.kftc.KAbstractOpMode
 import addonovan.kftc.ILog
 import addonovan.kftc.getLog
 import android.os.Environment
@@ -90,7 +91,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
      *
      * @return The active profile for the given opmode.
      */
-    fun profileFor( kClass: KClass< out OpMode > ): Profile
+    fun profileFor( kClass: KClass< out KAbstractOpMode> ): Profile
     {
         d( "Fetching active profile for ${kClass.simpleName}" );
         kClass.annotations.forEach {

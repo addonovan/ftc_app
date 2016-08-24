@@ -23,21 +23,37 @@
  */
 package addonovan.kftc
 
+import com.qualcomm.robotcore.hardware.Gamepad
+import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.robotcore.external.Telemetry
+
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * A container for the utilities that an OpMode requires to function.
  *
  * @author addonovan
  * @since 8/22/2016
  */
-abstract class KOpMode : KAbstractOpMode()
+object UtilityContainer
 {
 
-    open fun init() {}
+    /**
+     * The current hardware map.
+     */
+    lateinit var HardwareMap: HardwareMap;
 
-    open fun start() {}
+    /**
+     * The current gamepad registered as the first one.
+     */
+    lateinit var Gamepad1: Gamepad;
 
-    abstract fun loop();
+    /**
+     * The current gamepad registered as the second one.
+     */
+    lateinit var Gamepad2: Gamepad;
 
-    open fun stop() {}
+    /**
+     * The current telemetry link for debugging.
+     */
+    lateinit var Telemetry: Telemetry;
 
 }

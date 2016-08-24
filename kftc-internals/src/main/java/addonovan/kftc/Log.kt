@@ -94,9 +94,9 @@ private class Log private constructor( override val LogTag: String ) : ILog
  *
  * @return The log tag for the given inputs.
  */
-private fun getLogTag( kClass: KClass< * >?, id: String? ): String
+fun getLogTag( kClass: KClass< * >? = null, id: String? = null ): String
 {
-    var tag = "ftcext.";
+    var tag = "kftc.";
 
     if ( kClass != null )
     {
@@ -130,7 +130,7 @@ fun getLog( kClass: KClass< * >, id: String ): ILog = Log.getLog( getLogTag( kCl
  *          The class to get the log for.
  * @return The log for the class.
  */
-fun getLog( kClass: KClass< * > ): ILog = Log.getLog( getLogTag( kClass, null ) );
+fun getLog( kClass: KClass< * > ): ILog = Log.getLog( getLogTag( kClass = kClass ) );
 
 /**
  * Gets a log for the given id. This is generally used for when classes are
@@ -140,4 +140,4 @@ fun getLog( kClass: KClass< * > ): ILog = Log.getLog( getLogTag( kClass, null ) 
  *          The id of the logger.
  * @return The log for the id.
  */
-fun getLog( id: String ): ILog = Log.getLog( getLogTag( null, id ) );
+fun getLog( id: String ): ILog = Log.getLog( getLogTag( id = id ) );

@@ -24,20 +24,36 @@
 package addonovan.kftc
 
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * The kotlin equivalent of the Qualcomm LinearOpMode.
  *
  * @author addonovan
  * @since 8/22/2016
  */
-abstract class KOpMode : KAbstractOpMode()
+abstract class KLinearOpMode : KAbstractOpMode()
 {
 
-    open fun init() {}
+    /**
+     * Sleeps for the given period of time.
+     *
+     * @param[milliseconds]
+     *          The time, in milliseconds, to sleep for.
+     *
+     * @return `true` if an exception was thrown, `false` otherwise.
+     */
+    fun sleep( milliseconds: Long ): Boolean
+    {
+        try
+        {
+            Thread.sleep( milliseconds );
+            return false;
+        }
+        catch ( e: InterruptedException )
+        {
+            i( "Encountered Interruppted exception while sleeping!", e );
+            return true;
+        }
+    }
 
-    open fun start() {}
-
-    abstract fun loop();
-
-    open fun stop() {}
+    abstract fun runOpMode();
 
 }
