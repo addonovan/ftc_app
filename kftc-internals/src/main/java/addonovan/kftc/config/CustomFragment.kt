@@ -33,17 +33,22 @@ import android.preference.PreferenceFragment
  * @author addonovan
  * @since 8/23/16
  */
-internal abstract class CustomFragment : PreferenceFragment()
+abstract class CustomFragment : PreferenceFragment()
 {
 
     /** The fragment that associated with being above this one. */
     abstract val SuperFragment: CustomFragment?;
+
+    /** The resource used for the preferences. */
+    abstract val PreferenceResource: Int;
 
     /**
      * Calls onCreate without arguments.
      */
     final override fun onCreate( savedInstanceState: Bundle? )
     {
+        super.onCreate( savedInstanceState );
+        addPreferencesFromResource( PreferenceResource );
         onCreate();
     }
 
