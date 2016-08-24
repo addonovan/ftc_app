@@ -42,6 +42,27 @@ abstract class CustomFragment : PreferenceFragment()
     /** The resource used for the preferences. */
     abstract val PreferenceResource: Int;
 
+    //
+    // Helpers
+    //
+
+    /**
+     * Sets the title of the activity.
+     *
+     * @param[title]
+     *          The title to display.
+     */
+    internal fun setTitle( title: String )
+    {
+        val activity = activity /* as ConfigActivity */;
+        activity.title = title;
+        // activity.supportActionBar.title = title;
+    }
+
+    //
+    // On Create
+    //
+
     /**
      * Calls onCreate without arguments.
      */
@@ -55,6 +76,6 @@ abstract class CustomFragment : PreferenceFragment()
     /**
      * Creates the fragment and performs initialization.
      */
-    abstract fun onCreate();
+    internal abstract fun onCreate();
 
 }
