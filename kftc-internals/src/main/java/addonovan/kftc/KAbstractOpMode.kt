@@ -135,7 +135,7 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * is generally discourages as the other `get` methods should
      * be used instead for simpler access.
      */
-    override val ConfigProfile: Profile = Configurations.profileFor( javaClass.kotlin );
+    override val ConfigProfile: Profile = Configurations.profileFor( this );
 
     //
     // ILog
