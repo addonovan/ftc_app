@@ -88,6 +88,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     fun registerOpMode( clazz: Class< out KAbstractOpMode > )
     {
         RegisteredOpModes += clazz;
+        i( "Registered OpMode class ${clazz.simpleName} as ${RegisteredOpModes[ clazz ]}" );
     }
 
     /**
