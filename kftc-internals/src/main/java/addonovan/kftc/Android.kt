@@ -146,6 +146,10 @@ val OpModeLabel: TextView by lazy()
 // Actions
 //
 
+/**
+ * Adds a click listener onto the robot icon that allows [ConfigActivity]
+ * to be started when the icon is pressed.
+ */
 fun hookRobotIcon()
 {
     RobotIcon.setOnClickListener { view ->
@@ -159,6 +163,10 @@ fun hookRobotIcon()
     }
 }
 
+/**
+ * Removes the click listener from the robot icon so that [ConfigActivity]
+ * can not be opened.
+ */
 fun unhookRobotIcon()
 {
     RobotIcon.setOnClickListener { view ->

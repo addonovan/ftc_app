@@ -92,6 +92,9 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         Configurations.RegisteredOpModes.clear(); // just in case some things have already been registered
         Configurations.load();
 
+        d( "Hooking Robot icon..." );
+        hookRobotIcon();
+
         d( "kftc systems initialized" );
     }
 
@@ -148,6 +151,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun init()
         {
+            unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.init();
@@ -188,6 +192,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun runOpMode()
         {
+            unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.runOpMode();
