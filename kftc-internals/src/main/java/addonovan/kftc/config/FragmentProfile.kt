@@ -24,7 +24,8 @@
 package addonovan.kftc.config
 
 import addonovan.kftc.R
-import android.preference.PreferenceScreen
+import android.preference.*
+import android.text.InputType
 
 /**
  * !Description!
@@ -52,6 +53,12 @@ class FragmentProfile : CustomFragment()
         arguments[ PROFILE_NAME ]!! as String;
     }
 
+    /** The profile being configured. */
+    private val CurrentProfile: Profile by lazy()
+    {
+        Configurations.opModeConfigFor( OpModeName ).getProfile( ProfileName );
+    }
+
     //
     // Actions
     //
@@ -65,15 +72,140 @@ class FragmentProfile : CustomFragment()
     override fun onCreate()
     {
         setTitle( ProfileName );
-        val profile = Configurations.opModeConfigFor( OpModeName ).getProfile( ProfileName );
 
+        // set up the delete button
         val deleteProfile = findPreference( "delete_profile" ) as PreferenceScreen;
         deleteProfile.setOnPreferenceClickListener {
 
             // TODO ask the user to confirm
 
+            CurrentProfile.delete(); // default will be added back if need be
+
+            // switch back up to the previous screen
+            onBackPressed();
+
             true;
         };
+        deleteProfile.isEnabled = CurrentProfile.Name != Profile.DEFAULT_NAME; // disabled for default profiles
+
+        // set up the reset button
+        val resetProfile = findPreference( "reset_profile" ) as PreferenceScreen;
+        resetProfile.setOnPreferenceClickListener {
+
+            // TODO ask the user to confirm
+
+            CurrentProfile.config.clear();
+
+            // just create a new fragment, it'll be easier
+            switchTo( FragmentProfile(), OPMODE_NAME to OpModeName, PROFILE_NAME to ProfileName );
+
+            true;
+        };
+
+        setDefaults();
+
+        // set up all the entries
+        val configList = findPreference( "config_list" ) as PreferenceCategory;
+
+        // iterate over the config map
+        for ( entry in CurrentProfile.config.values )
+        {
+            configList.addPreference( createPreferenceFor( entry ) );
+        }
+    }
+
+    //
+    // Preference Fragments
+    //
+
+    private fun createPreferenceFor( entry: DataEntry< * > ) =
+            when ( entry.Value )
+            {
+                is Long   -> createNumericPreference( entry.Name, entry.Value );
+                is Double -> createNumericPreference( entry.Name, entry.Value );
+                else      -> null!!;
+            };
+
+
+    /**
+     * Creates a numeric prference for the given number.
+     *
+     * If the number is a double, decimals will be allowed in the text field.
+     *
+     * @param[key]
+     *          The name of the preference.
+     * @param[value]
+     *          The value of the preference.
+     *
+     * @return An EditTextPreference to configure the value.
+     */
+    private fun createNumericPreference( key: String, value: Number ): EditTextPreference
+    {
+        // create the textbox
+        val textbox = EditTextPreference( activity );
+        textbox.title = key;
+        textbox.summary = "\t$value";
+        textbox.text = "$value";
+
+        // allow only signed numbers
+        textbox.editText.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED;
+
+        // allow decimals if it's a double
+        if ( value is Double )
+        {
+            textbox.editText.inputType = textbox.editText.inputType or InputType.TYPE_NUMBER_FLAG_DECIMAL;
+        }
+
+        // set up the change listener
+        textbox.setOnPreferenceChangeListener { preference, newValue ->
+
+            if ( value is Long )
+            {
+                try
+                {
+                    CurrentProfile.setValue( key, ( newValue as String ).toLong() );
+                    CurrentProfile.i( "Changed $key (long) to $value" );
+                    true; // this was a valid value
+                }
+                catch ( e: NumberFormatException )
+                {
+                    // this was an invalid value
+                    CurrentProfile.e( "Failed to change $key (long) to $value!", e );
+                    false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    CurrentProfile.setValue( key, ( newValue as String ).toDouble() );
+                    CurrentProfile.i( "Changed $key (double) to $value" );
+                    true; // this was a valid change
+                }
+                catch ( e: NumberFormatException )
+                {
+                    // this was invalid
+                    CurrentProfile.e( "Failed to change $key (double) to $value!", e );
+                    false;
+                }
+            }
+
+        };
+
+        return textbox;
+    }
+
+    //
+    // Don't look here
+    //
+
+    /**
+     * Hacks around with awful methods to get the default values from an
+     * OpMode.
+     */
+    private fun setDefaults()
+    {
+        // TODO port
     }
 
 }
