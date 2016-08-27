@@ -150,6 +150,8 @@ class FragmentProfile : CustomFragment()
 
             true;
         };
+
+        return checkbox;
     }
 
     /**
