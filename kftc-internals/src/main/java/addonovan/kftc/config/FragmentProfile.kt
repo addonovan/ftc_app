@@ -189,13 +189,14 @@ class FragmentProfile : CustomFragment()
                 try
                 {
                     CurrentProfile.setValue( key, ( newValue as String ).toLong() );
-                    CurrentProfile.i( "Changed $key (long) to $value" );
+                    CurrentProfile.i( "Changed $key (long) to $newValue" );
+                    textbox.summary = "$newValue";
                     true; // this was a valid value
                 }
                 catch ( e: NumberFormatException )
                 {
                     // this was an invalid value
-                    CurrentProfile.e( "Failed to change $key (long) to $value!", e );
+                    CurrentProfile.e( "Failed to change $key (long) to $newValue!", e );
                     false;
                 }
             }
@@ -204,13 +205,14 @@ class FragmentProfile : CustomFragment()
                 try
                 {
                     CurrentProfile.setValue( key, ( newValue as String ).toDouble() );
-                    CurrentProfile.i( "Changed $key (double) to $value" );
+                    CurrentProfile.i( "Changed $key (double) to $newValue" );
+                    textbox.summary = "$newValue";
                     true; // this was a valid change
                 }
                 catch ( e: NumberFormatException )
                 {
                     // this was invalid
-                    CurrentProfile.e( "Failed to change $key (double) to $value!", e );
+                    CurrentProfile.e( "Failed to change $key (double) to $newValue!", e );
                     false;
                 }
             }
