@@ -26,6 +26,7 @@ package addonovan.kftc.config
 import addonovan.kftc.R
 import android.preference.*
 import android.text.InputType
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 /**
  * !Description!
@@ -53,10 +54,16 @@ class FragmentProfile : CustomFragment()
         arguments[ PROFILE_NAME ]!! as String;
     }
 
+    /** The OpModeconfig holding the profile. */
+    private val CurrentOpModeConfig: OpModeConfig by lazy()
+    {
+        Configurations.opModeConfigFor( OpModeName );
+    }
+
     /** The profile being configured. */
     private val CurrentProfile: Profile by lazy()
     {
-        Configurations.opModeConfigFor( OpModeName ).getProfile( ProfileName );
+        CurrentOpModeConfig.getProfile( ProfileName );
     }
 
     //
@@ -271,7 +278,24 @@ class FragmentProfile : CustomFragment()
      */
     private fun setDefaults()
     {
-        // TODO port
+        val realActiveProfile = CurrentOpModeConfig.ActiveProfile; // saved for the end
+
+        // active the profile so that it's chosen in initialization
+        CurrentProfile.activate();
+
+        // when the OpMode is instantiated, all the default values of the configs will
+        // be set if they aren't already
+        try
+        {
+            Configurations.RegisteredOpModes[ OpModeName ]!!.newInstance(); // create the instance of the OpMode
+        }
+        catch ( e: Throwable )
+        {
+            CurrentOpModeConfig.e( "Error instantiating OpMode for configuration!", e );
+            CurrentOpModeConfig.e( "Some values may not be present in the configurator!" );
+        }
+
+        realActiveProfile.activate(); // undo this
     }
 
 }
