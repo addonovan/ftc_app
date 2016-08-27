@@ -62,6 +62,9 @@ class Profile(
     companion object
     {
 
+        /** The name for the default profile. */
+        const val DEFAULT_NAME = "default";
+
         /**
          * Creates a new Profile from a json object.
          */
