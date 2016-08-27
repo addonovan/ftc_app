@@ -74,6 +74,9 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     /** A map of the OpModeConfigs for each OpMode. */
     private val OpModeConfigs = HashMap< String, OpModeConfig >();
 
+    /** A map of all the OpModes registered with the configuration system. */
+    private val RegisteredOpModes = ArrayList< Class< out KAbstractOpMode > >();
+
     //
     // Shortcuts
     //

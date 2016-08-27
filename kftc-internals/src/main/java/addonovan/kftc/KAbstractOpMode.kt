@@ -50,26 +50,7 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * @throws IllegalArgumentException
      *          If the class has neither annotation.
      */
-    val AnnotatedName: String by lazy()
-    {
-        if ( javaClass.isAnnotationPresent( TeleOp::class.java ) )
-        {
-            d( "Grabbing annotated name from TeleOp annotation" );
-
-            return@lazy javaClass.getAnnotation( TeleOp::class.java )!!.name;
-        }
-        else if ( javaClass.isAnnotationPresent( Autonomous::class.java ) )
-        {
-            d( "Grabbing annotated name from Autonomous annotation" );
-
-            return@lazy javaClass.getAnnotation( Autonomous::class.java )!!.name;
-        }
-        else
-        {
-            e( "Dude, there are no annotations on this class. Why?" );
-            throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
-        }
-    }
+    val AnnotatedName: String by lazy() { javaClass.getAnnotatedName(); }
 
     /**
      * The group of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
@@ -77,26 +58,7 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * @throws IllegalArgumentException
      *          If the class has neither annotation.
      */
-    val AnnotatedGroup: String by lazy()
-    {
-        if ( javaClass.isAnnotationPresent( TeleOp::class.java ) )
-        {
-            d( "Grabbing annotated group from TeleOp annotation" );
-
-            return@lazy javaClass.getAnnotation( TeleOp::class.java )!!.group;
-        }
-        else if ( javaClass.isAnnotationPresent( Autonomous::class.java ) )
-        {
-            d( "Grabbing annotated group from Autonomous annotation" );
-
-            return@lazy javaClass.getAnnotation( Autonomous::class.java )!!.group;
-        }
-        else
-        {
-            e( "Dude, there are no annotations on this class. Why?" );
-            throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
-        }
-    }
+    val AnnotatedGroup: String by lazy() { javaClass.getAnnotatedGroup(); }
 
     //
     // UtilityContainer mirror
