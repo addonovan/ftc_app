@@ -62,6 +62,9 @@ class Profile(
     companion object
     {
 
+        /** The name for the default profile. */
+        const val DEFAULT_NAME = "default";
+
         /**
          * Creates a new Profile from a json object.
          */
@@ -116,11 +119,29 @@ class Profile(
     //
 
     /** The list of all the data in this profile. */
-    internal val config = HashMap< String, DataEntry<*>>();
+    internal val config = HashMap< String, DataEntry< * > >();
 
     //
     // Actions
     //
+
+    /**
+     * Sets the value of the preference in tehe config map.
+     *
+     * This is a convenience method for
+     * ```kotlin
+     * config[ name ] = DataEntry.fromRaw( name, value );
+     * ```
+     *
+     * @param[name]
+     *          The name of the entry.
+     * @param[value]
+     *          The value of the entry.
+     */
+    fun setValue( name: String, value: Any )
+    {
+        config[ name ] = DataEntry.fromRaw( name, value );
+    }
 
     /**
      * Removes the Profile from the configuration list.

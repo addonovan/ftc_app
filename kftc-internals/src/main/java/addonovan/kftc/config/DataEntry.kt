@@ -62,7 +62,7 @@ class DataEntry< out T : Any > private constructor( val Name: String, val Value:
          * @throws MalformedJsonException
          *          If the array is malformed or has an unknown type as its key.
          */
-        fun fromJson( json: JSONArray): DataEntry<*>
+        fun fromJson( json: JSONArray ): DataEntry<*>
         {
             if ( json.length() != 3 ) throw MalformedJsonException( "Incorrect number of indices in array length. Expected: 3, Found: ${json.length()}" );
 
@@ -95,7 +95,7 @@ class DataEntry< out T : Any > private constructor( val Name: String, val Value:
          *
          * @return The new DataEntry.
          */
-        fun < T : Any > fromRaw( name: String, value: T ): DataEntry<T>
+        fun < T : Any > fromRaw( name: String, value: T ): DataEntry< T >
         {
             // make sure it's an applicable type
             if ( value !is Boolean && value !is Long && value !is Double && value !is String )

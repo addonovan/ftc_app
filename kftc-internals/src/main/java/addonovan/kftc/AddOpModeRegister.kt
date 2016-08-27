@@ -51,26 +51,28 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         i( "Registering OpModes" );
         for ( clazz in OpModeClasses )
         {
-            val teleOpAnnotation = clazz.getAnnotation( TeleOp::class.java ) ?: null;
-            val autoAnnotation = clazz.getAnnotation( Autonomous::class.java ) ?: null;
-
-            // nasty code
-
             val flavor =
-                    if ( teleOpAnnotation != null )
+                    if ( clazz.isAutonomous() )
+                    {
+                        OpModeMeta.Flavor.AUTONOMOUS;
+                    }
+                    else if ( clazz.isTeleOp() )
                     {
                         OpModeMeta.Flavor.TELEOP;
                     }
                     else
                     {
-                        OpModeMeta.Flavor.AUTONOMOUS;
+                        throw IllegalStateException( "OpMode has neither an Autonomous nor TeleOp Annotation!" );
                     }
 
-            val name = teleOpAnnotation?.name ?: autoAnnotation!!.name;
-            val group = teleOpAnnotation?.group ?: autoAnnotation!!.group;
+            val name = clazz.getAnnotatedName();
+            val group = clazz.getAnnotatedGroup();
 
-            // actually register it
+            // register it with Ftc
             manager.register( OpModeMeta( name, flavor, group ), wrap( clazz ) );
+
+            // register it with the configurator
+            Configurations.RegisteredOpModes += clazz;
         }
         d( "OpModes registered" );
     }
@@ -87,7 +89,11 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         i( "Initializing kftc systems" );
 
         d( "Init Configurations..." );
+        Configurations.RegisteredOpModes.clear(); // just in case some things have already been registered
         Configurations.load();
+
+        d( "Hooking Robot icon..." );
+        hookRobotIcon();
 
         d( "kftc systems initialized" );
     }
@@ -145,6 +151,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun init()
         {
+            unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.init();
@@ -185,6 +192,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun runOpMode()
         {
+            unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.runOpMode();
@@ -228,15 +236,14 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
                     continue;
                 }
 
-                // has one of the two annotations
-                if ( !clazz.isAnnotationPresent( TeleOp::class.java ) && !clazz.isAnnotationPresent( Autonomous::class.java ) ) continue;
+                @Suppress( "unchecked_cast" )
+                val casted = clazz as Class< out KAbstractOpMode >;
 
-                // not disabled
-                if ( clazz.isAnnotationPresent( Disabled::class.java ) ) continue;
+                // if it's missing the @Teleop and/or @Autnomous annotations or has @Disabled
+                if ( casted.isNotRegisterable() ) continue;
 
                 // checking is done at the first step
-                @Suppress( "unchecked_cast" )
-                list.add( clazz as Class< out KAbstractOpMode> );
+                list.add( casted );
             }
 
             list;
