@@ -36,8 +36,15 @@ import android.preference.PreferenceFragment
 abstract class CustomFragment : PreferenceFragment()
 {
 
-    /** The fragment that associated with being above this one. */
-    abstract val SuperFragment: CustomFragment?;
+    companion object
+    {
+        /** The key to get the name of the current opmode. */
+        const val OPMODE_NAME = "addonovan.kftc.config.CustomFragment.OPMODE_NAME";
+    }
+
+    //
+    // Values
+    //
 
     /** The resource used for the preferences. */
     abstract val PreferenceResource: Int;
@@ -45,6 +52,30 @@ abstract class CustomFragment : PreferenceFragment()
     //
     // Helpers
     //
+
+    /**
+     * Switches to the fragment and gives it the arguments.
+     *
+     * @param[fragment]
+     *          The fragment to switch to.
+     * @param[data]
+     *          The arguments to pass to the fragment via bundle.
+     */
+    internal fun switchTo( fragment: CustomFragment, vararg data: Pair< String, String > )
+    {
+        // create the bundle to pass to the fragment
+        val bundle = Bundle();
+        for ( datum in data )
+        {
+            bundle.putString( datum.first, datum.second );
+        }
+
+        // pass the bundle to the fragment
+        fragment.arguments = bundle;
+
+        // switch to the fragment
+        fragmentManager.beginTransaction().replace( android.R.id.content, fragment ).commit();
+    }
 
     /**
      * Sets the title of the activity.
@@ -77,5 +108,12 @@ abstract class CustomFragment : PreferenceFragment()
      * Creates the fragment and performs initialization.
      */
     internal abstract fun onCreate();
+
+    /**
+     * Goes up to the parent fragment, if one exists.
+     *
+     * @return If the back pressed event was handled with a fragment change.
+     */
+    internal abstract fun onBackPressed(): Boolean;
 
 }

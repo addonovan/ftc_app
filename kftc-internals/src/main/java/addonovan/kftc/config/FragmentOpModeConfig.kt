@@ -24,45 +24,42 @@
 package addonovan.kftc.config
 
 import addonovan.kftc.R
-import android.os.Bundle
-import android.preference.PreferenceCategory
 
 /**
- * A fragment that represents the Configurations class.
+ * !Description!
  *
  * @author addonovan
- * @since 8/23/16
+ * @since 8/27/16
  */
-class FragmentConfigurations : CustomFragment()
+class FragmentOpModeConfig : CustomFragment()
 {
 
-    /** Use this to inflate the preference layout. */
-    override val PreferenceResource: Int = R.xml.prefs_configurations;
+    //
+    // Vals
+    //
 
-    // we didn't handle this, so the activity should
-    override fun onBackPressed(): Boolean = false;
+    /** The resource for inflation */
+    override val PreferenceResource: Int = R.xml.prefs_opmode_config;
+
+    /** The name of the OpMode we're displaying profiles for. */
+    private val OpModeName: String by lazy()
+    {
+        arguments[OPMODE_NAME]!! as String;
+    }
+
+    //
+    // Actions
+    //
+
+    override fun onBackPressed(): Boolean
+    {
+        switchTo( FragmentConfigurations() ); // we have no arguments to pass
+        return true;
+    }
 
     override fun onCreate()
     {
-        setTitle( "KOpModes" );
 
-        val opModeList = findPreference( "opmode_list" ) as PreferenceCategory;
-
-        for ( name in Configurations.RegisteredOpModes.values )
-        {
-            // create a button for each opmode
-            val opModeScreen = preferenceManager.createPreferenceScreen( activity );
-            opModeScreen.title = name;
-            opModeScreen.setOnPreferenceClickListener {
-
-                // switches to the next fragment to configure the chosen opmode
-                switchTo( FragmentOpModeConfig(), OPMODE_NAME to name )
-
-                true; // click handled? idk
-            };
-
-            opModeList.addPreference( opModeScreen ); // add it to the list
-        }
     }
 
 }
