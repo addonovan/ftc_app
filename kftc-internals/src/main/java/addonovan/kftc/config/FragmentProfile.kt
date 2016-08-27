@@ -278,6 +278,7 @@ class FragmentProfile : CustomFragment()
      */
     private fun setDefaults()
     {
+        System.setProperty( "kftc.inConfig", "true" ); // tell the created OpMode that it shouldn't try to do some things
         val realActiveProfile = CurrentOpModeConfig.ActiveProfile; // saved for the end
 
         // active the profile so that it's chosen in initialization
@@ -296,6 +297,7 @@ class FragmentProfile : CustomFragment()
         }
 
         realActiveProfile.activate(); // undo this
+        System.setProperty( "kftc.inConfig", "false" ); // also undo this
     }
 
 }

@@ -23,8 +23,7 @@
  */
 package addonovan.kftc
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.eventloop.opmode.*
 
 /**
  * A file for extension methods.
@@ -34,33 +33,42 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
  */
 
 /**
+ * @return If this is marked with [TeleOp].
+ */
+fun Class< out KAbstractOpMode >.isTeleOp(): Boolean = isAnnotationPresent( TeleOp::class.java );
+
+/**
+ * @return If this is marked with [Autonomous].
+ */
+fun Class< out KAbstractOpMode >.isAutonomous(): Boolean = isAnnotationPresent( Autonomous::class.java );
+
+/**
+ * @return If this has neither [Autonomous] nor [TeleOp] or is marked with [Disabled].
+ */
+fun Class< out KAbstractOpMode >.isNotRegisterable(): Boolean = !isAutonomous() && !isTeleOp() || isAnnotationPresent( Disabled::class.java );
+
+/**
  * @return The value from the "name" parameter on the annotation.
  */
 fun Class< out KAbstractOpMode >.getAnnotatedName(): String =
         // return the name from the teleop annotation
-        if ( isAnnotationPresent( TeleOp::class.java ) )
-            getAnnotation( TeleOp::class.java )!!.name;
+        if ( isTeleOp() ) getAnnotation( TeleOp::class.java )!!.name;
 
         // return the name from the autonomous annotation
-        else if ( isAnnotationPresent( Autonomous::class.java ) )
-            getAnnotation( Autonomous::class.java )!!.name;
+        else if ( isAutonomous() ) getAnnotation( Autonomous::class.java )!!.name;
 
         // throw an exception
-        else
-            throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
+        else throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
 
 /**
  * @return The value from the "group" parameter on the annotation.
  */
 fun Class< out KAbstractOpMode >.getAnnotatedGroup(): String =
         // return the group from the teleop annotation
-        if ( isAnnotationPresent( TeleOp::class.java ) )
-            getAnnotation( TeleOp::class.java )!!.group;
+        if ( isTeleOp() ) getAnnotation( TeleOp::class.java )!!.group;
 
         // return the group from the autonomous annotation
-        else if ( isAnnotationPresent( Autonomous::class.java ) )
-            getAnnotation( Autonomous::class.java )!!.group;
+        else if ( isAutonomous() ) getAnnotation( Autonomous::class.java )!!.group;
 
         // throw an exception
-        else
-            throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
+        else throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
