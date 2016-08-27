@@ -46,6 +46,7 @@ class FragmentConfigurations : CustomFragment()
         setTitle( "KOpModes" );
 
         val opModeList = findPreference( "opmode_list" ) as PreferenceCategory;
+
     }
 
 }

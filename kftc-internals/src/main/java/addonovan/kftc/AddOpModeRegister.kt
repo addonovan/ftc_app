@@ -73,7 +73,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
             manager.register( OpModeMeta( name, flavor, group ), wrap( clazz ) );
 
             // register it with the configurator
-            Configurations.registerOpMode( clazz );
+            Configurations.RegisteredOpModes += clazz;
         }
         d( "OpModes registered" );
     }
@@ -90,7 +90,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         i( "Initializing kftc systems" );
 
         d( "Init Configurations..." );
-        Configurations.deregisterOpModes(); // just in case some things have already been registered
+        Configurations.RegisteredOpModes.clear(); // just in case some things have already been registered
         Configurations.load();
 
         d( "kftc systems initialized" );

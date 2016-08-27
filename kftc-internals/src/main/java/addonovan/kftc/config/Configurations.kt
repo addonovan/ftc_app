@@ -73,39 +73,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     private val OpModeConfigs = HashMap< String, OpModeConfig >();
 
     /** A map of all the registered OpModes' names and their classes. */
-    private val RegisteredOpModes = OpModeMap();
-
-    //
-    // OpMode Registration
-    //
-
-    /**
-     * Registers the OpMode with the configuration system.
-     *
-     * @param[clazz]
-     *          The OpMode class to register.
-     */
-    fun registerOpMode( clazz: Class< out KAbstractOpMode > )
-    {
-        RegisteredOpModes += clazz;
-        i( "Registered OpMode class ${clazz.simpleName} as ${RegisteredOpModes[ clazz ]}" );
-    }
-
-    /**
-     * @param[name]
-     *          The name of the opmode to fetch the class for.
-     *
-     * @return The class of the opmode registered with the given name.
-     */
-    fun getOpModeByName( name: String ) = RegisteredOpModes[ name ];
-
-    /**
-     * De-registers all OpModes
-     */
-    fun deregisterOpModes()
-    {
-        RegisteredOpModes.clear();
-    }
+    val RegisteredOpModes = OpModeMap();
 
     //
     // Shortcuts
@@ -233,7 +201,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
      * A custom doubly-linked hashmap that contains links between both the OpMode class
      * and its name, as well as the other way around.
      */
-    private class OpModeMap : HashMap< Class< out KAbstractOpMode >, String >()
+    class OpModeMap : HashMap< Class< out KAbstractOpMode >, String >()
     {
 
         /** Map used for class lookup by name. */
@@ -248,10 +216,12 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         operator fun plusAssign( clazz: Class< out KAbstractOpMode > )
         {
             val name = clazz.getAnnotatedName();
+            i( "Registering ${clazz.simpleName} as $name" );
 
             // if there's a name conflict, that's a big problem!
             if ( name in this )
             {
+                e( "!!Name conflict!!" );
                 throw IllegalArgumentException(
                         "Two OpMode may not have the same name! Conflict: $name." +
                         "Shared by ${get( name )!!.canonicalName} and ${clazz.canonicalName}"
@@ -261,6 +231,8 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
             // add it to both maps
             this[ clazz ] = name;
             reverseMap[ name ] = clazz;
+
+            v( "Registration complete" );
         }
 
         //
