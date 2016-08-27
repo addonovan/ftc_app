@@ -24,6 +24,7 @@
 package addonovan.kftc.config
 
 import addonovan.kftc.R
+import android.preference.PreferenceScreen
 
 /**
  * !Description!
@@ -63,7 +64,16 @@ class FragmentProfile : CustomFragment()
 
     override fun onCreate()
     {
+        setTitle( ProfileName );
+        val profile = Configurations.opModeConfigFor( OpModeName ).getProfile( ProfileName );
 
+        val deleteProfile = findPreference( "delete_profile" ) as PreferenceScreen;
+        deleteProfile.setOnPreferenceClickListener {
+
+            // TODO ask the user to confirm
+
+            true;
+        };
     }
 
 }

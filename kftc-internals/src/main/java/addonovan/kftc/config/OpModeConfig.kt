@@ -191,6 +191,26 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     internal fun getProfiles(): Array< Profile > = profiles.toTypedArray();
 
     /**
+     * @param[name]
+     *          The name of the profile to fetch.
+     *
+     * @return The profile, if one exists by the name.
+     */
+    internal fun getProfile( name: String ): Profile
+    {
+        for ( profile in profiles )
+        {
+            if ( profile.Name == name )
+            {
+                return profile;
+            }
+        }
+
+        e( "No profile for name $name!" );
+        throw IllegalArgumentException( "No profile exists for name: $name" );
+    }
+
+    /**
      * Creates a new blank profile if none exist by this name.
      *
      * @param[name]
