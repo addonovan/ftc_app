@@ -186,6 +186,41 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     }
 
     /**
+     * @return The profiles in this OpModeConfig.
+     */
+    internal fun getProfiles(): Array< Profile > = profiles.toTypedArray();
+
+    /**
+     * Creates a new blank profile if none exist by this name.
+     *
+     * @param[name]
+     *          The name of the profile to add.
+     *
+     * @return `true` if the profile was created, `false` if there was a name conflict.
+     */
+    internal fun addProfile( name: String ): Boolean
+    {
+        // check with all the other profiles for a name conflict
+        for ( profile in profiles )
+        {
+            // if there's a match, the name is taken
+            if ( profile.Name == name )
+            {
+                return false;
+            }
+
+            // just warn them; hopefully, they'll realize this is a bad idea on their own
+            if ( profile.Name.equals( name, ignoreCase = true ) )
+            {
+                w( "Creating a profile with the same name but different case as another!" );
+            }
+        }
+
+        profiles.add( Profile.fromRaw( this, name ) );
+        return true; // no name conflict!
+    }
+
+    /**
      * Sets the active profile to the one with the name [name].
      *
      * If no profile was found with the given name, then this will
@@ -197,7 +232,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
      * @return `true` if the new active profile has the name [name],
      *         `false` if it had to be set to the [DEFAULT_NAME] instead.
      */
-    fun setActiveProfile( name: String ): Boolean
+    internal fun setActiveProfile( name: String ): Boolean
     {
         for ( profile in profiles )
         {
@@ -226,7 +261,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
      * @return `true` if the profile was removed, `false` if no profile
      *          by the name could be found.
      */
-    fun deleteProfile( name: String ): Boolean
+    internal fun deleteProfile( name: String ): Boolean
     {
         for ( profile in profiles )
         {

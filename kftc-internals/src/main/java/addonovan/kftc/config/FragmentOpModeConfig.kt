@@ -24,7 +24,7 @@
 package addonovan.kftc.config
 
 import addonovan.kftc.R
-import android.preference.ListPreference
+import android.preference.*
 
 /**
  * A fragment used to configure the OpModeConfig class.
@@ -63,9 +63,43 @@ class FragmentOpModeConfig : CustomFragment()
         setTitle( "$OpModeName" );
 
         val config = Configurations.opModeConfigFor( OpModeName ); // the OpModeConfig object for the name
+        val profiles = config.getProfiles();
 
         // add action for clicking activate profile
         val chooseProfile = findPreference( "choose_profile" ) as ListPreference;
+        chooseProfile.entries = Array( profiles.size, { i -> profiles[ i ].Name } ); // create a list of all profiles to select from
+        chooseProfile.entryValues = chooseProfile.entries; // so I don't have to deal with any nonsense.
+        chooseProfile.value = config.ActiveProfile.Name;
+
+        // change the active profile when the preference is updated
+        chooseProfile.setOnPreferenceChangeListener { preference, value ->
+            config.setActiveProfile( value as String );
+            true;
+        };
+
+        // add an action for creating a profile
+        val createProfile = findPreference( "create_profile" ) as EditTextPreference;
+        createProfile.setOnPreferenceChangeListener { preference, name -> config.addProfile( name as String ); }; // TODO tell them if there was a conflict?
+        createProfile.text = ""; // the default text should always be blank
+
+        // the section for profiles
+        val profileList = findPreference( "profile_list" ) as PreferenceCategory;
+
+        for( profile in profiles )
+        {
+            val profileScreen = preferenceManager.createPreferenceScreen( activity );
+            profileScreen.title = profile.Name;
+
+            // when clicked...
+            profileScreen.setOnPreferenceClickListener {
+
+                // ...switch to the profile fragment
+
+                true;
+            };
+
+            profileList.addPreference( profileScreen ); // add it to the list
+        }
     }
 
 }
