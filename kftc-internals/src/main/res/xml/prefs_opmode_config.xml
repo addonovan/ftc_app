@@ -7,7 +7,7 @@
 
         <PreferenceScreen
             android:title="Delete this profile"
-            android:key="delete_variant">
+            android:key="delete_profile">
 
             <!-- When clicked, a dialog will pop up to confirm deletion -->
 
@@ -15,7 +15,7 @@
 
         <PreferenceScreen
             android:title="Reset this profile"
-            android:key="reset_variant">
+            android:key="reset_profile">
 
             <!-- When clicked, a dialog will pop up to confirm the reset -->
 

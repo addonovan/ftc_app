@@ -24,6 +24,7 @@
 package addonovan.kftc.config
 
 import addonovan.kftc.R
+import android.preference.ListPreference
 
 /**
  * A fragment used to configure the OpModeConfig class.
@@ -61,7 +62,10 @@ class FragmentOpModeConfig : CustomFragment()
     {
         setTitle( "$OpModeName" );
 
-        val config = Configurations.getOpModeConfigs( OpModeName );
+        val config = Configurations.opModeConfigFor( OpModeName ); // the OpModeConfig object for the name
+
+        // add action for clicking activate profile
+        val chooseProfile = findPreference( "choose_profile" ) as ListPreference;
     }
 
 }
