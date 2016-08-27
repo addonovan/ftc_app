@@ -41,26 +41,6 @@ abstract class KAbstractOpMode : IConfigurable, ILog
 {
 
     //
-    // Annotation Data
-    //
-
-    /**
-     * The name of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
-     *
-     * @throws IllegalArgumentException
-     *          If the class has neither annotation.
-     */
-    val AnnotatedName: String by lazy() { javaClass.getAnnotatedName(); }
-
-    /**
-     * The group of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
-     *
-     * @throws IllegalArgumentException
-     *          If the class has neither annotation.
-     */
-    val AnnotatedGroup: String by lazy() { javaClass.getAnnotatedGroup(); }
-
-    //
     // UtilityContainer mirror
     //
 
@@ -97,7 +77,7 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * is generally discourages as the other `get` methods should
      * be used instead for simpler access.
      */
-    override val ConfigProfile: Profile = Configurations.profileFor( this );
+    override val ConfigProfile: Profile = Configurations.profileFor( javaClass );
 
     //
     // ILog
