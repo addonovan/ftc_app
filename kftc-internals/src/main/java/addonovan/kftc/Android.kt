@@ -23,8 +23,11 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.ConfigActivity
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -137,4 +140,32 @@ val RobotIcon: ImageView by lazy()
 val OpModeLabel: TextView by lazy()
 {
     getView( "textOpMode" ) as TextView;
+}
+
+//
+// Actions
+//
+
+fun hookRobotIcon()
+{
+    RobotIcon.setOnClickListener { view ->
+        Activity.startActivity( Intent( Activity, ConfigActivity::class.java ) );
+    }
+
+    Activity.runOnUiThread {
+        RobotIcon.setBackgroundResource( R.drawable.animated_robot_icon );
+
+        ( RobotIcon.background as AnimationDrawable ).start();
+    }
+}
+
+fun unhookRobotIcon()
+{
+    RobotIcon.setOnClickListener { view ->
+        // do nothing!
+    };
+
+    Activity.runOnUiThread {
+        RobotIcon.setBackgroundResource( R.drawable.robot_icon_off );
+    }
 }
