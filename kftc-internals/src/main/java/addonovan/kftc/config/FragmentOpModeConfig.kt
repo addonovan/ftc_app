@@ -26,7 +26,7 @@ package addonovan.kftc.config
 import addonovan.kftc.R
 
 /**
- * !Description!
+ * A fragment used to configure the OpModeConfig class.
  *
  * @author addonovan
  * @since 8/27/16
@@ -44,7 +44,7 @@ class FragmentOpModeConfig : CustomFragment()
     /** The name of the OpMode we're displaying profiles for. */
     private val OpModeName: String by lazy()
     {
-        arguments[OPMODE_NAME]!! as String;
+        arguments[ OPMODE_NAME ]!! as String;
     }
 
     //
@@ -59,7 +59,9 @@ class FragmentOpModeConfig : CustomFragment()
 
     override fun onCreate()
     {
+        setTitle( "$OpModeName" );
 
+        val config = Configurations.getOpModeConfigs( OpModeName );
     }
 
 }

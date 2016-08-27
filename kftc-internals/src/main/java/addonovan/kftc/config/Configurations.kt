@@ -94,19 +94,35 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
 
         // get the name from the registered OpModes
         val name = RegisteredOpModes[ clazz ] ?: throw IllegalArgumentException( "Class $className was not registered!" );
-
         v( "$className registered as '$name'" );
 
-        if ( OpModeConfigs[ name ] != null )
+        // get the active profile
+        return opModeConfigFor( name ).ActiveProfile;
+    }
+
+    /**
+     * Gets the OpModeConfig object for the given name. A blank one is
+     * created if one does not already exist.
+     *
+     * @param[name]
+     *          The name of the string.
+     *
+     * @return The [OpModeConfig] for the given name.
+     */
+    fun opModeConfigFor( name: String ): OpModeConfig
+    {
+        // if one exists, return it
+        if ( name in OpModeConfigs )
         {
             v( "Pre-existing profile found!" );
-            return OpModeConfigs[ name ]!!.ActiveProfile;
+            return OpModeConfigs[ name ]!!;
         }
 
+        // otherwise, make a new one
         w( "Generating blank configuration for: $name" );
         val blankConfig = OpModeConfig.fromRaw( name );
         OpModeConfigs[ name ] = blankConfig; // add it to the map for future use
-        return blankConfig.ActiveProfile;
+        return blankConfig;
     }
 
     //
