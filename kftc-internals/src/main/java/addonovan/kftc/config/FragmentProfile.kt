@@ -121,14 +121,39 @@ class FragmentProfile : CustomFragment()
     private fun createPreferenceFor( entry: DataEntry< * > ) =
             when ( entry.Value )
             {
-                is Long   -> createNumericPreference( entry.Name, entry.Value );
-                is Double -> createNumericPreference( entry.Name, entry.Value );
-                else      -> null!!;
+                is Boolean -> createBooleanPreference( entry.Name, entry.Value );
+                is Long    -> createNumericPreference( entry.Name, entry.Value );
+                is Double  -> createNumericPreference( entry.Name, entry.Value );
+                else       -> createStringPreference(  entry.Name, entry.Value.toString() );
             };
 
 
     /**
-     * Creates a numeric prference for the given number.
+     * Creates a checkbox preference for the given value.
+     *
+     * @param[key]
+     *          The name of the preference.
+     * @param[value]
+     *          The value of the preference.
+     *
+     * @return A CheckBoxPreference to configure the value.
+     */
+    private fun createBooleanPreference( key: String, value: Boolean ): CheckBoxPreference
+    {
+        val checkbox = CheckBoxPreference( activity );
+        checkbox.title = key;
+        checkbox.isChecked = value;
+        checkbox.setOnPreferenceChangeListener { preference, newValue ->
+
+            CurrentProfile.setValue( key, newValue as Boolean );
+            CurrentProfile.i( "Changed $key (boolean) to $value" );
+
+            true;
+        };
+    }
+
+    /**
+     * Creates a numeric preference for the given number.
      *
      * If the number is a double, decimals will be allowed in the text field.
      *
@@ -190,6 +215,34 @@ class FragmentProfile : CustomFragment()
                 }
             }
 
+        };
+
+        return textbox;
+    }
+
+    /**
+     * Creates a string preference for the given value.
+     *
+     * @param[key]
+     *          The name of the preference.
+     * @param[value]
+     *          The initial value of the preference.
+     *
+     * @return An EditTextPreference to configure the value.
+     */
+    private fun createStringPreference( key: String, value: String ): EditTextPreference
+    {
+        val textbox = EditTextPreference( activity );
+        textbox.title = key;
+        textbox.summary = "\t$value";
+        textbox.text = value;
+
+        textbox.setOnPreferenceChangeListener { preference, newValue ->
+            CurrentProfile.setValue( key, newValue as String );
+            CurrentProfile.i( "Changed $key (string) to $value" );
+            textbox.summary = "\t$newValue";
+
+            true;
         };
 
         return textbox;
