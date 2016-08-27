@@ -118,13 +118,22 @@ class FragmentProfile : CustomFragment()
     // Preference Fragments
     //
 
+    /**
+     * Creates the correct preference editor for the given DataEntry type.
+     *
+     * @param[entry]
+     *          The entry to configure.
+     *
+     * @return the preference editor for the given entry.
+     */
     private fun createPreferenceFor( entry: DataEntry< * > ) =
             when ( entry.Value )
             {
                 is Boolean -> createBooleanPreference( entry.Name, entry.Value );
                 is Long    -> createNumericPreference( entry.Name, entry.Value );
                 is Double  -> createNumericPreference( entry.Name, entry.Value );
-                else       -> createStringPreference(  entry.Name, entry.Value.toString() );
+                is String  -> createStringPreference(  entry.Name, entry.Value );
+                else       -> throw IllegalArgumentException( "This literally shouldn't happen???" );
             };
 
 
