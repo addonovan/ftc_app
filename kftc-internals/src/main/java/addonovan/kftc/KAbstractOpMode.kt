@@ -25,8 +25,8 @@ package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import android.text.Editable
+import android.text.TextWatcher
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -39,6 +39,52 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  */
 abstract class KAbstractOpMode : IConfigurable, ILog
 {
+
+    //
+    // Constructor
+    //
+
+    init
+    {
+        // if we aren't configuring outselves, then add the [profile] text to
+        // the end of the OpModeLabel
+        if ( !System.getProperty( "kftc.inConfig", "false" ).toBoolean() )
+        {
+            val name = javaClass.getAnnotatedName();
+            val profileName = Configurations.profileFor( javaClass ).Name;
+
+            OpModeLabel.addTextChangedListener( object : TextWatcher
+            {
+                // unused
+                override fun afterTextChanged( s: Editable? ){}
+                override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ){}
+
+                // whenever the label updates, add the profile to the end
+                override fun onTextChanged( s: CharSequence, start: Int, before: Int, count: Int )
+                {
+                    val text = s.toString();
+
+                    // if the OpMode isn't running, remove this listener so we don't get bogged down
+                    if ( !text.contains( name ) )
+                    {
+                        OpModeLabel.removeTextChangedListener( this );
+                    }
+
+                    // if it doesn't have the configuration details, add them
+                    if ( !text.contains( "[" ) )
+                    {
+                        // run on the ui thread so we don't get yelled at
+                        Activity.runOnUiThread {
+
+                            // when this is created, update the OpMode label to also show the active profile
+                            OpModeLabel.text = "OpMode: $name [$profileName]";
+                        }
+                    }
+                }
+
+            } );
+        }
+    }
 
     //
     // UtilityContainer mirror
