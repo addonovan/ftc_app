@@ -79,17 +79,17 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     //
 
     /**
-     * Shortcut for getting the active profile for the given OpMode.
+     * Gets the active profile for the given OpMode.
      *
-     * Cover for
-     * ```kotlin
-     * OpModeConfigs[ opMode.RegisteredName ]!!.ActiveProfile
-     * ```
+     * Based on the OpMode's [AnnotatedName][KAbstractOpMode.AnnotatedName] property,
+     * this will fetch the correct OpModeConfig object from the backing map and return
+     * its active profile. If there is no OpModeConfig object for the name, a blank
+     * one will be created and its default profile returned.
      *
-     * @param[kClass]
-     *          The class of the OpMode to get the active profile for.
+     * @param[opMode]
+     *          The [KAbstractOpMode] to get the active profile for.
      *
-     * @return The active profile for the given opmode.
+     * @return The active profile for the given OpMode.
      */
     fun profileFor( opMode: KAbstractOpMode ): Profile
     {
