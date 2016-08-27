@@ -40,6 +40,9 @@ abstract class CustomFragment : PreferenceFragment()
     {
         /** The key to get the name of the current opmode. */
         const val OPMODE_NAME = "addonovan.kftc.config.CustomFragment.OPMODE_NAME";
+
+        /** The key to get the name of the current profile. */
+        const val PROFILE_NAME = "addonovan.kftc.config.CustomFragment.PROFILE_NAME";
     }
 
     //

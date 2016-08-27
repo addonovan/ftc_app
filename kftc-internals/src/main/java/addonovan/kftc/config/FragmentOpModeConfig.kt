@@ -94,7 +94,8 @@ class FragmentOpModeConfig : CustomFragment()
             profileScreen.setOnPreferenceClickListener {
 
                 // ...switch to the profile fragment
-
+                switchTo( FragmentProfile(), OPMODE_NAME to OpModeName, PROFILE_NAME to profile.Name );
+                
                 true;
             };
 
