@@ -285,6 +285,8 @@ class FragmentProfile : CustomFragment()
         // active the profile so that it's chosen in initialization
         CurrentProfile.activate();
 
+        FalseHardwareMap.spoofUtilityContainer(); // spoof all the hardware info so the OpMode can function fully
+
         // when the OpMode is instantiated, all the default values of the configs will
         // be set if they aren't already
         try
