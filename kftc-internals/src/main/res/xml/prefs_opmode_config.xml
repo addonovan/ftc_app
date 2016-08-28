@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="General">
+
+        <ListPreference
+            android:key="choose_profile"
+            android:title="Select active profile">
+
+        </ListPreference>
+
+        <EditTextPreference
+            android:key="create_profile"
+            android:defaultValue=""
+            android:title="Create new profile"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="profile_list"
+        android:title="Profiles">
+
+        <!-- Populated Programmatically -->
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
