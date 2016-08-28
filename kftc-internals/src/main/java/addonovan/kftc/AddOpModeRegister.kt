@@ -49,7 +49,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         initSystems(); // initialize all of the systems that need to be
 
         i( "Registering OpModes" );
-        for ( clazz in OpModeClasses )
+        for ( clazz in ClassFinder.OpModeClasses )
         {
             val flavor =
                     if ( clazz.isAutonomous() )
@@ -87,6 +87,12 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     private fun initSystems()
     {
         i( "Initializing kftc systems" );
+
+        d( "Loading OpModes..." );
+        d( "Loaded ${ClassFinder.OpModeClasses.size} opmodes" );
+
+        d( "Loading Hardware Extensions..." );
+        d( "Loaded ${ClassFinder.HardwareExtensions.size} hardware extensions" );
 
         d( "Init Configurations..." );
         Configurations.RegisteredOpModes.clear(); // just in case some things have already been registered
@@ -196,115 +202,6 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.runOpMode();
-        }
-
-    }
-
-    //
-    // Companion
-    //
-
-    /**
-     * Companion object used to locate the OpMode classes.
-     */
-    private companion object OpModeFinder : ILog by getLog( OpModeFinder::class )
-    {
-
-        //
-        // Vals
-        //
-
-        /** The classes we're left with */
-        private val classes: LinkedHashSet< Class< * > > = linkedSetOf();
-
-        /**
-         * The classes that fit all of the criteria
-         */
-        val OpModeClasses by lazy {
-            val list = ArrayList< Class< out KAbstractOpMode> >();
-
-            for ( clazz in classes )
-            {
-                // it's a subclass
-                if ( !KAbstractOpMode::class.java.isAssignableFrom( clazz ) ) continue;
-
-                if ( !KOpMode::class.java.isAssignableFrom( clazz ) && !KLinearOpMode::class.java.isAssignableFrom( clazz ) )
-                {
-                    // log it just to let them know if they forgot something
-                    w( "${clazz.canonicalName} illegally subclasses KAbstractOpMode but not KOpMode or KLinearOpMode!" );
-
-                    continue;
-                }
-
-                @Suppress( "unchecked_cast" )
-                val casted = clazz as Class< out KAbstractOpMode >;
-
-                // if it's missing the @Teleop and/or @Autnomous annotations or has @Disabled
-                if ( casted.isNotRegisterable() ) continue;
-
-                // checking is done at the first step
-                list.add( casted );
-            }
-
-            list;
-        }
-
-        //
-        // Constructors
-        //
-
-        init
-        {
-            // all the classes in this dex file
-            val classNames = Collections.list( DexFile( Context.packageCodePath ).entries() );
-
-            // modifiers that we won't allow
-            val prohibitedModifiers = Modifier.ABSTRACT or Modifier.INTERFACE;
-
-            // find the classes that are okay
-            for ( name in classNames )
-            {
-                if ( isBlacklisted( name ) ) continue; // skip classes that are in blacklisted packages
-
-                try
-                {
-                    val c = Class.forName( name, false, Context.classLoader );
-
-                    if ( c.modifiers and Modifier.PUBLIC == 0         // not public
-                            || c.modifiers and prohibitedModifiers != 0 )   // has a prohibited modifier
-                    {
-                        continue;
-                    }
-
-                    classes.add( c );
-                }
-                catch ( e: Exception )
-                {
-                    // then this class wasn't instantiable, so don't bother doing anything
-                }
-            }
-        }
-
-        /** A list of packages that are blacklisted to save time when loading the baseClasses */
-        private val blackList: LinkedHashSet< String > =
-                linkedSetOf( "com.google", "com.android", "dalvik", "android", // android packages
-                        "java", "kotlin",                                      // language packages
-                        "com.ftdi", "addonovan" );                             // some FTC packages
-
-        /**
-         * @param[name]
-         *          The full name of the class (package included).
-         * @return If the class name is in a blacklisted package.
-         */
-        private fun isBlacklisted( name: String ): Boolean
-        {
-            if ( name.contains( "$" ) ) return true;
-
-            for ( blacklisted in blackList )
-            {
-                if ( name.startsWith( blacklisted ) ) return true;
-            }
-            return false;
         }
 
     }
