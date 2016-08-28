@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 /**
  * A class intended to be extended in order to form hardware definition
  * files that contain all the hardware fetching goodness of a regular
- * OpMode, but seperated entirely.
+ * OpMode, but separated entirely.
  *
  * @author addonovan
  * @since 8/27/16
