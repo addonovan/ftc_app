@@ -190,7 +190,16 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         try
         {
             val writer = JsonWriter( OutputStreamWriter( FileOutputStream( ConfigFile ) ) );
+
+            // set up the writer
+            writer.setIndent( "    " );
+            writer.beginObject();
+
+            // save the data
             toJson( writer );
+
+            // close the writer
+            writer.endObject();
             writer.close();
         }
         catch ( e: Exception )

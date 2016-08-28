@@ -27,7 +27,6 @@ import addonovan.kftc.R
 import addonovan.kftc.showToast
 import android.preference.*
 import android.text.InputType
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 /**
  * !Description!
