@@ -23,7 +23,9 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.hardware.HardwareExtension
 import com.qualcomm.robotcore.eventloop.opmode.*
+import com.qualcomm.robotcore.hardware.HardwareDevice
 
 /**
  * A file for extension methods.
@@ -31,6 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.*
  * @author addonovan
  * @since 8/27/16
  */
+
+//
+// TeleOp / Autonomous
+//
 
 /**
  * @return If this is marked with [TeleOp].
@@ -72,3 +78,19 @@ fun Class< out KAbstractOpMode >.getAnnotatedGroup(): String =
 
         // throw an exception
         else throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
+
+//
+// HardwareExtension
+//
+
+/**
+ * @return `true` if this class has the [HardwareExtension] annotation on it.
+ */
+fun Class< out HardwareDevice >.isHardwareExtension() = isAnnotationPresent( HardwareExtension::class.java );
+
+/**
+ * @return The value of the `hardwareMapType` parameter on the [HardwareExtension] annotation.
+ */
+fun Class< out HardwareDevice >.getHardwareMapType() =
+        if ( !this.isHardwareExtension() ) throw IllegalArgumentException( "No @HardwareExtension annotation on $canonicalName!" );
+        else getAnnotation( HardwareExtension::class.java ).hardwareMapType;
