@@ -35,24 +35,32 @@ import org.firstinspires.ftc.robotcore.internal.TelemetryImpl
  * @author addonovan
  * @since 8/28/16
  */
-internal object FalseHardwareMap : HardwareMap( Activity )
+internal class FalseHardwareMap private constructor() : HardwareMap( Activity )
 {
 
-    /** Gamepad used to spoof the utility container. */
-    private val gamepad = Gamepad();
-
-    /** Telemetry used to spoof the utility container. */
-    private val telemetry = TelemetryImpl( null );
-
-    /**
-     * Spoofs the utility container with false information.
-     */
-    fun spoofUtilityContainer()
+    companion object
     {
-        UtilityContainer.HardwareMap = this;
-        UtilityContainer.Gamepad1 = gamepad;
-        UtilityContainer.Gamepad2 = gamepad;
-        UtilityContainer.Telemetry = telemetry;
+        /** FalseHardwareMap used to spoof the utility container. */
+        private val hardwareMap = FalseHardwareMap();
+
+        /** Gamepad used to spoof the utility container. */
+        private val gamepad = Gamepad();
+
+        /** Telemetry used to spoof the utility container. */
+        private val telemetry = TelemetryImpl( null );
+
+        /**
+         * Spoofs the utility container with false information.
+         */
+        fun spoofUtilityContainer()
+        {
+            UtilityContainer.HardwareMap = hardwareMap;
+            UtilityContainer.Gamepad1 = gamepad;
+            UtilityContainer.Gamepad2 = gamepad;
+            UtilityContainer.Telemetry = telemetry;
+        }
+
+
     }
 
     //
@@ -423,7 +431,7 @@ internal object FalseHardwareMap : HardwareMap( Activity )
      * @param[instance]
      *          The instance to always return for this map.
      */
-    private class FalseDeviceMapping< T : HardwareDevice >( private val instance: T ) : HardwareMap.DeviceMapping< T >()
+    private inner class FalseDeviceMapping< T : HardwareDevice >( private val instance: T ) : DeviceMapping< T >()
     {
         override fun get( deviceName: String ) = instance;
     }
