@@ -34,9 +34,6 @@ import java.util.*
  * @author addonovan
  * @since 8/27/16
  */
-/**
- * Companion object used to locate the OpMode classes.
- */
 internal object ClassFinder : ILog by getLog( ClassFinder::class )
 {
 
