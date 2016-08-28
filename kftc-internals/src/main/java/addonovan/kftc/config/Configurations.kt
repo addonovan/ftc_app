@@ -26,6 +26,7 @@ package addonovan.kftc.config
 import addonovan.kftc.*
 import android.os.Environment
 import android.util.JsonWriter
+import android.widget.Toast
 import com.qualcomm.robotcore.eventloop.opmode.*
 import org.json.JSONObject
 import java.io.*
@@ -165,7 +166,15 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         }
 
         i( "Loading profiles from config file" );
-        fromJson( JSONObject( ConfigFile.readText() ) );
+        try
+        {
+            fromJson( JSONObject( ConfigFile.readText() ) );
+        }
+        catch ( e: Exception )
+        {
+            e( "Error loading JSON!", e );
+            showToast( "Error loading configuration!", time = Toast.LENGTH_LONG );
+        }
     }
 
     /**

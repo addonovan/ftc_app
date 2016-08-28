@@ -29,8 +29,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 
 /**
  * File for assorted android access things.
@@ -84,6 +83,21 @@ val Activity: Activity by lazy()
     }
 
     activity ?: throw NullPointerException( "Failed to find activity!" ); // "not needed" my ass, it errors unless this is here
+}
+
+/**
+ * Shows a toast to the user.
+ *
+ * @param[message]
+ *          The message to show.
+ * @param[time]
+ *          The time to show it for, defaults to [Toast.LENGTH_SHORT].
+ */
+fun showToast( message: String, time: Int = Toast.LENGTH_SHORT )
+{
+    Activity.runOnUiThread {
+        Toast.makeText( Activity, message, time ).show();
+    }
 }
 
 //
