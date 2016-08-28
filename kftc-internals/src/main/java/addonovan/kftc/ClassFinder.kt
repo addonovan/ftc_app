@@ -23,7 +23,7 @@
  */
 package addonovan.kftc
 
-import com.qualcomm.robotcore.hardware.HardwareDevice
+import com.qualcomm.robotcore.hardware.*
 import dalvik.system.DexFile
 import java.lang.reflect.Modifier
 import java.util.*
@@ -74,6 +74,7 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
 
             // checking is done at the first step
             list.add( casted );
+            d( "Found OpMode: ${casted.simpleName} (${casted.getAnnotatedName()})" );
         }
 
         list;
@@ -85,10 +86,50 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
     val HardwareExtensions: ArrayList< Class< out HardwareDevice > > by lazy {
         val list = ArrayList< Class< out HardwareDevice > >();
 
+        // a list of all the types that _are_ allowed
+        val allowedTypes = listOf(
+                DcMotor::class, DcMotorController::class, ServoController::class, Servo::class,
+                LegacyModule::class, TouchSensorMultiplexer::class, DeviceInterfaceModule::class,
+                AnalogInput::class, AnalogOutput::class, DigitalChannel::class, LED::class,
+                OpticalDistanceSensor::class, TouchSensor::class, PWMOutput::class, I2cDevice::class,
+                ColorSensor::class, AccelerationSensor::class, CompassSensor::class, GyroSensor::class,
+                IrSeekerSensor::class, LightSensor::class, UltrasonicSensor::class, VoltageSensor::class
+        );
+
         for ( clazz in classes )
         {
             // ensure it's a subclass of HardwareDevice
             if ( !HardwareDevice::class.java.isAssignableFrom( clazz ) ) continue;
+
+            // cast it for the rest
+            @Suppress( "unchecked_cast" )
+            val casted = clazz as Class< out HardwareDevice >;
+
+            // if it doesn't have the annotation, it's worthless
+            if ( !casted.isHardwareExtension() ) continue;
+
+            // verify that it's hardwareMapType parameter is valid
+            val hardwareMapType = casted.getHardwareMapType();
+            if ( !allowedTypes.contains( hardwareMapType ) )
+            {
+                w( "${clazz.canonicalName} had an invalid parameter in its HardwareExtension annotation: ${casted.getHardwareMapType().java.simpleName}::class" );
+                continue;
+            }
+
+            // verify that is has an acceptable constructor
+            try
+            {
+                // MUST have the following parameters
+                casted.getConstructor( hardwareMapType.java, String::class.java );
+            }
+            catch ( nsme: NoSuchMethodException )
+            {
+                w( "${clazz.canonicalName} did not have a valid constructor to be a HardwareExtension", nsme );
+                continue;
+            }
+
+            list.add( casted );
+            d( "Loaded HardwareExtension: ${clazz.simpleName}" );
         }
 
         list;

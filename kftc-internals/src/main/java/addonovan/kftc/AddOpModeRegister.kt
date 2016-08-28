@@ -88,6 +88,12 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     {
         i( "Initializing kftc systems" );
 
+        d( "Loading OpModes..." );
+        d( "Loaded ${ClassFinder.OpModeClasses.size} opmodes" );
+
+        d( "Loading Hardware Extensions..." );
+        d( "Loaded ${ClassFinder.HardwareExtensions.size} hardware extensions" );
+
         d( "Init Configurations..." );
         Configurations.RegisteredOpModes.clear(); // just in case some things have already been registered
         Configurations.load();
