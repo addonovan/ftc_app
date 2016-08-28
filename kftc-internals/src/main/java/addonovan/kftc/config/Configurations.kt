@@ -245,11 +245,18 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
      * A custom doubly-linked hashmap that contains links between both the OpMode class
      * and its name, as well as the other way around.
      */
-    class OpModeMap : HashMap< Class< out KAbstractOpMode >, String >()
+    class OpModeMap
     {
+
+        /** Map used for name lookup by class. */
+        private val forwardMap = HashMap< Class< out KAbstractOpMode >, String >();
 
         /** Map used for class lookup by name. */
         private val reverseMap = HashMap< String, Class< out KAbstractOpMode > >();
+
+        /** All the names of the registered OpModes. */
+        val Names: MutableSet< String >
+            get() = reverseMap.keys;
 
         /**
          * Adds a class to the class map.
@@ -272,16 +279,39 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
                 );
             }
 
+            // if the class has already been registered, that's also a big problem!
+            if ( clazz in this )
+            {
+                e( "!!Class conflict!!" );
+                throw IllegalArgumentException(
+                        "One OpMode class may not be registered twice!" +
+                        "Class \"${clazz.canonicalName}\" registered twice! As \"${get( clazz )}\" and \"$name\"!"
+                );
+            }
+
             // add it to both maps
-            this[ clazz ] = name;
+            forwardMap[ clazz ] = name;
             reverseMap[ name ] = clazz;
 
             v( "Registration complete" );
         }
 
         //
-        // Reverse Map operators
+        // HashMap operations
         //
+
+        /**
+         * Clears all OpModes from the maps, allowing for the Configuration
+         * map to be started again from scratch.
+         */
+        fun clear()
+        {
+            forwardMap.clear();
+            reverseMap.clear();
+        }
+
+        operator fun get( clazz: Class< out KAbstractOpMode > ) = forwardMap[ clazz ];
+        operator fun contains( clazz: Class< out KAbstractOpMode > ) = clazz in forwardMap;
 
         operator fun get( name: String ) = reverseMap[ name ];
         operator fun contains( name: String ) = name in reverseMap;

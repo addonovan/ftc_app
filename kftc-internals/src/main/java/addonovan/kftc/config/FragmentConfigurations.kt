@@ -51,7 +51,7 @@ class FragmentConfigurations : CustomFragment()
 
         val opModeList = findPreference( "opmode_list" ) as PreferenceCategory;
 
-        for ( name in Configurations.RegisteredOpModes.values )
+        for ( name in Configurations.RegisteredOpModes.Names )
         {
             // create a button for each opmode
             val opModeScreen = preferenceManager.createPreferenceScreen( activity );
