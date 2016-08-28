@@ -110,27 +110,6 @@ private val HardwareMap.deviceClassMap: DeviceClassMap
     }
 
 /**
- * The world's shittiest guess and check! This makes it slightly nicer looking for
- * java users to actually use the method, but it's far less efficient. Oh well.
- *
- * @param[name]
- *          The name of the device to fetch.
- */
-@Suppress( "unchecked_cast" )
-fun < T : HardwareDevice > HardwareMap.getDeviceByGuess( name: String ): T
-{
-    ClassFinder.HardwareExtensions.forEach { extensionClass ->
-        try
-        {
-            return getDeviceByType( extensionClass as Class< out HardwareDevice >, name ) as T;
-        }
-        catch ( e: Exception ){} // ignore these exceptions, this is trial by error after all
-    };
-
-    throw NullPointerException( "No Hardware Device with the name '$name' with the required type!" );
-}
-
-/**
  * Gets the correct device from the Hardware device mappings in the HardwareMap by
  * using the type of HardwareDevice to find the correct hardware device mapping
  * and the name to get the correct value out of it.
@@ -146,17 +125,6 @@ fun < T : HardwareDevice > HardwareMap.getDeviceByGuess( name: String ): T
  *          If [type] had no DeviceMapping associated with it.
  * @throws NullPointerException
  *          If there was no entry for [name] with the type [type].
- * @throws IllegalAnnotationValueException
- *          If the [type] class had a [HardwareExtension] annotation on it that had
- *          an invalid value (that is, one that doesn't have a value in the backing
- *          map of classes and `DeviceMapping`s) assigned to the `hardwareMapType`
- *          parameter.
- *          This should *never* happen to an end-user, that would mean that the
- *          developer who wrote the extension did so wrongly.
- * @throws IllegalClassSetupException
- *          If [type] is a [HardwareExtension] that has been insufficiently
- *          set up, which could be for a multitude of reasons, check the
- *          error message if this occurs for more details.
  */
 @Suppress( "unchecked_cast" )
 fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String ): HardwareDevice
@@ -167,7 +135,7 @@ fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String
 
     if ( isExtension )
     {
-        constructor = findExtensionConstructor( type );
+        constructor = type.getConstructor( type.getHardwareMapType().java, String::class.java );
         baseType = type.getHardwareMapType().java;
     }
     else
@@ -205,21 +173,7 @@ fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String
         if ( isExtension )
         {
             // if it's an extension, create the extension object and return it
-
-            // 1 parameter is just the hardware device
-            if ( constructor!!.typeParameters.size == 1 )
-            {
-                return constructor.newInstance( device );
-            }
-            // 2 parameters is the hardware device AND its name
-            else if ( constructor.typeParameters.size == 2 )
-            {
-                return constructor.newInstance( device, name );
-            }
-            else
-            {
-                throw IllegalStateException( "huh but how?" ); // not descriptive, but will probably never occur
-            }
+            return constructor!!.newInstance( device, name );
         }
         else
         {
@@ -236,71 +190,15 @@ fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String
     // catch the other exceptions
     catch ( ex: Throwable )
     {
-        // if they're from the newInstance invocation
-        if ( ex is InstantiationError ) throw IllegalStateException( "${type.canonicalName} is not instantiable!" );
-        if ( ex is IllegalAccessException ) throw IllegalStateException( "${type.canonicalName}: constructor is inaccessible!" );
-        // IllegalArgumentException can't happen as the constructor has already been chosen for the specified arguments
-
-        if ( ex is InvocationTargetException ) HardwareMapExtension.e( "Exception while invoking HardwareExtension constructor: ${ex.javaClass.name}" );
+        if ( ex is InvocationTargetException )
+        {
+            HardwareMapExtension.e( "Exception while invoking HardwareExtension constructor: ${ex.javaClass.name}" );
+        }
+        else
+        {
+            HardwareMapExtension.wtf( "This exception was already checked for! Well That's Fascinating!", ex );
+        }
 
         throw ex; // throw it again
     }
-}
-
-/**
- * Finds the correct Hardware extension constructor.
- *
- * @param[type]
- *          The hardware extension class.
- *
- * @return The constructor for the extension, if one exists.
- *
- * @throws IllegalAnnotationValueException
- *          If the [type] class had a [HardwareExtension] annotation on it that had
- *          an invalid value (that is, one that doesn't have a value in the backing
- *          map of classes and `DeviceMapping`s) assigned to the `hardwareMapType`
- *          parameter.
- *          This should *never* happen to an end-user, that would mean that the
- *          developer who wrote the extension did so wrongly.
- * @throws IllegalClassSetupException
- *          If [type] is a [HardwareExtension] that has been insufficiently
- *          set up, which could be for a multitude of reasons, check the
- *          error message if this occurs for more details.
- */
-private fun HardwareMap.findExtensionConstructor( type: Class< out HardwareDevice > ): Constructor< out HardwareDevice >
-{
-    var constructor: Constructor< out HardwareDevice >? = null;
-
-    // If the class is an @HardwareExtension, we can get the base type right out of the
-    // annotation parameters
-
-    val baseType = type.getHardwareMapType().java;
-
-    // ensure the base type is a valid one
-    if ( !deviceClassMap.containsKey( baseType ) )
-    {
-        throw IllegalAccessException( "The @HardwareExtension.hardwareMapType value for class \"${type.simpleName}\" isn't supported!" );
-    }
-
-    // ensure that there's a correct constructor for the extension class
-    try
-    {
-        constructor = type.getConstructor( baseType );
-    }
-    catch ( nsme: NoSuchMethodException ) {}
-
-    // try to select a more specific one, but fall back to the other one
-    try
-    {
-        constructor = type.getConstructor( baseType, String::class.java );
-    }
-    catch ( nsme: NoSuchMethodException ) {}
-
-    // if it's still null at this point
-    if ( constructor == null )
-    {
-        throw IllegalStateException( "Failed to find a valid constructor in the hardware extension class: ${type.canonicalName}!" );
-    }
-
-    return constructor;
 }
