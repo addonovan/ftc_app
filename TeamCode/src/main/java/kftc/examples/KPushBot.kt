@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.Range
  * @since 8/27/16
  */
 @TeleOp( name= "Pushbot: Teleop Tank", group= "Pushbot" )
-@Disabled
+//@Disabled
 @Suppress( "unused" )
 class KPushBot : KOpMode()
 {

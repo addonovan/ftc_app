@@ -24,6 +24,7 @@
 package addonovan.kftc.config
 
 import addonovan.kftc.R
+import addonovan.kftc.showToast
 import android.preference.*
 import android.text.InputType
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -294,6 +295,9 @@ class FragmentProfile : CustomFragment()
         {
             CurrentOpModeConfig.e( "Error instantiating OpMode for configuration!", e );
             CurrentOpModeConfig.e( "Some values may not be present in the configurator!" );
+            showToast( "Error created OpMode for configuration!" );
+            showToast( "Some values may not be present in the profile editor" );
+            showToast( ":(" );
         }
 
         realActiveProfile.activate(); // undo this
