@@ -27,11 +27,9 @@ import addonovan.kftc.*
 import android.os.Environment
 import android.util.JsonWriter
 import android.widget.Toast
-import com.qualcomm.robotcore.eventloop.opmode.*
 import org.json.JSONObject
 import java.io.*
 import java.util.*
-import kotlin.reflect.KClass
 
 /**
  * !Description!
@@ -94,7 +92,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         d( "Fetching active profile for $className" );
 
         // get the name from the registered OpModes
-        val name = RegisteredOpModes[ clazz ] ?: throw IllegalArgumentException( "Class $className was not registered!" );
+        val name = RegisteredOpModes[ clazz ];
         v( "$className registered as '$name'" );
 
         // get the active profile
@@ -242,21 +240,21 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     //
 
     /**
-     * A custom doubly-linked hashmap that contains links between both the OpMode class
-     * and its name, as well as the other way around.
+     * A custom collection that stores the names and classes of registered OpModes
+     * so that they can be accessed by either entry.
      */
     class OpModeMap
     {
 
-        /** Map used for name lookup by class. */
-        private val forwardMap = HashMap< Class< out KAbstractOpMode >, String >();
+        /** The names of all the registered OpModes. */
+        private val names = ArrayList< String >();
 
-        /** Map used for class lookup by name. */
-        private val reverseMap = HashMap< String, Class< out KAbstractOpMode > >();
+        /** The classes of all the registered OpModes. */
+        private val classes = ArrayList< Class< out KAbstractOpMode > >();
 
         /** All the names of the registered OpModes. */
-        val Names: MutableSet< String >
-            get() = reverseMap.keys;
+        val Names: List< String >
+            get() = Collections.unmodifiableList( names );
 
         /**
          * Adds a class to the class map.
@@ -275,7 +273,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
                 e( "!!Name conflict!!" );
                 throw IllegalArgumentException(
                         "Two OpMode may not have the same name! Conflict: $name." +
-                        "Shared by ${get( name )!!.canonicalName} and ${clazz.canonicalName}"
+                        "Shared by ${get( name ).canonicalName} and ${clazz.canonicalName}"
                 );
             }
 
@@ -289,9 +287,9 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
                 );
             }
 
-            // add it to both maps
-            forwardMap[ clazz ] = name;
-            reverseMap[ name ] = clazz;
+            // add it to both lists, same position
+            names.add( 0, name );
+            classes.add( 0, clazz );
 
             v( "Registration complete" );
         }
@@ -301,20 +299,19 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         //
 
         /**
-         * Clears all OpModes from the maps, allowing for the Configuration
-         * map to be started again from scratch.
+         * Clears all OpModes from the map.
          */
         fun clear()
         {
-            forwardMap.clear();
-            reverseMap.clear();
+            names.clear();
+            classes.clear();
         }
 
-        operator fun get( clazz: Class< out KAbstractOpMode > ) = forwardMap[ clazz ];
-        operator fun contains( clazz: Class< out KAbstractOpMode > ) = clazz in forwardMap;
+        operator fun get( clazz: Class< out KAbstractOpMode > ) = names[ classes.indexOf( clazz ) ];
+        operator fun contains( clazz: Class< out KAbstractOpMode > ) = clazz in classes;
 
-        operator fun get( name: String ) = reverseMap[ name ];
-        operator fun contains( name: String ) = name in reverseMap;
+        operator fun get( name: String ) = classes[ names.indexOf( name ) ];
+        operator fun contains( name: String ) = name in names;
 
     }
 
