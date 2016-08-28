@@ -40,7 +40,10 @@ class FragmentConfigurations : CustomFragment()
     override val PreferenceResource: Int = R.xml.prefs_configurations;
 
     // we didn't handle this, so the activity should
-    override fun onBackPressed(): Boolean = false;
+    override fun onBackPressed(): Boolean
+    {
+        return false;
+    }
 
     override fun onCreate()
     {
