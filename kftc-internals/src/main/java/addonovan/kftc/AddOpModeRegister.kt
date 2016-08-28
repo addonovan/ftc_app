@@ -166,6 +166,12 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
             instance.init();
         }
 
+        override fun init_loop()
+        {
+            updateUtilities( this );
+            instance.init_loop();
+        }
+
         override fun start()
         {
             updateUtilities( this );
