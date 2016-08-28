@@ -23,8 +23,7 @@
  */
 package addonovan.kftc.hardware
 
-import addonovan.kftc.ILog
-import addonovan.kftc.getLog
+import addonovan.kftc.*
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.HardwareMap.DeviceMapping
