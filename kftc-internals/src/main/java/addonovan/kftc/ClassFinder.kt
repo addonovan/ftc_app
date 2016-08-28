@@ -132,12 +132,19 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
         list;
     }
 
+    /** A list of packages that are blacklisted to save time when loading the baseClasses */
+    private val blackList: LinkedHashSet< String > =
+            linkedSetOf( "com.google", "com.android", "dalvik", "android", // android packages
+                    "java", "kotlin",                                      // language packages
+                    "com.ftdi", "addonovan" );                             // some FTC packages
+
     //
     // Constructors
     //
 
     init
     {
+        v( "init" )
         // all the classes in this dex file
         val classNames = Collections.list( DexFile( Context.packageCodePath ).entries() );
 
@@ -166,13 +173,8 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
                 // then this class wasn't instantiable, so don't bother doing anything
             }
         }
+        v( "inited" )
     }
-
-    /** A list of packages that are blacklisted to save time when loading the baseClasses */
-    private val blackList: LinkedHashSet< String > =
-            linkedSetOf( "com.google", "com.android", "dalvik", "android", // android packages
-                    "java", "kotlin",                                      // language packages
-                    "com.ftdi", "addonovan" );                             // some FTC packages
 
     /**
      * @param[name]
