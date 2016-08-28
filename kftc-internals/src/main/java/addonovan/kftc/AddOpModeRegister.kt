@@ -27,6 +27,7 @@ import addonovan.kftc.config.Configurations
 import com.qualcomm.robotcore.eventloop.opmode.*
 import com.qualcomm.robotcore.util.Util
 import dalvik.system.DexFile
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.lang.reflect.Modifier
 import java.util.*
 import kotlin.reflect.KClass
@@ -173,6 +174,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         {
             updateUtilities( this );
             instance.loop();
+            telemetry.update(); // automatically update telemetry for them
         }
 
         override fun stop()

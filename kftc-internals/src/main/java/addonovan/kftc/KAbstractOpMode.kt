@@ -93,24 +93,28 @@ abstract class KAbstractOpMode : IConfigurable, ILog
     /**
      * Provides access to all of the hardware devices loaded.
      */
+    @Suppress( "unused" )
     val HardwareMap: HardwareMap
         get() = UtilityContainer.HardwareMap;
 
     /**
      * The first controller's digital representation.
      */
+    @Suppress( "unused" )
     val Gamepad1: Gamepad
         get() = UtilityContainer.Gamepad1;
 
     /**
      * The second controller's digital representation.
      */
+    @Suppress( "unused" )
     val Gamepad2: Gamepad
         get() = UtilityContainer.Gamepad2;
 
     /**
      * Telemetry object used to relay information back to the controller.
      */
+    @Suppress( "unused" )
     val Telemetry: Telemetry
         get() = UtilityContainer.Telemetry;
 
