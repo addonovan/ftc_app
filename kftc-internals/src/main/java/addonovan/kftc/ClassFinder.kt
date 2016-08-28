@@ -144,7 +144,6 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
 
     init
     {
-        v( "init" )
         // all the classes in this dex file
         val classNames = Collections.list( DexFile( Context.packageCodePath ).entries() );
 
@@ -173,7 +172,6 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
                 // then this class wasn't instantiable, so don't bother doing anything
             }
         }
-        v( "inited" )
     }
 
     /**

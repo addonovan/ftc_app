@@ -25,12 +25,6 @@ package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
 import com.qualcomm.robotcore.eventloop.opmode.*
-import com.qualcomm.robotcore.util.Util
-import dalvik.system.DexFile
-import org.firstinspires.ftc.robotcore.external.Telemetry
-import java.lang.reflect.Modifier
-import java.util.*
-import kotlin.reflect.KClass
 
 /**
  * The entry point for the kftc library.

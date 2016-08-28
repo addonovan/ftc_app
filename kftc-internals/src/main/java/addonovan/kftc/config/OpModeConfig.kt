@@ -175,11 +175,16 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
      */
     private fun insertDefaultProfile(): Boolean
     {
-        if ( profiles[ 0 ].Name == Profile.DEFAULT_NAME ) return false;
+        // if we need to insert the profile
+        // (there're no profiles, or the first one isn't the default)
+        if ( profiles.size == 0 || profiles[ 0 ].Name != Profile.DEFAULT_NAME )
+        {
+            v( "Inserting default profile!" );
+            profiles.add( 0, Profile.fromRaw( this, Profile.DEFAULT_NAME ) );
+            return true;
+        }
 
-        v( "Inserting default profile!" );
-        profiles.add( 0, Profile.fromRaw( this, Profile.DEFAULT_NAME ) );
-        return true;
+        return false;
     }
 
     /**
