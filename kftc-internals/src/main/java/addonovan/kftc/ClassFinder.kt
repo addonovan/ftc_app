@@ -23,6 +23,7 @@
  */
 package addonovan.kftc
 
+import com.qualcomm.robotcore.hardware.HardwareDevice
 import dalvik.system.DexFile
 import java.lang.reflect.Modifier
 import java.util.*
@@ -49,7 +50,7 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
     /**
      * The classes that fit all of the criteria to be an OpMode.
      */
-    val OpModeClasses by lazy {
+    val OpModeClasses: ArrayList< Class< out KAbstractOpMode > > by lazy {
         val list = ArrayList< Class< out KAbstractOpMode > >();
 
         for ( clazz in classes )
@@ -81,8 +82,16 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
     /**
      * The classes that fit all of the criteria to be hardware extensions.
      */
-    val HardwareExtensions by lazy {
+    val HardwareExtensions: ArrayList< Class< out HardwareDevice > > by lazy {
+        val list = ArrayList< Class< out HardwareDevice > >();
 
+        for ( clazz in classes )
+        {
+            // ensure it's a subclass of HardwareDevice
+            if ( !HardwareDevice::class.java.isAssignableFrom( clazz ) ) continue;
+        }
+
+        list;
     }
 
     //

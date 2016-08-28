@@ -53,11 +53,6 @@ private object HardwareMapExtension : ILog by getLog( HardwareMapExtension::clas
     /** Maps the deviceClassMap to the HardwareMap. */
     private val deviceClassMapMap = HashMap< HardwareMap, DeviceClassMap >();
 
-    internal val HardwareExtensions: MutableList< Class< * > > by lazy()
-    {
-        ClassFinder().inheritsFrom( HardwareDevice::class.java ).with( HardwareExtension::class.java ).get();
-    }
-
     /**
      * Gets (or creates) the single DeviceClassMap for the instance of the hardware map given.
      *
@@ -124,7 +119,7 @@ private val HardwareMap.deviceClassMap: DeviceClassMap
 @Suppress( "unchecked_cast" )
 fun < T : HardwareDevice > HardwareMap.getDeviceByGuess( name: String ): T
 {
-    HardwareMapExtension.HardwareExtensions.forEach { extensionClass ->
+    ClassFinder.HardwareExtensions.forEach { extensionClass ->
         try
         {
             return getDeviceByType( extensionClass as Class< out HardwareDevice >, name ) as T;
