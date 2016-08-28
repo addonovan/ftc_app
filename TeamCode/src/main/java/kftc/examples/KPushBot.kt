@@ -24,14 +24,20 @@
 package kftc.examples
 
 import addonovan.kftc.KOpMode
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.Range
 
 /**
  * A port of the PushBot example to the kftc framework.
  *
+ * This is based off of `PushbotTeleopTank_Iterative`.
+ *
  * @author addonovan
  * @since 8/27/16
  */
+@TeleOp( name= "Pushbot: Teleop Tank", group= "Pushbot" )
+@Disabled
 @Suppress( "unused" )
 class KPushBot : KOpMode()
 {
