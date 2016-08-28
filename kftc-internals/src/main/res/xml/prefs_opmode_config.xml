@@ -3,31 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title= "General">
+        android:title="General">
 
-        <PreferenceScreen
-            android:title="Delete this profile"
-            android:key="delete_profile">
+        <ListPreference
+            android:key="choose_profile"
+            android:title="Select active profile">
 
-            <!-- When clicked, a dialog will pop up to confirm deletion -->
+        </ListPreference>
 
-        </PreferenceScreen>
-
-        <PreferenceScreen
-            android:title="Reset this profile"
-            android:key="reset_profile">
-
-            <!-- When clicked, a dialog will pop up to confirm the reset -->
-
-        </PreferenceScreen>
+        <EditTextPreference
+            android:key="create_profile"
+            android:defaultValue=""
+            android:title="Create new profile"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Preferences"
-        android:key="config_list">
+        android:key="profile_list"
+        android:title="Profiles">
 
-        <!-- Populated programmatically -->
+        <!-- Populated Programmatically -->
 
     </PreferenceCategory>
 
