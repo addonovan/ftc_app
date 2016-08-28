@@ -173,7 +173,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         catch ( e: Exception )
         {
             e( "Error loading JSON!", e );
-            showToast( "Error loading configuration!", time = Toast.LENGTH_LONG );
+            showToast( "Error loading configuration!", time= Toast.LENGTH_LONG );
         }
     }
 
@@ -186,7 +186,15 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
 
         i( "Saving profiles to config file" );
         val writer = JsonWriter( OutputStreamWriter( FileOutputStream( ConfigFile ) ) );
-        toJson( writer );
+        try
+        {
+            toJson( writer );
+        }
+        catch ( e: Exception )
+        {
+            e( "Error saving JSON!", e );
+            showToast( "Error saving configuration!", time= Toast.LENGTH_LONG );
+        }
         writer.close();
     }
 
