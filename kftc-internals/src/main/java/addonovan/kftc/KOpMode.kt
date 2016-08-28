@@ -32,12 +32,31 @@ package addonovan.kftc
 abstract class KOpMode : KAbstractOpMode()
 {
 
+    /**
+     * This is called immediately after the init button has been pressed.
+     */
     open fun init() {}
 
+    /**
+     * This is called repeatedly after the init button has been pressed,
+     * but not yet started.
+     */
+    open fun init_loop() {}
+
+    /**
+     * This is called immediately after the start button has been pressed.
+     */
     open fun start() {}
 
+    /**
+     * This is called repeatedly after the start button has been pressed,
+     * but not yet stopped.
+     */
     abstract fun loop();
 
+    /**
+     * This is called immediately after the stop button has been pressed.
+     */
     open fun stop() {}
 
 }

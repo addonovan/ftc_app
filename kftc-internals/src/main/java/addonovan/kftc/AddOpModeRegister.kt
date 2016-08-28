@@ -158,10 +158,18 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun init()
         {
+            CurrentOpMode = this; // set the current opmode to us, so the KOpMode can call methods on us
+
             unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.init();
+        }
+
+        override fun init_loop()
+        {
+            updateUtilities( this );
+            instance.init_loop();
         }
 
         override fun start()
@@ -200,12 +208,31 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun runOpMode()
         {
+            CurrentLinearOpMode = this; // update this reference so the KLinearOpMode can call us
+
             unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.runOpMode();
         }
 
+    }
+
+    //
+    // Companion object
+    //
+
+    /**
+     * Used to keep track of the currently running opmode.
+     */
+    internal companion object
+    {
+
+        /** The current running [KOpModeWrapper] */
+        lateinit var CurrentOpMode: OpMode;
+
+        /** The currently running [KLinearOpModeWrapper] */
+        lateinit var CurrentLinearOpMode: LinearOpMode;
     }
 
 }

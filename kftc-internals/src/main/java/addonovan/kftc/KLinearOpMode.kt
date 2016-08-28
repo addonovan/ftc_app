@@ -56,4 +56,40 @@ abstract class KLinearOpMode : KAbstractOpMode()
 
     abstract fun runOpMode();
 
+    //
+    // LinearOpMode methods
+    //
+
+    /**
+     * Puts the current thread to sleep for a bit as it has nothing better to do.
+     * This allows other threads in the system to run.
+     *
+     * This is entirely optional, it just might help make the system a little more
+     * responsive or efficient. While this is similar to the old `waitOnFullHardwareCycle()`
+     * function, this does not guarantee the passage of even a single hardware cycle.
+     */
+    @Suppress( "unused" )
+    fun idle()
+    {
+        AddOpModeRegister.CurrentLinearOpMode.idle(); // call our wrapper to idle
+    }
+
+    /**
+     * @return If the OpMode is actually active and should continue running.
+     */
+    @Suppress( "unused" )
+    fun isOpModeActive() = AddOpModeRegister.CurrentLinearOpMode.opModeIsActive();
+
+    /**
+     * @return If this OpMode has started or not.
+     */
+    @Suppress( "unused" )
+    fun isStarted() = AddOpModeRegister.CurrentLinearOpMode.isStarted;
+
+    /**
+     * @return If the OpMode has been requested to stop or not.
+     */
+    @Suppress( "unused" )
+    fun isStopRequested() = AddOpModeRegister.CurrentLinearOpMode.isStopRequested;
+
 }
