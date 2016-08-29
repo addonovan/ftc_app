@@ -55,7 +55,7 @@ class KPushBot : KOpMode()
 
     /** sets rate to move servo */
     // question: Why are the Qualcomm comments so terse and uninformative??
-    val CLAW_SPEED = 0.02;
+    val CLAW_SPEED = get( "claw speed", 0.02 );
 
     //
     // Overrides
@@ -93,7 +93,7 @@ class KPushBot : KOpMode()
         Telemetry.addData( "claw", "Offset = %.2f", clawOffset );
         Telemetry.addData( "left", "%.2f", left );
         Telemetry.addData( "right", "%.2f", right );
-        Telemetry.update();
+        // Telemetry.update(); // This is automatically performed for KOpModes, no need to to it
     }
 
 }
