@@ -40,7 +40,10 @@ class FragmentConfigurations : CustomFragment()
     override val PreferenceResource: Int = R.xml.prefs_configurations;
 
     // we didn't handle this, so the activity should
-    override fun onBackPressed(): Boolean = false;
+    override fun onBackPressed(): Boolean
+    {
+        return false;
+    }
 
     override fun onCreate()
     {
@@ -48,7 +51,7 @@ class FragmentConfigurations : CustomFragment()
 
         val opModeList = findPreference( "opmode_list" ) as PreferenceCategory;
 
-        for ( name in Configurations.RegisteredOpModes.values )
+        for ( name in Configurations.RegisteredOpModes.Names )
         {
             // create a button for each opmode
             val opModeScreen = preferenceManager.createPreferenceScreen( activity );

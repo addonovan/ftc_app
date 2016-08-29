@@ -58,7 +58,10 @@ class ConfigActivity : AppCompatActivity()
     override fun onBackPressed()
     {
         // if the CurrentFragment didn't handle it, then we go back
-        if ( !CurrentFragment.onBackPressed() ) super.onBackPressed();
+        if ( !CurrentFragment.onBackPressed() )
+        {
+            super.onBackPressed();
+        }
     }
 
     override fun onDestroy()

@@ -55,7 +55,7 @@ class KPushBot : KOpMode()
 
     /** sets rate to move servo */
     // question: Why are the Qualcomm comments so terse and uninformative??
-    val CLAW_SPEED = get( "claw speed", 0.02 );
+    val CLAW_SPEED = get( "claw speed", 0.02 ); // configurable so it's faster to change if this is too slow
 
     //
     // Overrides

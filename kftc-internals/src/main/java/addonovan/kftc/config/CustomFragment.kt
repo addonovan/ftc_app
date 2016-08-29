@@ -23,6 +23,7 @@
  */
 package addonovan.kftc.config
 
+import addonovan.kftc.Activity
 import android.os.Bundle
 import android.preference.PreferenceFragment
 
@@ -52,6 +53,9 @@ abstract class CustomFragment : PreferenceFragment()
     /** The resource used for the preferences. */
     abstract val PreferenceResource: Int;
 
+    /** The activity we're in, casted to ConfigActivity. */
+    private val ConfigActivity by lazy() { activity as ConfigActivity; }
+
     //
     // Helpers
     //
@@ -77,7 +81,7 @@ abstract class CustomFragment : PreferenceFragment()
         fragment.arguments = bundle;
 
         // switch to the fragment
-        fragmentManager.beginTransaction().replace( android.R.id.content, fragment ).commit();
+        ConfigActivity.fragmentManager.beginTransaction().replace( android.R.id.content, fragment ).commit();
     }
 
     /**
@@ -88,9 +92,8 @@ abstract class CustomFragment : PreferenceFragment()
      */
     internal fun setTitle( title: String )
     {
-        val activity = activity /* as ConfigActivity */;
-        activity.title = title;
-        // activity.supportActionBar.title = title;
+        ConfigActivity.title = title;
+        ConfigActivity.supportActionBar?.title = title;
     }
 
     //
@@ -105,6 +108,8 @@ abstract class CustomFragment : PreferenceFragment()
         super.onCreate( savedInstanceState );
         addPreferencesFromResource( PreferenceResource );
         onCreate();
+
+        ConfigActivity.CurrentFragment = this; // mark ourselves as the current fragment
     }
 
     /**
