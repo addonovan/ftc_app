@@ -23,6 +23,7 @@
  */
 package addonovan.kftc
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import java.util.*
 
 /**
@@ -59,8 +60,7 @@ import java.util.*
  * @author addonovan
  * @since 9/17/16
  */
-class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
-        ILog by getLog( TaskManager::class, runningOpMode.javaClass.getAnnotatedName() )
+object TaskManager : ILog by getLog( TaskManager::class )
 {
 
     //
@@ -68,10 +68,23 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
     //
 
     /** If this is a linear opmode, then we'll need to treat some things differently. */
-    private val isLinear = runningOpMode is KLinearOpMode;
+    private var isLinear: Boolean = false;
 
     /** The tasks enqueued in the manager for execution later. */
-    private val tasks = LinkedList< TaskWrapper >();
+    private val tasks: LinkedList< TaskWrapper > = LinkedList();
+
+    //
+    // Updating
+    //
+
+    /**
+     * Prepares the Task Manager to use the given opmode.
+     */
+    internal fun prepareFor( opMode: KAbstractOpMode )
+    {
+        isLinear = opMode is KLinearOpMode;
+        // TODO anything else that requires initialization now
+    }
 
     //
     // Registration
@@ -200,7 +213,7 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
      * Wraps around a task and contains some extra meta-data for the task, such as
      * the name it's registered with, and if the task has been started or not.
      */
-    private inner class TaskWrapper( val Task: Task, val Name: String )
+    private class TaskWrapper( val Task: Task, val Name: String )
     {
         var Started = false;
     }

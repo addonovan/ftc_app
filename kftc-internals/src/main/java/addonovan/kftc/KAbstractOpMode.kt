@@ -50,6 +50,8 @@ abstract class KAbstractOpMode : IConfigurable, ILog
         // the end of the OpModeLabel
         if ( !System.getProperty( "kftc.inConfig", "false" ).toBoolean() )
         {
+            TaskManager.prepareFor( this );
+
             val name = javaClass.getAnnotatedName();
             val profileName = Configurations.profileFor( javaClass ).Name;
 
@@ -117,19 +119,6 @@ abstract class KAbstractOpMode : IConfigurable, ILog
     @Suppress( "unused" )
     val Telemetry: Telemetry
         get() = UtilityContainer.Telemetry;
-
-    //
-    // TaskManager Instance
-    //
-
-    /**
-     * The [TaskManager] instance for this OpMode, used for handling
-     * asynchronous tasks that would normally clutter up the [loop][KOpMode.loop]
-     * and [runOpMode][KLinearOpMode.runOpMode] methods with an excess
-     * of conditions.
-     */
-    @Suppress( "unused" )
-    val TaskManager: TaskManager = TaskManager( this );
 
     //
     // IConfigurable

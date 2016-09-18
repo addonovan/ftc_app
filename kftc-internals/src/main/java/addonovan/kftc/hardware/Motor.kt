@@ -24,6 +24,7 @@
 @file:Suppress("unused")
 package addonovan.kftc.hardware
 
+import addonovan.kftc.*
 import com.qualcomm.robotcore.hardware.*
 
 /**
@@ -87,33 +88,12 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     //
 
     /**
-     * Creates and registers a task with the [TaskManager] that will
-     * reset the motor encoders.
-     *
-     * If the OpMode is linear, then whenever this method returns, the
-     * task will have already been completed.
-     *
-     * @return The created task. (Use [Task.isFinished] to determine
-     *         when the task has been finished).
+     * Resets the motor encoders.
      */
-    fun resetEncoders()/*: Task*/
+    fun resetEncoders()
     {
-        throw UnsupportedOperationException( "This has not been fully ported yet!" );
-//        val task = object : SimpleTask()
-//        {
-//
-//            override fun tick()
-//            {
-//                setMode( DcMotorController.RunMode.RESET_ENCODERS );
-//            }
-//
-//            override fun isFinished() = currentPosition == 0;
-//
-//        }
-//
-//        TaskManager.registerTask( task, "$Name resetting encoders" );
-//
-//        return task;
+        // this is guaranteed since they finally made the SDK synchronous
+        setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
     }
 
     /**
@@ -134,42 +114,36 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
      * @return The created task. (Use [Task.isFinished] to determine
      *         when the task has been finished).
      */
-    fun moveDistance( distance: Double, power: Double )/*: Task*/
+    fun moveDistance( distance: Double, power: Double ): Task
     {
-        throw UnsupportedOperationException( "This has not been fully ported yet!" );
+        val ticks = assembly.toTicks( distance ); // pre-calculate the number of ticks
+        resetEncoders(); // register the task for resetting the encoders
 
-//        val ticks = assembly.toTicks( distance ); // precalculate the number of ticks
-//        val resetTask = resetEncoders(); // register the task for resetting the encoders
-//
-//        // create the task
-//        val task = object : Task
-//        {
-//
-//            // this task will only start after the motor encoders have been reset to zero
-//            override fun canStart() = resetTask.isFinished();
-//
-//            override fun tick()
-//            {
-//                setPower( power ); // continually set the power
-//            }
-//
-//            // we're only finished once we're in the right place
-//            override fun isFinished(): Boolean
-//            {
-//                return currentPosition == ticks;
-//            }
-//
-//            // we reached the goal
-//            override fun onFinish()
-//            {
-//                brake();
-//            }
-//
-//        };
-//
-//        TaskManager.registerTask( task, "$Name running for $ticks encoder ticks" );
-//
-//        return task;
+        // create the task
+        val task = object : SimpleTask()
+        {
+
+            override fun tick()
+            {
+                setPower( power ); // continually set the power
+            }
+
+            // we're only finished once we're in the right place
+            override fun isFinished(): Boolean
+            {
+                return currentPosition == ticks;
+            }
+
+            // we reached the goal
+            override fun onFinish()
+            {
+                brake();
+            }
+
+        };
+
+        TaskManager.registerTask( task, "$Name running for $ticks encoder ticks" );
+        return task;
     }
 
     //
