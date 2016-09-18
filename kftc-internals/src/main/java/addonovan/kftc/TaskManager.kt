@@ -177,7 +177,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
                 {
                     if ( !task.canStart() )
                     {
-                        v( "" );
+                        v( "Task \"$name\" cannot start, skipping." );
                         continue; // skip to the next task
                     }
 
