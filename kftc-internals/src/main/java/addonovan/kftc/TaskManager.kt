@@ -144,7 +144,7 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
      *
      * This method cannot be run for [KLinearOpMode]s, and _will_ throw an exception.
      */
-    fun tick()
+    internal fun tick()
     {
         if ( isLinear ) throw UnsupportedOperationException( "TaskManagers cannot be ticked in LinearOpModes!" );
 
