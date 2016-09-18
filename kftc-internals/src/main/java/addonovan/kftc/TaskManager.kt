@@ -31,7 +31,8 @@ import java.util.*
  * @author addonovan
  * @since 9/17/16
  */
-class TaskManager internal constructor( val runningOpMode: KAbstractOpMode ): ILog by getLog( TaskManager::class )
+class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
+        ILog by getLog( TaskManager::class, runningOpMode.javaClass.getAnnotatedName() )
 {
 
     //
@@ -125,6 +126,41 @@ class TaskManager internal constructor( val runningOpMode: KAbstractOpMode ): IL
             val wrapper = iter.next();
 
             // ease of access / slightly more efficient
+            val task = wrapper.Task;
+            val name = wrapper.Name;
+
+            // wrapped in a try-catch as the task might throw an exception
+            try
+            {
+                if ( !wrapper.Started )
+                {
+                    if ( !task.canStart() )
+                    {
+                        v( "" );
+                        continue; // skip to the next task
+                    }
+
+                    i( "Task \"$name\" has started" );
+                    wrapper.Started = true; // once the task is started, this method won't be called anymore
+                }
+
+                v( "Ticking task: \"$name\"" );
+                task.tick();
+
+                // remove it if it's finished
+                if ( task.isFinished() )
+                {
+                    i( "Task \"$name\" has been completed" );
+                    iter.remove();
+
+                    task.onFinish(); // let the task clean up
+                }
+            }
+            catch ( e: Exception )
+            {
+                // log it to the user, but don't crash the program
+                e( "Error while ticking task: \"$name\"!", e );
+            }
         }
     }
 
@@ -132,9 +168,13 @@ class TaskManager internal constructor( val runningOpMode: KAbstractOpMode ): IL
     // Inner classes
     //
 
+    /**
+     * Wraps around a task and contains some extra meta-data for the task, such as
+     * the name it's registered with, and if the task has been started or not.
+     */
     private inner class TaskWrapper( val Task: Task, val Name: String )
     {
-
+        var Started = false;
     }
 
 }
