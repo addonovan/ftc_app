@@ -175,8 +175,9 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         override fun loop()
         {
             updateUtilities( this );
+            instance.TaskManager.tick(); // tick the task manager for the users
             instance.loop();
-            telemetry.update(); // automatically update telemetry for them
+            telemetry.update(); // automatically update telemetry for the users
         }
 
         override fun stop()
