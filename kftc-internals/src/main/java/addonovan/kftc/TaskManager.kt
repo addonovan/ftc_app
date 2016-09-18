@@ -26,7 +26,35 @@ package addonovan.kftc
 import java.util.*
 
 /**
- * !Description!
+ * Not to be confused with the Windows `taskmgr.exe` program,
+ * the Task Manager is the asynchronous system for managing
+ * specific tasks.
+ *
+ * The life cycle of a task is rather simple. Before a task's
+ * [tick][Task.tick] method can be called, it must first be
+ * ready, which means the Task Manager will wait until it
+ * receives a `true` back from the task's [canStart][Task.canStart]
+ * method. The task will continue to be ticked until the
+ * [isFinished][Task.isFinished] method returns `true`, at
+ * which point, the task will be removed from the registered
+ * tasks list and it's [onFinish][Task.onFinish] method will
+ * be invoked.
+ *
+ * It should be noted that all methods, except `onFinish` have the
+ * possibility of being called more than once. 'canStart' will be
+ * called however many times it takes for the method to return
+ * 'true', and 'tick' and 'isFinished' will be called the same number
+ * of times, until 'isFinished' eventually returns 'true' (n.b. they
+ * will both be called *at least* one time, as the task is ticked
+ * before it is checked for completion).
+ *
+ * In regular OpModes, the Task Manager will call the [tick][Task.tick]
+ * methods of the registered tasks as often as the [loop][KOpMode.loop]
+ * method is by the system.
+ *
+ * In a [KLinearOpMode], the Task Manager will _not_ schedule events
+ * or allow them to be put off until later; they're entire lifetime
+ * will happen before the [registerTask] method returns.
  *
  * @author addonovan
  * @since 9/17/16
