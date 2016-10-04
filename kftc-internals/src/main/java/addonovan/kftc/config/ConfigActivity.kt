@@ -21,42 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package addonovan.kftc
+package addonovan.kftc.config
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * !Description!
  *
  * @author addonovan
- * @since 8/22/2016
+ * @since 8/27/16
  */
-abstract class KOpMode : KAbstractOpMode()
+class ConfigActivity : AppCompatActivity()
 {
 
-    /**
-     * This is called immediately after the init button has been pressed.
-     */
-    open fun init() {}
+    //
+    // Vars
+    //
 
-    /**
-     * This is called repeatedly after the init button has been pressed,
-     * but not yet started.
-     */
-    open fun init_loop() {}
+    /** The current fragment we're seeing. */
+    lateinit var CurrentFragment: CustomFragment;
 
-    /**
-     * This is called immediately after the start button has been pressed.
-     */
-    open fun start() {}
+    //
+    // Overrides
+    //
 
-    /**
-     * This is called repeatedly after the start button has been pressed,
-     * but not yet stopped.
-     */
-    abstract fun loop();
+    override fun onCreate( savedInstanceState: Bundle? )
+    {
+        super.onCreate( savedInstanceState );
 
-    /**
-     * This is called immediately after the stop button has been pressed.
-     */
-    open fun stop() {}
+        // add the main fragment and let it handle that stuff
+        CurrentFragment = FragmentConfigurations();
+        fragmentManager.beginTransaction().replace( android.R.id.content, CurrentFragment ).commit();
+    }
+
+    override fun onBackPressed()
+    {
+        // if the CurrentFragment didn't handle it, then we go back
+        if ( !CurrentFragment.onBackPressed() ) super.onBackPressed();
+    }
+
+    override fun onDestroy()
+    {
+        // save our edits
+        Configurations.save();
+        super.onDestroy();
+    }
 
 }

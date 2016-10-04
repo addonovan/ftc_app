@@ -23,9 +23,7 @@
  */
 package addonovan.kftc.config
 
-import addonovan.kftc.KAbstractOpMode
-import addonovan.kftc.ILog
-import addonovan.kftc.getLog
+import addonovan.kftc.*
 import android.os.Environment
 import android.util.JsonWriter
 import com.qualcomm.robotcore.eventloop.opmode.*
@@ -74,38 +72,57 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     /** A map of the OpModeConfigs for each OpMode. */
     private val OpModeConfigs = HashMap< String, OpModeConfig >();
 
+    /** A map of all the registered OpModes' names and their classes. */
+    val RegisteredOpModes = OpModeMap();
+
     //
     // Shortcuts
     //
 
     /**
-     * Shortcut for getting the active profile for the given OpMode.
+     * Gets the active profile for the given OpMode.
      *
-     * Cover for
-     * ```kotlin
-     * OpModeConfigs[ opMode.RegisteredName ]!!.ActiveProfile
-     * ```
+     * @param[clazz]
+     *          The class of the [KAbstractOpMode] to get the active profile for.
      *
-     * @param[opMode]
-     *          The OpMode to get the active profile for.
-     *
-     * @return The active profile for the given opmode.
+     * @return The active profile for the given OpMode.
      */
-    fun profileFor( opMode: KAbstractOpMode ): Profile
+    fun profileFor( clazz: Class< out KAbstractOpMode > ): Profile
     {
-        val name = opMode.AnnotatedName; // minimizes method calls to the lazy getter
-        d( "Finding active profile for $name" );
+        val className = clazz.canonicalName;
+        d( "Fetching active profile for $className" );
 
-        // if one exists, just return it
-        if ( OpModeConfigs[ name ] != null )
+        // get the name from the registered OpModes
+        val name = RegisteredOpModes[ clazz ] ?: throw IllegalArgumentException( "Class $className was not registered!" );
+        v( "$className registered as '$name'" );
+
+        // get the active profile
+        return opModeConfigFor( name ).ActiveProfile;
+    }
+
+    /**
+     * Gets the OpModeConfig object for the given name. A blank one is
+     * created if one does not already exist.
+     *
+     * @param[name]
+     *          The name of the string.
+     *
+     * @return The [OpModeConfig] for the given name.
+     */
+    fun opModeConfigFor( name: String ): OpModeConfig
+    {
+        // if one exists, return it
+        if ( name in OpModeConfigs )
         {
-            return OpModeConfigs[ name ]!!.ActiveProfile;
+            v( "Pre-existing profile found!" );
+            return OpModeConfigs[ name ]!!;
         }
 
+        // otherwise, make a new one
         w( "Generating blank configuration for: $name" );
-        val omc = OpModeConfig.fromRaw( name );
-        OpModeConfigs[ name ] = omc; // add it to the map for future use
-        return omc.ActiveProfile;
+        val blankConfig = OpModeConfig.fromRaw( name );
+        OpModeConfigs[ name ] = blankConfig; // add it to the map for future use
+        return blankConfig;
     }
 
     //
@@ -190,6 +207,57 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
             val omConfig = OpModeConfig.fromJson( root.getJSONObject( i ) );
             OpModeConfigs[ omConfig.Name ] = omConfig;
         }
+    }
+
+    //
+    // Nested Classes
+    //
+
+    /**
+     * A custom doubly-linked hashmap that contains links between both the OpMode class
+     * and its name, as well as the other way around.
+     */
+    class OpModeMap : HashMap< Class< out KAbstractOpMode >, String >()
+    {
+
+        /** Map used for class lookup by name. */
+        private val reverseMap = HashMap< String, Class< out KAbstractOpMode > >();
+
+        /**
+         * Adds a class to the class map.
+         *
+         * @param[clazz]
+         *          The OpMode class to add to the map.
+         */
+        operator fun plusAssign( clazz: Class< out KAbstractOpMode > )
+        {
+            val name = clazz.getAnnotatedName();
+            i( "Registering ${clazz.simpleName} as $name" );
+
+            // if there's a name conflict, that's a big problem!
+            if ( name in this )
+            {
+                e( "!!Name conflict!!" );
+                throw IllegalArgumentException(
+                        "Two OpMode may not have the same name! Conflict: $name." +
+                        "Shared by ${get( name )!!.canonicalName} and ${clazz.canonicalName}"
+                );
+            }
+
+            // add it to both maps
+            this[ clazz ] = name;
+            reverseMap[ name ] = clazz;
+
+            v( "Registration complete" );
+        }
+
+        //
+        // Reverse Map operators
+        //
+
+        operator fun get( name: String ) = reverseMap[ name ];
+        operator fun contains( name: String ) = name in reverseMap;
+
     }
 
 }

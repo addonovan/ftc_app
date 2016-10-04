@@ -25,8 +25,8 @@ package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import android.text.Editable
+import android.text.TextWatcher
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -41,60 +41,48 @@ abstract class KAbstractOpMode : IConfigurable, ILog
 {
 
     //
-    // Annotation Data
+    // Constructor
     //
 
-    /**
-     * The name of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
-     *
-     * @throws IllegalArgumentException
-     *          If the class has neither annotation.
-     */
-    val AnnotatedName: String by lazy()
+    init
     {
-        if ( javaClass.isAnnotationPresent( TeleOp::class.java ) )
+        // if we aren't configuring outselves, then add the [profile] text to
+        // the end of the OpModeLabel
+        if ( !System.getProperty( "kftc.inConfig", "false" ).toBoolean() )
         {
-            d( "Grabbing annotated name from TeleOp annotation" );
+            val name = javaClass.getAnnotatedName();
+            val profileName = Configurations.profileFor( javaClass ).Name;
 
-            return@lazy javaClass.getAnnotation( TeleOp::class.java )!!.name;
-        }
-        else if ( javaClass.isAnnotationPresent( Autonomous::class.java ) )
-        {
-            d( "Grabbing annotated name from Autonomous annotation" );
+            OpModeLabel.addTextChangedListener( object : TextWatcher
+            {
+                // unused
+                override fun afterTextChanged( s: Editable? ){}
+                override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ){}
 
-            return@lazy javaClass.getAnnotation( Autonomous::class.java )!!.name;
-        }
-        else
-        {
-            e( "Dude, there are no annotations on this class. Why?" );
-            throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
-        }
-    }
+                // whenever the label updates, add the profile to the end
+                override fun onTextChanged( s: CharSequence, start: Int, before: Int, count: Int )
+                {
+                    val text = s.toString();
 
-    /**
-     * The group of the KOpMode as it is written in the annotation (either TeleOp or Autonomous).
-     *
-     * @throws IllegalArgumentException
-     *          If the class has neither annotation.
-     */
-    val AnnotatedGroup: String by lazy()
-    {
-        if ( javaClass.isAnnotationPresent( TeleOp::class.java ) )
-        {
-            d( "Grabbing annotated group from TeleOp annotation" );
+                    // if the OpMode isn't running, remove this listener so we don't get bogged down
+                    if ( !text.contains( name ) )
+                    {
+                        OpModeLabel.removeTextChangedListener( this );
+                    }
 
-            return@lazy javaClass.getAnnotation( TeleOp::class.java )!!.group;
-        }
-        else if ( javaClass.isAnnotationPresent( Autonomous::class.java ) )
-        {
-            d( "Grabbing annotated group from Autonomous annotation" );
+                    // if it doesn't have the configuration details, add them
+                    if ( !text.contains( "[" ) )
+                    {
+                        // run on the ui thread so we don't get yelled at
+                        Activity.runOnUiThread {
 
-            return@lazy javaClass.getAnnotation( Autonomous::class.java )!!.group;
-        }
-        else
-        {
-            e( "Dude, there are no annotations on this class. Why?" );
-            throw IllegalArgumentException( "No annotations (TeleOp or Autonomous) on OpMode!" );
+                            // when this is created, update the OpMode label to also show the active profile
+                            OpModeLabel.text = "OpMode: $name [$profileName]";
+                        }
+                    }
+                }
+
+            } );
         }
     }
 
@@ -105,24 +93,28 @@ abstract class KAbstractOpMode : IConfigurable, ILog
     /**
      * Provides access to all of the hardware devices loaded.
      */
+    @Suppress( "unused" )
     val HardwareMap: HardwareMap
         get() = UtilityContainer.HardwareMap;
 
     /**
      * The first controller's digital representation.
      */
+    @Suppress( "unused" )
     val Gamepad1: Gamepad
         get() = UtilityContainer.Gamepad1;
 
     /**
      * The second controller's digital representation.
      */
+    @Suppress( "unused" )
     val Gamepad2: Gamepad
         get() = UtilityContainer.Gamepad2;
 
     /**
      * Telemetry object used to relay information back to the controller.
      */
+    @Suppress( "unused" )
     val Telemetry: Telemetry
         get() = UtilityContainer.Telemetry;
 
@@ -135,7 +127,7 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * is generally discourages as the other `get` methods should
      * be used instead for simpler access.
      */
-    override val ConfigProfile: Profile = Configurations.profileFor( this );
+    override val ConfigProfile: Profile = Configurations.profileFor( javaClass );
 
     //
     // ILog

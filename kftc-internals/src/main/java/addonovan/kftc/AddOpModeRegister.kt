@@ -27,6 +27,7 @@ import addonovan.kftc.config.Configurations
 import com.qualcomm.robotcore.eventloop.opmode.*
 import com.qualcomm.robotcore.util.Util
 import dalvik.system.DexFile
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.lang.reflect.Modifier
 import java.util.*
 import kotlin.reflect.KClass
@@ -49,28 +50,30 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         initSystems(); // initialize all of the systems that need to be
 
         i( "Registering OpModes" );
-        for ( clazz in OpModeClasses )
+        for ( clazz in ClassFinder.OpModeClasses )
         {
-            val teleOpAnnotation = clazz.getAnnotation( TeleOp::class.java ) ?: null;
-            val autoAnnotation = clazz.getAnnotation( Autonomous::class.java ) ?: null;
-
-            // nasty code
-
             val flavor =
-                    if ( teleOpAnnotation != null )
+                    if ( clazz.isAutonomous() )
+                    {
+                        OpModeMeta.Flavor.AUTONOMOUS;
+                    }
+                    else if ( clazz.isTeleOp() )
                     {
                         OpModeMeta.Flavor.TELEOP;
                     }
                     else
                     {
-                        OpModeMeta.Flavor.AUTONOMOUS;
+                        throw IllegalStateException( "OpMode has neither an Autonomous nor TeleOp Annotation!" );
                     }
 
-            val name = teleOpAnnotation?.name ?: autoAnnotation!!.name;
-            val group = teleOpAnnotation?.group ?: autoAnnotation!!.group;
+            val name = clazz.getAnnotatedName();
+            val group = clazz.getAnnotatedGroup();
 
-            // actually register it
+            // register it with Ftc
             manager.register( OpModeMeta( name, flavor, group ), wrap( clazz ) );
+
+            // register it with the configurator
+            Configurations.RegisteredOpModes += clazz;
         }
         d( "OpModes registered" );
     }
@@ -86,8 +89,18 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     {
         i( "Initializing kftc systems" );
 
+        d( "Loading OpModes..." );
+        d( "Loaded ${ClassFinder.OpModeClasses.size} opmodes" );
+
+        d( "Loading Hardware Extensions..." );
+        d( "Loaded ${ClassFinder.HardwareExtensions.size} hardware extensions" );
+
         d( "Init Configurations..." );
+        Configurations.RegisteredOpModes.clear(); // just in case some things have already been registered
         Configurations.load();
+
+        d( "Hooking Robot icon..." );
+        hookRobotIcon();
 
         d( "kftc systems initialized" );
     }
@@ -145,9 +158,18 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun init()
         {
+            CurrentOpMode = this; // set the current opmode to us, so the KOpMode can call methods on us
+
+            unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.init();
+        }
+
+        override fun init_loop()
+        {
+            updateUtilities( this );
+            instance.init_loop();
         }
 
         override fun start()
@@ -160,6 +182,7 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         {
             updateUtilities( this );
             instance.loop();
+            telemetry.update(); // automatically update telemetry for them
         }
 
         override fun stop()
@@ -185,6 +208,9 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
 
         override fun runOpMode()
         {
+            CurrentLinearOpMode = this; // update this reference so the KLinearOpMode can call us
+
+            unhookRobotIcon(); // Unhooks the listener because we're running now
             updateUtilities( this );
             instance = clazz.newInstance();
             instance.runOpMode();
@@ -193,113 +219,20 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     }
 
     //
-    // Companion
+    // Companion object
     //
 
     /**
-     * Companion object used to locate the OpMode classes.
+     * Used to keep track of the currently running opmode.
      */
-    private companion object OpModeFinder : ILog by getLog( OpModeFinder::class )
+    internal companion object
     {
 
-        //
-        // Vals
-        //
+        /** The current running [KOpModeWrapper] */
+        lateinit var CurrentOpMode: OpMode;
 
-        /** The classes we're left with */
-        private val classes: LinkedHashSet< Class< * > > = linkedSetOf();
-
-        /**
-         * The classes that fit all of the criteria
-         */
-        val OpModeClasses by lazy {
-            val list = ArrayList< Class< out KAbstractOpMode> >();
-
-            for ( clazz in classes )
-            {
-                // it's a subclass
-                if ( !KAbstractOpMode::class.java.isAssignableFrom( clazz ) ) continue;
-
-                if ( !KOpMode::class.java.isAssignableFrom( clazz ) && !KLinearOpMode::class.java.isAssignableFrom( clazz ) )
-                {
-                    // log it just to let them know if they forgot something
-                    w( "${clazz.canonicalName} illegally subclasses KAbstractOpMode but not KOpMode or KLinearOpMode!" );
-
-                    continue;
-                }
-
-                // has one of the two annotations
-                if ( !clazz.isAnnotationPresent( TeleOp::class.java ) && !clazz.isAnnotationPresent( Autonomous::class.java ) ) continue;
-
-                // not disabled
-                if ( clazz.isAnnotationPresent( Disabled::class.java ) ) continue;
-
-                // checking is done at the first step
-                @Suppress( "unchecked_cast" )
-                list.add( clazz as Class< out KAbstractOpMode> );
-            }
-
-            list;
-        }
-
-        //
-        // Constructors
-        //
-
-        init
-        {
-            // all the classes in this dex file
-            val classNames = Collections.list( DexFile( Context.packageCodePath ).entries() );
-
-            // modifiers that we won't allow
-            val prohibitedModifiers = Modifier.ABSTRACT or Modifier.INTERFACE;
-
-            // find the classes that are okay
-            for ( name in classNames )
-            {
-                if ( isBlacklisted( name ) ) continue; // skip classes that are in blacklisted packages
-
-                try
-                {
-                    val c = Class.forName( name, false, Context.classLoader );
-
-                    if ( c.modifiers and Modifier.PUBLIC == 0         // not public
-                            || c.modifiers and prohibitedModifiers != 0 )   // has a prohibited modifier
-                    {
-                        continue;
-                    }
-
-                    classes.add( c );
-                }
-                catch ( e: Exception )
-                {
-                    // then this class wasn't instantiable, so don't bother doing anything
-                }
-            }
-        }
-
-        /** A list of packages that are blacklisted to save time when loading the baseClasses */
-        private val blackList: LinkedHashSet< String > =
-                linkedSetOf( "com.google", "com.android", "dalvik", "android", // android packages
-                        "java", "kotlin",                                      // language packages
-                        "com.ftdi", "addonovan" );                             // some FTC packages
-
-        /**
-         * @param[name]
-         *          The full name of the class (package included).
-         * @return If the class name is in a blacklisted package.
-         */
-        private fun isBlacklisted( name: String ): Boolean
-        {
-            if ( name.contains( "$" ) ) return true;
-
-            for ( blacklisted in blackList )
-            {
-                if ( name.startsWith( blacklisted ) ) return true;
-            }
-            return false;
-        }
-
+        /** The currently running [KLinearOpModeWrapper] */
+        lateinit var CurrentLinearOpMode: LinearOpMode;
     }
 
 }

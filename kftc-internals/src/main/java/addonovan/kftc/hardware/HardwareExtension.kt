@@ -21,42 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package addonovan.kftc
+package addonovan.kftc.hardware
+
+import com.qualcomm.robotcore.hardware.*
+import com.qualcomm.robotcore.util.Hardware
+import kotlin.reflect.KClass
+
 
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * An annotation for hardware class that are build on top of another hardware device.
+ * Valid classes for the [hardwareMapType] are as follows:
+ * [DcMotorController]
+ * [DcMotor]
+ * [ServoController]
+ * [Servo]
+ * [LegacyModule]
+ * [TouchSensorMultiplexer]
+ * [DeviceInterfaceModule]
+ * [AnalogInput]
+ * [AnalogOutput]
+ * [DigitalChannel]
+ * [LED]
+ * [OpticalDistanceSensor]
+ * [TouchSensor]
+ * [PWMOutput]
+ * [I2cDevice]
+ * [ColorSensor]
+ * [AccelerationSensor]
+ * [CompassSensor]
+ * [GyroSensor]
+ * [IrSeekerSensor]
+ * [LightSensor]
+ * [UltrasonicSensor]
+ * [VoltageSensor]
+ *
+ * @param[hardwareMapType]
+ *          The type of [HardwareDevice] that the class is based around. See the list
+ *          above for valid classes.
  *
  * @author addonovan
- * @since 8/22/2016
+ * @since 8/27/16
  */
-abstract class KOpMode : KAbstractOpMode()
-{
-
-    /**
-     * This is called immediately after the init button has been pressed.
-     */
-    open fun init() {}
-
-    /**
-     * This is called repeatedly after the init button has been pressed,
-     * but not yet started.
-     */
-    open fun init_loop() {}
-
-    /**
-     * This is called immediately after the start button has been pressed.
-     */
-    open fun start() {}
-
-    /**
-     * This is called repeatedly after the start button has been pressed,
-     * but not yet stopped.
-     */
-    abstract fun loop();
-
-    /**
-     * This is called immediately after the stop button has been pressed.
-     */
-    open fun stop() {}
-
-}
+annotation class HardwareExtension( val hardwareMapType: KClass< out HardwareDevice > );
