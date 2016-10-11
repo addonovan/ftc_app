@@ -119,6 +119,19 @@ abstract class KAbstractOpMode : IConfigurable, ILog
         get() = UtilityContainer.Telemetry;
 
     //
+    // TaskManager Instance
+    //
+
+    /**
+     * The [TaskManager] instance for this OpMode, used for handling
+     * asynchronous tasks that would normally clutter up the [loop][KOpMode.loop]
+     * and [runOpMode][KLinearOpMode.runOpMode] methods with an excess
+     * of conditions.
+     */
+    @Suppress( "unused" )
+    val TaskManager: TaskManager = TaskManager( this );
+
+    //
     // IConfigurable
     //
 

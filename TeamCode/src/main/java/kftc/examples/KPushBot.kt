@@ -93,7 +93,7 @@ class KPushBot : KOpMode()
         Telemetry.addData( "claw", "Offset = %.2f", clawOffset );
         Telemetry.addData( "left", "%.2f", left );
         Telemetry.addData( "right", "%.2f", right );
-        Telemetry.update();
+        // Telemetry.update(); // This is automatically performed for KOpModes, no need to to it
     }
 
 }
