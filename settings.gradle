@@ -1,2 +1,2 @@
-include ':FtcRobotController', ':kftc-internals'
+include ':FtcRobotController'
 include ':TeamCode'
