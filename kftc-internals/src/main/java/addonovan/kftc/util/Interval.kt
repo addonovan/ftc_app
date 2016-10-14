@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@file:Suppress( "unused" )
 package addonovan.kftc.util
 
 /**
@@ -67,6 +68,15 @@ open class Interval( startTime: Long, duration: Long )
      *          The time (in milliseconds) that this Interval will be active for.
      */
     constructor( baseInterval: Interval, duration: Long ) : this( baseInterval.EndTime, duration );
+
+    /**
+     * Constructs an interval which starts at the millisecond that the constructor
+     * is called and spans the given duration.
+     *
+     * @param[duration]
+     *          The duration (in milliseconds) for which this Interval will be active.
+     */
+    constructor( duration: Long ) : this( System.currentTimeMillis(), duration );
 
     //
     // Active

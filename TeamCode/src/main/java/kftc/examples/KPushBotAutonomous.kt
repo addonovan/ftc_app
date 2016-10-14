@@ -26,6 +26,8 @@ package kftc.examples
 import addonovan.kftc.KOpMode
 import addonovan.kftc.Task
 import addonovan.kftc.TaskManager
+import addonovan.kftc.util.Interval
+import com.qualcomm.robotcore.hardware.DcMotor
 
 /**
  *
@@ -60,20 +62,50 @@ class KPushBotAutonomous : KOpMode()
     private val moveForward = object : Task
     {
 
+        private lateinit var interval: Interval;
+
         override fun onStart()
         {
-
+            interval = Interval( 2500 );
         }
 
         override fun tick()
         {
-
+            leftMotor.power = 1.0;
+            rightMotor.power = 1.0;
         }
 
         override fun isFinished(): Boolean
         {
-            return false;
+            return !interval.isActive();
         }
+
+        override fun onFinish()
+        {
+            leftMotor.power = 0.0;
+            rightMotor.power = 0.0;
+
+            // after this task finished, we can move on to the next one if the tasks
+            // are just need to run linearly
+            TaskManager.registerTask( grabClaw, "grab object" );
+        }
+    }
+
+    /** This will close the claw to grab something */
+    private val grabClaw = object : Task
+    {
+
+        override fun tick()
+        {
+            leftClaw.position = 0.5;
+            rightClaw.position = 0.5;
+        }
+
+        override fun isFinished(): Boolean
+        {
+            return ( leftClaw.position == 0.5 && rightClaw.position == 0.5 );
+        }
+
     }
 
     //
@@ -87,7 +119,8 @@ class KPushBotAutonomous : KOpMode()
 
     override fun loop()
     {
-
+        // anything else you would need (e.g. telemetry/logging) to do
+        // in the loop, aside from tasks.
     }
 
 }
