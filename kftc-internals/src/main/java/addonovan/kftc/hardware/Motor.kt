@@ -120,7 +120,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
         resetEncoders(); // register the task for resetting the encoders
 
         // create the task
-        val task = object : SimpleTask()
+        val task = object : Task
         {
 
             override fun tick()
