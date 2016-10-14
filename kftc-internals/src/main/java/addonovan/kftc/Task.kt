@@ -36,8 +36,14 @@ interface Task
 {
 
     /**
+     * @return `true` if the task's preconditions have been met.
      */
-    fun canStart(): Boolean;
+    fun canStart(): Boolean = true;
+
+    /**
+     * Called when the task starts for the first time.
+     */
+    fun onStart() {}
 
     /**
      * 'Ticks' the task. This is executed as often as the OpMode's 'loop'
@@ -55,22 +61,6 @@ interface Task
     /**
      * Called when the task is complete for clean up.
      */
-    fun onFinish();
-
-}
-
-/**
- * A simple task is an implementation of a task that can immediately start
- * and has no necessary cleanup.
- *
- * @author addonovan
- * @since 9/17/16
- */
-abstract class SimpleTask : Task
-{
-
-    override fun canStart() = true;
-
-    override fun onFinish() {}
+    fun onFinish() {}
 
 }

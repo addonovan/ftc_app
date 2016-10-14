@@ -127,7 +127,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+        // Wait for the game to onStart (Display Gyro value), and reset gyro before we move..
         while (!isStarted()) {
             telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
             telemetry.update();
@@ -193,7 +193,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
             robot.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // start motion.
+            // onStart motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
             robot.leftMotor.setPower(speed);
             robot.rightMotor.setPower(speed);

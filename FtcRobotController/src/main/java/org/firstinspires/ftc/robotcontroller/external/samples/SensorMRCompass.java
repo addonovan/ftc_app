@@ -75,13 +75,13 @@ public class SensorMRCompass extends LinearOpMode {
         telemetry.log().add("compass in a full 360 degree circle while keeping");
         telemetry.log().add("it level. When complete, press 'B'.");
 
-        // wait for the start button to be pressed
+        // wait for the onStart button to be pressed
         waitForStart();
         telemetry.log().clear();
 
         while (opModeIsActive()) {
 
-            // If the A button is pressed, start calibration and wait for the A button to rise
+            // If the A button is pressed, onStart calibration and wait for the A button to rise
             if (gamepad1.a && !compass.isCalibrating()) {
 
                 telemetry.log().clear();

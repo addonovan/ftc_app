@@ -85,7 +85,7 @@ public class ConceptCompassCalibration extends LinearOpMode {
         telemetry.addData("Status", "Ready to cal");    //
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to onStart (driver presses PLAY)
         waitForStart();
 
         // Set the compass to calibration mode

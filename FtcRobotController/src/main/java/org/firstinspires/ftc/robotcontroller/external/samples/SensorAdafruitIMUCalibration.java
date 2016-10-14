@@ -144,7 +144,7 @@ public class SensorAdafruitIMUCalibration extends LinearOpMode
         imu.initialize(parameters);
 
         composeTelemetry();
-        telemetry.log().add("Waiting for start...");
+        telemetry.log().add("Waiting for onStart...");
 
         // Wait until we're told to go
         while (!isStarted()) {

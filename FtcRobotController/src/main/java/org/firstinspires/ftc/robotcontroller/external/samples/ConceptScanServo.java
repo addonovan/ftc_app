@@ -36,13 +36,13 @@ public class ConceptScanServo extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
-        // Connect to servo (Assume PushBot Left Hand)
+        // Connect to servo (Assume PushBot Left Claw)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.servo.get("left_hand");
+        servo = hardwareMap.servo.get("left claw");
 
-        // Wait for the start button
+        // Wait for the onStart button
         telemetry.addData(">", "Press Start to scan Servo." );
         telemetry.update();
         waitForStart();
