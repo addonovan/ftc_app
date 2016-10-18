@@ -125,7 +125,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
 
             override fun tick()
             {
-                setPower( power / 100.0 ); // continually set the power
+                setPower( power ); // continually set the power
             }
 
             // we're only finished once we're in the right place
@@ -160,16 +160,16 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
 
     /**
      * @param[power]
-     *          The power to set the motor at [-100,100].
+     *          The power to set the motor at [-1,1].
      */
     override fun setPower( power: Double )
     {
-        super.setPower( power / 100.0 );
+        super.setPower( power );
     }
 
     /**
-     * @return The power, on a scale of [-100,100].
+     * @return The power, on a scale of [-1,1].
      */
-    override fun getPower() = super.getPower() * 100;
+    override fun getPower() = super.getPower();
 
 }
