@@ -21,46 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package addonovan.kftc
+package addonovan.kftc.hardware
+
+import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.hardware.ServoImpl
 
 /**
- * A task is an action that is repeatedly executed until it's finished.
- * Tasks are executed asynchronously by the [TaskManager], and two
- * tasks should not be modifying the same hardware components, as they
- * might conflict.
+ * A class which serves to distinguish a regular servo from a
+ * continuous (aka 360°) one. A few additions are made, such
+ * as the [stop] method and the [StopPosition] property, but
+ * it's identical to a regular [Servo] for the most part.
  *
  * @author addonovan
- * @since 9/17/16
+ * @since 6/26/16
  */
-interface Task
+@HardwareExtension( Servo::class )
+open class ContinuousServo(servo: Servo ) : ServoImpl( servo.controller, servo.portNumber )
 {
 
-    /**
-     * @return `true` if the task's preconditions have been met.
-     */
-    fun canStart(): Boolean = true;
+    //
+    // Vals
+    //
+
+    /** The position to use to tell the servo to stop moving. */
+    val StopPosition = 0.5;
+
+    //
+    // Actions
+    //
 
     /**
-     * Called when the task starts for the first time.
+     * Sets the position of the servo to [StopPosition] so that
+     * the continuous servo stops moving.
      */
-    fun onStart() {}
-
-    /**
-     * 'Ticks' the task. This is executed as often as the OpMode's 'loop'
-     * method is invoked, and should be written to function as if it were
-     * in the loop method.
-     */
-    fun tick();
-
-    /**
-     * @return `true` if the task has been completed and should be removed
-     *         from the tasking queue.
-     */
-    fun isFinished(): Boolean;
-
-    /**
-     * Called when the task is complete for clean up.
-     */
-    fun onFinish() {}
+    fun stop()
+    {
+        position = StopPosition;
+    }
 
 }

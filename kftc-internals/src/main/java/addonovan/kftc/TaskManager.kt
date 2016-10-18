@@ -23,6 +23,7 @@
  */
 package addonovan.kftc
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import java.util.*
 
 /**
@@ -59,8 +60,7 @@ import java.util.*
  * @author addonovan
  * @since 9/17/16
  */
-class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
-        ILog by getLog( TaskManager::class, runningOpMode.javaClass.getAnnotatedName() )
+object TaskManager : ILog by getLog( TaskManager::class )
 {
 
     //
@@ -68,10 +68,23 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
     //
 
     /** If this is a linear opmode, then we'll need to treat some things differently. */
-    private val isLinear = runningOpMode is KLinearOpMode;
+    private var isLinear: Boolean = false;
 
     /** The tasks enqueued in the manager for execution later. */
-    private val tasks = LinkedList< TaskWrapper >();
+    private val tasks: LinkedList< TaskWrapper > = LinkedList();
+
+    //
+    // Updating
+    //
+
+    /**
+     * Prepares the Task Manager to use the given opmode.
+     */
+    internal fun prepareFor( opMode: KAbstractOpMode )
+    {
+        isLinear = opMode is KLinearOpMode;
+        // TODO anything else that requires initialization now
+    }
 
     //
     // Registration
@@ -80,7 +93,7 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
     /**
      * Registers a task to be executed asynchronously as the match proceeds. If the
      * OpMode this is running for is a [KLinearOpMode], then this task will be executed
-     * immediately, from start to finish.
+     * immediately, from onStart to finish.
      *
      * @param[task]
      *          The task to complete.
@@ -105,7 +118,7 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
     //
 
     /**
-     * Runs the given task from start to end, for a linear OpMode.
+     * Runs the given task from onStart to end, for a linear OpMode.
      *
      * @param[task]
      *          The task to complete.
@@ -117,11 +130,13 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
         i( "Running task: \"$name\"" );
 
         v( "Waiting until task can start..." );
-        // every 10 milliseconds, check to see if the task can start or not
+        // every 10 milliseconds, check to see if the task can onStart or not
         while ( !task.canStart() )
         {
             Thread.sleep( 10 );
         }
+
+        task.onStart();
 
         v( "Running task until completion..." );
         // continually tick it until it's finished
@@ -164,12 +179,13 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
                 {
                     if ( !task.canStart() )
                     {
-                        v( "" );
+                        v( "Task \"$name\" cannot onStart, skipping." );
                         continue; // skip to the next task
                     }
 
                     i( "Task \"$name\" has started" );
                     wrapper.Started = true; // once the task is started, this method won't be called anymore
+                    task.onStart();
                 }
 
                 v( "Ticking task: \"$name\"" );
@@ -200,7 +216,7 @@ class TaskManager internal constructor( runningOpMode: KAbstractOpMode ):
      * Wraps around a task and contains some extra meta-data for the task, such as
      * the name it's registered with, and if the task has been started or not.
      */
-    private inner class TaskWrapper( val Task: Task, val Name: String )
+    private class TaskWrapper( val Task: Task, val Name: String )
     {
         var Started = false;
     }

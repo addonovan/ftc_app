@@ -335,12 +335,12 @@ extends java.lang.Object</pre>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#shutdown()">shutdown</a></strong>()</code>
-<div class="block">Performs the logical inverse of <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#start(com.qualcomm.robotcore.eventloop.EventLoop)"><code>start(EventLoop)</code></a>.</div>
+<div class="block">Performs the logical inverse of <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#onStart(com.qualcomm.robotcore.eventloop.EventLoop)"><code>onStart(EventLoop)</code></a>.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#start(com.qualcomm.robotcore.eventloop.EventLoop)">start</a></strong>(<a href="../../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop)</code>
+<td class="colLast"><code><strong><a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#onStart(com.qualcomm.robotcore.eventloop.EventLoop)">onStart</a></strong>(<a href="../../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop)</code>
 <div class="block">Starts up the <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html" title="class in com.qualcomm.robotcore.eventloop"><code>EventLoopManager</code></a>.</div>
 </td>
 </tr>
@@ -628,13 +628,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;CallbackResult&nbsp;onNetworkConnectionEvent(NetworkConnection.Event&nbsp;event)</pre>
 </li>
 </ul>
-<a name="start(com.qualcomm.robotcore.eventloop.EventLoop)">
+<a name="onStart(com.qualcomm.robotcore.eventloop.EventLoop)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>start</h4>
-<pre>public&nbsp;void&nbsp;start(<a href="../../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop)
+<h4>onStart</h4>
+<pre>public&nbsp;void&nbsp;onStart(<a href="../../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop)
            throws <a href="../../../../com/qualcomm/robotcore/exception/RobotCoreException.html" title="class in com.qualcomm.robotcore.exception">RobotCoreException</a></pre>
 <div class="block">Starts up the <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html" title="class in com.qualcomm.robotcore.eventloop"><code>EventLoopManager</code></a>. This mostly involves setting up the network
  connections and listeners and senders, then getting the event loop thread going.
@@ -642,7 +642,7 @@ extends java.lang.Object</pre>
  Note that shutting down the <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html" title="class in com.qualcomm.robotcore.eventloop"><code>EventLoopManager</code></a> does <em>not</em> do a full
  complete inverse. Rather, it leaves the underlying network connection alive and
  running, as this, among other things, helps remote toasts to continue to function
- correctly. Thus, we must be aware of that possibility here as we start.</div>
+ correctly. Thus, we must be aware of that possibility here as we onStart.</div>
 <dl><dt><span class="strong">Throws:</span></dt>
 <dd><code><a href="../../../../com/qualcomm/robotcore/exception/RobotCoreException.html" title="class in com.qualcomm.robotcore.exception">RobotCoreException</a></code></dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#shutdown()"><code>shutdown()</code></a></dd></dl>
 </li>
@@ -654,8 +654,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>shutdown</h4>
 <pre>public&nbsp;void&nbsp;shutdown()</pre>
-<div class="block">Performs the logical inverse of <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#start(com.qualcomm.robotcore.eventloop.EventLoop)"><code>start(EventLoop)</code></a>.</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#start(com.qualcomm.robotcore.eventloop.EventLoop)"><code>start(EventLoop)</code></a></dd></dl>
+<div class="block">Performs the logical inverse of <a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#onStart(com.qualcomm.robotcore.eventloop.EventLoop)"><code>onStart(EventLoop)</code></a>.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../com/qualcomm/robotcore/eventloop/EventLoopManager.html#onStart(com.qualcomm.robotcore.eventloop.EventLoop)"><code>onStart(EventLoop)</code></a></dd></dl>
 </li>
 </ul>
 <a name="close()">

@@ -21,42 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package addonovan.kftc
+@file:Suppress( "unused" )
+package addonovan.kftc.util
+
+import java.lang.System.nanoTime
 
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * A special, high quality type of [Interval] which uses the
+ * system's time in nanoseconds rather than the inaccurate
+ * method of getting the time in milliseconds.
  *
  * @author addonovan
- * @since 8/22/2016
+ * @since 10/14/16
+ *
+ * @see [Interval]
  */
-abstract class KOpMode : KAbstractOpMode()
+class HQInterval( nanosUntilStart: Long, duration: Long ) : Interval( 0, 0 )
 {
 
-    /**
-     * This is called immediately after the init button has been pressed.
-     */
-    open fun init() {}
+    //
+    // Vals
+    //
 
     /**
-     * This is called repeatedly after the init button has been pressed,
-     * but not yet started.
+     * The start time of this interval (in nanoseconds).
      */
-    open fun init_loop() {}
+    override val StartTime = nanoTime() + nanosUntilStart;
 
     /**
-     * This is called immediately after the onStart button has been pressed.
+     * The end time of this interval (in nanoseconds).
      */
-    open fun start() {}
+    override val EndTime = StartTime + duration;
+
+    //
+    // Constructors
+    //
 
     /**
-     * This is called repeatedly after the onStart button has been pressed,
-     * but not yet stopped.
+     * Constructs an interval based off of the given HQInterval. The new
+     * HQInterval will be active immediately after the given interval.
+     *
+     * @param[baseInterval]
+     *          The interval which ends just before this one.
+     * @param[duration]
+     *          The length of this interval (in nanoseconds).
      */
-    abstract fun loop();
+    constructor( baseInterval: HQInterval, duration: Long ) : this ( baseInterval.EndTime - nanoTime(), duration );
+
+    //
+    // Active
+    //
 
     /**
-     * This is called immediately after the stop button has been pressed.
+     * @return If the HQInterval is active or not.
      */
-    open fun stop() {}
+    override fun isActive() = StartTime <= nanoTime() && nanoTime() <= EndTime;
 
 }

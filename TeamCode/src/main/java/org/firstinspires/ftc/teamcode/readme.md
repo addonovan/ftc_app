@@ -97,11 +97,11 @@ Warning:  This is not for the inexperienced Software developer.
 You will need to be comfortable with File manipulations and managing Android Studio Modules.
 These changes are performed OUTSIDE of Android Studios, so close Android Studios before you do this.
  
-Also.. Make a full project backup before you start this :)
+Also.. Make a full project backup before you onStart this :)
 
 To clone TeamCode, do the following:
 
-Note: Some names start with "Team" and others start with "team".  This is intentional.
+Note: Some names onStart with "Team" and others onStart with "team".  This is intentional.
 
 1)  Using your operating system file management tools, copy the whole "TeamCode"
     folder to a sibling folder with a corresponding new name, eg: "Team0417".

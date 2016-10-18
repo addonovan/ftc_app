@@ -431,7 +431,7 @@ internal class FalseHardwareMap private constructor() : HardwareMap( Activity )
      * @param[instance]
      *          The instance to always return for this map.
      */
-    private inner class FalseDeviceMapping< T : HardwareDevice >( private val instance: T ) : DeviceMapping< T >()
+    private inner class FalseDeviceMapping< T : HardwareDevice >( private val instance: T ) : DeviceMapping< T >( instance.javaClass )
     {
         override fun get( deviceName: String ) = instance;
     }

@@ -21,42 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package addonovan.kftc
+package addonovan.kftc.util
 
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * An enum for the valid types of motors for encoder purposes.
+ *
+ * @param[encoderTicks]
+ *          The number of encoder ticks the motor supports.
  *
  * @author addonovan
- * @since 8/22/2016
+ * @since 10/14/16
  */
-abstract class KOpMode : KAbstractOpMode()
+enum class MotorType( encoderTicks: Int )
 {
 
-    /**
-     * This is called immediately after the init button has been pressed.
-     */
-    open fun init() {}
+    //
+    // Instances
+    //
+
+    /** A standard tetrix motor */
+    TETRIX( 1440 ),
+
+    /** A standard andymark motor */
+    ANDYMARK( 1220 );
+
+    //
+    // Vals
+    //
 
     /**
-     * This is called repeatedly after the init button has been pressed,
-     * but not yet started.
+     * The number of 'ticks' that the motor encoder can count in
+     * one full cycle.
      */
-    open fun init_loop() {}
-
-    /**
-     * This is called immediately after the onStart button has been pressed.
-     */
-    open fun start() {}
-
-    /**
-     * This is called repeatedly after the onStart button has been pressed,
-     * but not yet stopped.
-     */
-    abstract fun loop();
-
-    /**
-     * This is called immediately after the stop button has been pressed.
-     */
-    open fun stop() {}
+    val EncoderTicks = encoderTicks;
 
 }

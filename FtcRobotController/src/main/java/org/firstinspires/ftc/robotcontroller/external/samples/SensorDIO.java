@@ -82,7 +82,7 @@ final int RED_LED_CHANNEL = 1;
     digIn.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
     digOut.setMode(DigitalChannelController.Mode.OUTPUT);
 
-    // wait for the start button to be pressed.
+    // wait for the onStart button to be pressed.
     telemetry.addData(">", "Press play, and then user X button to set DigOut");
     telemetry.update();
     waitForStart();

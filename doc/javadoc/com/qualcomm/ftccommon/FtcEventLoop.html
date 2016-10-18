@@ -522,14 +522,14 @@ extends <a href="../../../com/qualcomm/ftccommon/FtcEventLoopBase.html" title="c
  It is important to save a copy of the event loop manager from this method, as that is how
  you'll get access to the gamepad.
  <p>
- If an Exception is thrown then the event loop manager will not start the robot.
+ If an Exception is thrown then the event loop manager will not onStart the robot.
  <p>
  Caller synchronizes: called on RobotSetupRunnable.run() thread</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>eventLoopManager</code> - event loop manager that is responsible for this event loop</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code><a href="../../../com/qualcomm/robotcore/exception/RobotCoreException.html" title="class in com.qualcomm.robotcore.exception">RobotCoreException</a></code> - if a RobotCoreException is thrown, it will be handled
          by the event loop manager. The manager will report that the robot failed
-         to start.</dd>
+         to onStart.</dd>
 <dd><code>java.lang.InterruptedException</code></dd></dl>
 </li>
 </ul>
