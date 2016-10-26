@@ -52,7 +52,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
 {
 
     //
-    // motor identification
+    // Motor identification
     //
 
     /** The name of this motor in the hardware map */
@@ -62,12 +62,16 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     // motor Assembly
     //
 
+    /** The backing field for [assembly]. */
+    private var _assembly: MotorAssembly = MotorAssembly( MotorType.TETRIX )
+
     /**
      * The motor assembly that this motor is a part of. By default,
      * this represents an assembly with a tetrix motor, with a 4 inch
      * (10.16 cm) wheel, and a 1:1 gear ratio.
      */
-    private var assembly: MotorAssembly = MotorAssembly( MotorType.TETRIX );
+    val assembly: MotorAssembly
+        get() = _assembly;
 
     /**
      * @param[assembly]
@@ -76,14 +80,9 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
      */
     fun setAssembly( assembly: MotorAssembly ): Motor
     {
-        this.assembly = assembly;
+        _assembly = assembly;
         return this;
     }
-
-    /**
-     * @return The current motor assembly.
-     */
-    fun getAssembly() = assembly;
 
     //
     // Encoders
