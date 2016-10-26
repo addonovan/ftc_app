@@ -63,7 +63,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     //
 
     /** The backing field for [assembly]. */
-    private var _assembly: MotorAssembly = MotorAssembly( MotorType.TETRIX )
+    private var _assembly = MotorAssembly( MotorType.TETRIX )
 
     /**
      * The motor assembly that this motor is a part of. By default,
