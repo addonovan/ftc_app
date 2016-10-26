@@ -99,17 +99,23 @@ object TaskManager : ILog by getLog( TaskManager::class )
      *          The task to complete.
      * @param[name]
      *          A short description of the task (for debugging).
+     *
+     *  @return The [TaskWrapper] associated with this registered task. This
+     *          will be null if this is a [KLinearOpMode].
      */
-    fun registerTask( task: Task, name: String )
+    fun registerTask( task: Task, name: String ): TaskWrapper?
     {
         if ( isLinear )
         {
             runTaskLinearly( task, name );
+            return null;
         }
         else
         {
             i( "Registered task: \"$name\"" );
-            tasks += TaskWrapper( task, name );
+            val wrapper = TaskWrapper( task, name );
+            tasks += wrapper;
+            return wrapper;
         }
     }
 
@@ -216,7 +222,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      * Wraps around a task and contains some extra meta-data for the task, such as
      * the name it's registered with, and if the task has been started or not.
      */
-    private class TaskWrapper( val Task: Task, val Name: String )
+    class TaskWrapper( val Task: Task, val Name: String )
     {
         var Started = false;
     }
