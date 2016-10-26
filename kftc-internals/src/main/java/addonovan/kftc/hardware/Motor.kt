@@ -25,6 +25,8 @@
 package addonovan.kftc.hardware
 
 import addonovan.kftc.*
+import addonovan.kftc.util.MotorAssembly
+import addonovan.kftc.util.MotorType
 import com.qualcomm.robotcore.hardware.*
 
 /**
@@ -50,14 +52,14 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
 {
 
     //
-    // Motor identification
+    // motor identification
     //
 
     /** The name of this motor in the hardware map */
-    val Name = "Motor: $name";
+    val Name = "motor: $name";
 
     //
-    // Motor Assembly
+    // motor Assembly
     //
 
     /**

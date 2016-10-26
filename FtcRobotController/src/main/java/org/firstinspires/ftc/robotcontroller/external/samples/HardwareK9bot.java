@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
  *
- * Motor channel:  Left  drive motor:        "left_drive"
- * Motor channel:  Right drive motor:        "right_drive"
+ * motor channel:  Left  drive motor:        "left_drive"
+ * motor channel:  Right drive motor:        "right_drive"
  * Servo channel:  Servo to raise/lower arm: "arm"
  * Servo channel:  Servo to open/close claw: "claw"
  *

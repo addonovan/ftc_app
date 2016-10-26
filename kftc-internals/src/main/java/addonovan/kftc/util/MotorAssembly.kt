@@ -21,55 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@file:Suppress( "unused" )
 package addonovan.kftc.util
+
+import addonovan.kftc.ILog
+import addonovan.kftc.getLog
+import com.qualcomm.robotcore.util.Range
 
 /**
  * A motor assembly is the programmatic representation of an assembly
  * of any type of motor and its components which allows for higher level
  * control of encoder movements.
  *
- * @param[Motor]
+ * @param[motor]
  *          The motor used in this assembly.
- * @param[WheelDiameter]
+ * @param[outputDiameter]
  *          The diameter of the wheel used in the assembly (in cm). Default is
  *          4 inches/10.16 cm.
- * @param[GearRatio]
+ * @param[gearRatio]
  *          The gear ratio in this assembly (default is 1:1). This should be
  *          the number of spins of the motor divided by the spins of the wheel
  *          at the end.
  *
  * @see[MotorType]
- *
- * @since 10/14/16
- * @author addonovan
  */
 class MotorAssembly(
-        val Motor: MotorType,
-        val WheelDiameter: Double = 10.16,
-        val GearRatio: Double = 1.0 )
+        val motor: MotorType,
+        val outputDiameter: Double = 10.16,
+        val gearRatio: Double = 1.0 ) : ILog by getLog( MotorAssembly::class, "${motor.name} | $gearRatio:1 | $outputDiameter cm" )
 {
 
     /** The circumference of the wheel in this assembly. */
-    val WheelCircumference = Math.PI * WheelDiameter;
+    val outputCircumference = Math.PI * outputDiameter;
 
     /**
      * converts the number of encoder ticks on the motor to a distance based
-     * off of the circumference of the wheel from the [Motor] and [GearRatio].
+     * off of the circumference of the wheel from the [motor] and [gearRatio].
      *
      * @param[ticks]
      *          The number of ticks.
      *
      * @return The distance (cm) traveled if the wheel spun [ticks] ticks.
      */
+    @Suppress( "unused" )
     fun toDistance( ticks: Int ): Double
     {
         // train tracks!
-        // ticks     1 rotation      x wheel spins     1 wheel circumference
-        // ----- * ------------- * ---------------- * ----------------------- = distance
-        // 1         # ticks         1 motor spin      1 wheel spin
+        // ticks |   1 rotation  |   x wheel spins  |  1 wheel circumference
+        // ----- | ------------- | ---------------- | ----------------------- = distance
+        // 1     |   # ticks     |   1 motor spin   |  1 wheel spin
         // rearranged for grouping similar operations
-        return ( ticks * WheelCircumference ).toDouble() / ( Motor.EncoderTicks * GearRatio );
+        return ( ticks * outputCircumference ).toDouble() / ( motor.EncoderTicks * gearRatio );
     }
 
     /**
@@ -84,11 +85,39 @@ class MotorAssembly(
     fun toTicks( distance: Double ): Int
     {
         // train tracks! (again!)
-        // distance    x wheel spins             x motor spins     # ticks
-        // -------- * ----------------------- * --------------- * ------------ = ticks
-        // 1           1 wheel circumference     1 wheel spin      1 rotation
+        // distance |  x wheel spins          |  x motor spins  |  # ticks
+        // -------- | ----------------------- | --------------- | ------------ = ticks
+        // 1        |  1 wheel circumference  |  1 wheel spin   |  1 rotation
         // rearranged for grouping similar operations
-        return Math.round( ( distance * Motor.EncoderTicks * GearRatio ).toDouble() / WheelCircumference ).toInt();
+        return Math.round( ( distance * motor.EncoderTicks * gearRatio ).toDouble() / outputCircumference ).toInt();
+    }
+
+    /**
+     * Converts the target rpm to a power value for this motor based on the gear ratio
+     * and the usual no-load rpm.
+     *
+     * @param[targetRPM]
+     *          The target RPM that the motor should try to achieve under no load.
+     *
+     * @return The power to run the motor at to achieve the given RPM under no load.
+     */
+    fun toPower( targetRPM: Double ): Double
+    {
+        // the required input RPM to achieve
+        val requiredInput = ( targetRPM / gearRatio );
+
+        // make this a ratio of the input / max to get the requrired power
+        val power = requiredInput / motor.NoLoadRPM;
+
+        // make sure this is a valid power rating
+        if ( power > 1.0 || power < -1.0 )
+        {
+            // warn the user if the limit was exceeded so that there's a trace of it somehwere
+            w( "$power exceeded the range [-1.0, 1.0] trying to achieve $targetRPM (clipped to fit range)!" );
+            return Range.clip( power, -1.0, 1.0 );
+        }
+
+        return power;
     }
 
 }

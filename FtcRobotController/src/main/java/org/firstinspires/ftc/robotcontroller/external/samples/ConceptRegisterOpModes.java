@@ -103,7 +103,7 @@ public class ConceptRegisterOpModes
     // manager.register("Compass Calibration",    ConceptCompassCalibration.class);
     // manager.register("DIM as Indicator",       ConceptDIMAsIndicator.class);
     // manager.register("I2C Address Change",     ConceptI2cAddressChange.class);
-    // manager.register("Ramp Motor Speed",       ConceptRampMotorSpeed.class);
+    // manager.register("Ramp motor Speed",       ConceptRampMotorSpeed.class);
     // manager.register("Scan Servo",             ConceptScanServo.class);
     // manager.register("Telemetry",              ConceptTelemetry.class);
     // manager.register("Vuforia Navigation",     ConceptVuforiaNavigation.class);
