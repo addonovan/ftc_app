@@ -23,7 +23,6 @@
  */
 package addonovan.kftc.util
 
-import addonovan.kftc.Task
 import addonovan.kftc.hardware.Motor
 
 /**
@@ -82,6 +81,14 @@ class MotorGroup( vararg _motors: Motor )
     // Tasks
     //
 
+    /**
+     * Moves all the motors the given distance.
+     *
+     * @param[distance]
+     *          The distance (in cm) to move.
+     * @param[power]
+     *          The power to move the motors at.
+     */
     fun moveDistance( distance: Double, power: Double )
     {
         motors.forEach { m -> m.moveDistance( distance, power ) }
