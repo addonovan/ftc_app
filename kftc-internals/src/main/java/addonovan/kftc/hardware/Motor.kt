@@ -85,6 +85,39 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     }
 
     //
+    // Tasks
+    //
+
+    private fun moveDistanceTask( distance: Double, power: Double ) = object : Task
+    {
+        private val power = assembly.toTicks( distance );
+
+        private val stoppingTicks = assembly.toTicks( distance );
+
+        override fun tick()
+        {
+            this@Motor.power = power; // continually set the power
+        }
+
+        override fun onStart()
+        {
+            resetEncoders();
+        }
+
+        // we're only finished once we're in the right place
+        override fun isFinished(): Boolean
+        {
+            return currentPosition == stoppingTicks;
+        }
+
+        // we reached the goal
+        override fun onFinish()
+        {
+            brake();
+        }
+    };
+
+    //
     // Encoders
     //
 
@@ -117,34 +150,13 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
      */
     fun moveDistance( distance: Double, power: Double ): Task
     {
-        val ticks = assembly.toTicks( distance ); // pre-calculate the number of ticks
-        resetEncoders(); // register the task for resetting the encoders
-
-        // create the task
-        val task = object : Task
-        {
-
-            override fun tick()
-            {
-                setPower( power ); // continually set the power
-            }
-
-            // we're only finished once we're in the right place
-            override fun isFinished(): Boolean
-            {
-                return currentPosition == ticks;
-            }
-
-            // we reached the goal
-            override fun onFinish()
-            {
-                brake();
-            }
-
-        };
-
-        TaskManager.registerTask( task, "$Name running for $ticks encoder ticks" );
+        val task = moveDistanceTask( distance, power );
+        TaskManager.registerTask( task, "$Name running $distance cm" );
         return task;
+    }
+
+    fun maintainOutputRPM( outputRPM: Double )
+    {
     }
 
     //
