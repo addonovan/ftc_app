@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.Range;
  *  This code requires that the drive Motors have been configured such that a positive
  *  power command moves them forward, and causes the encoders to count UP.
  *
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ *  This code uses the RUN_TO_POSITION mode to enable the motor controllers to generate the run profile
  *
  *  In order to calibrate the Gyro correctly, the robot must remain stationary during calibration.
  *  This is performed when the INIT button is pressed on the Driver Station.
@@ -79,7 +79,7 @@ public class PushbotAutoDriveByGyro_Linear extends LinearOpMode {
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
     ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /

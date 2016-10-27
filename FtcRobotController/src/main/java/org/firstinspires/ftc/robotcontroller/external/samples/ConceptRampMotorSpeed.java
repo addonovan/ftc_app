@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Concept: Ramp Motor Speed", group = "Concept")
+@Autonomous(name = "Concept: Ramp motor Speed", group = "Concept")
 @Disabled
 public class ConceptRampMotorSpeed extends LinearOpMode {
 
@@ -66,7 +66,7 @@ public class ConceptRampMotorSpeed extends LinearOpMode {
             }
 
             // Display the current value
-            telemetry.addData("Motor Power", "%5.2f", power);
+            telemetry.addData("motor Power", "%5.2f", power);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 

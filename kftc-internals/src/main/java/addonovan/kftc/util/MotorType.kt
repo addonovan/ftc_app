@@ -32,7 +32,7 @@ package addonovan.kftc.util
  * @author addonovan
  * @since 10/14/16
  */
-enum class MotorType( encoderTicks: Int )
+enum class MotorType( encoderTicks: Int, noLoadRPM: Int )
 {
 
     //
@@ -40,10 +40,19 @@ enum class MotorType( encoderTicks: Int )
     //
 
     /** A standard tetrix motor */
-    TETRIX( 1440 ),
+    TETRIX( 1440, 150 ),
 
-    /** A standard andymark motor */
-    ANDYMARK( 1220 );
+    /** A neverest 20 motor. */
+    NEVEREST_20( 1220, 275 ),
+
+    /** A neverest 40 motor. */
+    NEVEREST_40( 1220, 160 ),
+
+    /** A neverest 60 motor. */
+    NEVEREST_60( 1220, 105 ),
+
+    /** A neverest motor without the gearbox. */
+    NEVEREST( 1220, 6600 );
 
     //
     // Vals
@@ -54,5 +63,10 @@ enum class MotorType( encoderTicks: Int )
      * one full cycle.
      */
     val EncoderTicks = encoderTicks;
+
+    /**
+     * The average output RPM of this device under no load.
+     */
+    val NoLoadRPM = noLoadRPM;
 
 }
