@@ -68,7 +68,11 @@ object TaskManager : ILog by getLog( TaskManager::class )
     //
 
     /** If this is a linear opmode, then we'll need to treat some things differently. */
-    private var isLinear: Boolean = false;
+    private var _isLinearOpMode: Boolean = false;
+
+    /** If the currently running OpMode is a linear one or not.*/
+    val isLinearOpMode: Boolean
+        get() = _isLinearOpMode;
 
     /** The tasks enqueued in the manager for execution later. */
     private val tasks: LinkedList< TaskWrapper > = LinkedList();
@@ -82,7 +86,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      */
     internal fun prepareFor( opMode: KAbstractOpMode )
     {
-        isLinear = opMode is KLinearOpMode;
+        _isLinearOpMode = opMode is KLinearOpMode;
         // TODO anything else that requires initialization now
     }
 
@@ -102,7 +106,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      */
     fun registerTask( task: Task, name: String )
     {
-        if ( isLinear )
+        if (_isLinearOpMode)
         {
             runTaskLinearly( task, name );
         }
@@ -161,7 +165,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      */
     internal fun tick()
     {
-        if ( isLinear ) throw UnsupportedOperationException( "TaskManagers cannot be ticked in LinearOpModes!" );
+        if (_isLinearOpMode) throw UnsupportedOperationException( "TaskManagers cannot be ticked in LinearOpModes!" );
 
         val iter = tasks.iterator();
         while ( iter.hasNext() )

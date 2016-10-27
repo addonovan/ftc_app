@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.Range
  * @param[gearRatio]
  *          The gear ratio in this assembly (default is 1:1). This should be
  *          the number of spins of the motor divided by the spins of the wheel
- *          at the end.
+ *          at the end (e.g. a 4:1 gear ratio is written as 4.0).
  *
  * @see[MotorType]
  */
