@@ -54,10 +54,10 @@ abstract class KPushBotHardware : HardwareDefinition()
     /** Used to move the motors at the same power. */
     val movementMotors = MotorGroup( leftMotor, rightMotor );
 
-    val armMotor: DcMotor   = get( "arm motor" );
+    val armMotor = get< Motor >( "arm motor" );
 
-    val leftClaw: Servo  = get( "left claw" );
-    val rightClaw: Servo = get( "right claw" );
+    val leftClaw = get< Servo >( "left claw" );
+    val rightClaw = get< Servo >( "right claw" );
 
     private val period = ElapsedTime();
 
