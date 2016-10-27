@@ -157,6 +157,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
 
     fun maintainOutputRPM( outputRPM: Double )
     {
+        // TODO maintain the output RPM given by using a task
     }
 
     //
