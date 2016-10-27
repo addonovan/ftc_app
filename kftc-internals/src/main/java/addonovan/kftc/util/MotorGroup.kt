@@ -23,6 +23,7 @@
  */
 package addonovan.kftc.util
 
+import addonovan.kftc.Task
 import addonovan.kftc.hardware.Motor
 
 /**
@@ -44,7 +45,7 @@ class MotorGroup( vararg _motors: Motor )
     private val motors = listOf( *_motors );
 
     //
-    // Basic Movement
+    // Motor Properties
     //
 
     /**
@@ -57,6 +58,17 @@ class MotorGroup( vararg _motors: Motor )
             motors.forEach { m -> m.power = value };
         }
 
+    //
+    // Actions
+    //
+
+    /**
+     * Resets all the motor encoders on the motors in this group.
+     */
+    fun resetEncoders()
+    {
+        motors.forEach( Motor::resetEncoders );
+    }
 
     /**
      * Sets all the power of the motors in this motor group to zero.
@@ -64,6 +76,15 @@ class MotorGroup( vararg _motors: Motor )
     fun brake()
     {
         power = 0.0;
+    }
+
+    //
+    // Tasks
+    //
+
+    fun moveDistance( distance: Double, power: Double )
+    {
+        motors.forEach { m -> m.moveDistance( distance, power ) }
     }
 
 }
