@@ -159,18 +159,4 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
         power = 0.0;
     }
 
-    /**
-     * @param[power]
-     *          The power to set the motor at [-1,1].
-     */
-    override fun setPower( power: Double )
-    {
-        super.setPower( power );
-    }
-
-    /**
-     * @return The power, on a scale of [-1,1].
-     */
-    override fun getPower() = super.getPower();
-
 }
