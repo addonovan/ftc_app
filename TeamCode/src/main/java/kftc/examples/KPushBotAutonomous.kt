@@ -27,6 +27,8 @@ import addonovan.kftc.KOpMode
 import addonovan.kftc.Task
 import addonovan.kftc.TaskManager
 import addonovan.kftc.util.Interval
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.hardware.DcMotor
 
 /**
@@ -35,6 +37,9 @@ import com.qualcomm.robotcore.hardware.DcMotor
  * @author addonovan
  * @since 10/14/2016
  */
+@Autonomous( name= "KPushBotAutnomous" )
+@Disabled
+@Suppress( "unused" )
 class KPushBotAutonomous : KOpMode()
 {
 
@@ -71,8 +76,7 @@ class KPushBotAutonomous : KOpMode()
 
         override fun tick()
         {
-            leftMotor.power = 1.0;
-            rightMotor.power = 1.0;
+            movementMotors.power = 1.0;
         }
 
         override fun isFinished(): Boolean
@@ -82,8 +86,7 @@ class KPushBotAutonomous : KOpMode()
 
         override fun onFinish()
         {
-            leftMotor.power = 0.0;
-            rightMotor.power = 0.0;
+            movementMotors.brake();
 
             // after this task finished, we can move on to the next one if the tasks
             // are just need to run linearly

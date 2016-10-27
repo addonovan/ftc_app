@@ -24,6 +24,8 @@
 package kftc.examples
 
 import addonovan.kftc.hardware.HardwareDefinition
+import addonovan.kftc.hardware.Motor
+import addonovan.kftc.util.MotorGroup
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.util.ElapsedTime
 
@@ -46,8 +48,12 @@ abstract class KPushBotHardware : HardwareDefinition()
         const val ARM_DOWN_POWER = -0.45;
     }
 
-    val leftMotor: DcMotor  = get( "left motor" );
-    val rightMotor: DcMotor = get( "right motor" );
+    val leftMotor  = get< Motor >( "left motor" );
+    val rightMotor = get< Motor >( "right motor" );
+
+    /** Used to move the motors at the same power. */
+    val movementMotors = MotorGroup( leftMotor, rightMotor );
+
     val armMotor: DcMotor   = get( "arm motor" );
 
     val leftClaw: Servo  = get( "left claw" );

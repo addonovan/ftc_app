@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.Range
  * @since 8/27/16
  */
 @TeleOp( name= "Pushbot: Teleop Tank", group= "Pushbot" )
-//@Disabled
+@Disabled
 @Suppress( "unused" )
 class KPushBot : KOpMode()
 {
@@ -74,6 +74,7 @@ class KPushBot : KOpMode()
         val right = -Gamepad1.right_stick_y.toDouble();
         leftMotor.power = left;
         rightMotor.power = right;
+        // movementMotors not applicable here as the power to the motors is not the same
 
         // Use gamepad left & right bumpers to open and close the claw
         if ( Gamepad1.right_bumper ) clawOffset += CLAW_SPEED;
