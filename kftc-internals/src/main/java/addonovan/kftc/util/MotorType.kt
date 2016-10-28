@@ -43,13 +43,13 @@ enum class MotorType( encoderTicks: Int, noLoadRPM: Int )
     TETRIX( 1440, 150 ),
 
     /** A neverest 20 motor. */
-    NEVEREST_20( 1220, 275 ),
+    NEVEREST_20( 560, 275 ),
 
     /** A neverest 40 motor. */
     NEVEREST_40( 1220, 160 ),
 
     /** A neverest 60 motor. */
-    NEVEREST_60( 1220, 105 ),
+    NEVEREST_60( 1680, 105 ),
 
     /** A neverest motor without the gearbox. */
     NEVEREST( 1220, 6600 );
