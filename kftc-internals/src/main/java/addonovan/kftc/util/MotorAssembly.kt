@@ -70,7 +70,7 @@ class MotorAssembly(
         // ----- | ------------- | ---------------- | ----------------------- = distance
         // 1     |   # ticks     |   1 motor spin   |  1 wheel spin
         // rearranged for grouping similar operations
-        return ( ticks * outputCircumference ).toDouble() / ( motor.EncoderTicks * gearRatio );
+        return ( ticks * outputCircumference ).toDouble() / ( motor.encoderTicks * gearRatio );
     }
 
     /**
@@ -89,7 +89,7 @@ class MotorAssembly(
         // -------- | ----------------------- | --------------- | ------------ = ticks
         // 1        |  1 wheel circumference  |  1 wheel spin   |  1 rotation
         // rearranged for grouping similar operations
-        return Math.round( ( distance * motor.EncoderTicks * gearRatio ).toDouble() / outputCircumference ).toInt();
+        return Math.round( ( distance * motor.encoderTicks * gearRatio ).toDouble() / outputCircumference ).toInt();
     }
 
     /**

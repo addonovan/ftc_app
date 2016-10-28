@@ -78,6 +78,11 @@ object TaskManager : ILog by getLog( TaskManager::class )
     //
 
     /**
+     * @return If the opmode currently running is linear or not.
+     */
+    internal fun isLinearOpMode() = isLinear;
+
+    /**
      * Prepares the Task Manager to use the given opmode.
      */
     internal fun prepareFor( opMode: KAbstractOpMode )

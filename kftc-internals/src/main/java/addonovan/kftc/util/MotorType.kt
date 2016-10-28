@@ -62,7 +62,7 @@ enum class MotorType( encoderTicks: Int, noLoadRPM: Int )
      * The number of 'ticks' that the motor encoder can count in
      * one full cycle.
      */
-    val EncoderTicks = encoderTicks;
+    val encoderTicks = encoderTicks;
 
     /**
      * The average output RPM of this device under no load.
