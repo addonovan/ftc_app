@@ -201,6 +201,7 @@ class Profile(
         // create the entry if it doesn't exist
         if ( !config.containsKey( name ) || config[ name ] == null )
         {
+            d( "get($name) = $default (defaulted)" );
             config[ name ] = DataEntry.fromRaw( name, default );
             return default; // no point in going through the expensive operations below
         }
@@ -209,6 +210,7 @@ class Profile(
 
         try
         {
+            d( "get($name) = $value" );
             return value as T;
         }
         catch ( cce: ClassCastException )

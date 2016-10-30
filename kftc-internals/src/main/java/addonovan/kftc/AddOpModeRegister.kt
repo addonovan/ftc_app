@@ -84,6 +84,9 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
         i( "Initializing kftc systems" );
 
         d( "Loading OpModes..." );
+        // reset the previous OpModes
+        currentOpMode = null;
+        currentLinearOpMode = null;
         d( "Loaded ${ClassFinder.OpModeClasses.size} opmodes" );
 
         d( "Loading Hardware Extensions..." );
@@ -134,10 +137,10 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     {
 
         /** The current running [KOpModeWrapper] */
-        lateinit var CurrentOpMode: OpMode;
+        var currentOpMode: KOpModeWrapper? = null;
 
         /** The currently running [KLinearOpModeWrapper] */
-        lateinit var CurrentLinearOpMode: LinearOpMode;
+        var currentLinearOpMode: KLinearOpModeWrapper? = null;
     }
 
 }

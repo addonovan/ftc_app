@@ -159,7 +159,7 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
             {
                 val c = Class.forName( name, false, Context.classLoader );
 
-                if ( c.modifiers and Modifier.PUBLIC == 0         // not public
+                if ( c.modifiers and Modifier.PUBLIC == 0               // not public
                         || c.modifiers and prohibitedModifiers != 0 )   // has a prohibited modifier
                 {
                     continue;

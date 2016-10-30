@@ -112,6 +112,10 @@ fun getLogTag( kClass: KClass< * >? = null, id: String? = null ): String
     return tag.substring( 0, tag.length - 1 );
 }
 
+//
+// Log Fetching
+//
+
 /**
  * Gets the log for the given class and id, if one doesn't exist, then it is made.
  *

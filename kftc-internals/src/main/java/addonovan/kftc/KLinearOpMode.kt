@@ -49,7 +49,7 @@ abstract class KLinearOpMode : KAbstractOpMode()
         }
         catch ( e: InterruptedException )
         {
-            i( "Encountered Interruppted exception while sleeping!", e );
+            i( "Encountered Interrupted exception while sleeping!", e );
             return true;
         }
     }
@@ -71,25 +71,25 @@ abstract class KLinearOpMode : KAbstractOpMode()
     @Suppress( "unused" )
     fun idle()
     {
-        AddOpModeRegister.CurrentLinearOpMode.idle(); // call our wrapper to idle
+        AddOpModeRegister.currentLinearOpMode!!.idle(); // call our wrapper to idle
     }
 
     /**
      * @return If the OpMode is actually active and should continue running.
      */
     @Suppress( "unused" )
-    fun isOpModeActive() = AddOpModeRegister.CurrentLinearOpMode.opModeIsActive();
+    fun isOpModeActive() = AddOpModeRegister.currentLinearOpMode!!.opModeIsActive();
 
     /**
      * @return If this OpMode has started or not.
      */
     @Suppress( "unused" )
-    fun isStarted() = AddOpModeRegister.CurrentLinearOpMode.isStarted;
+    fun isStarted() = AddOpModeRegister.currentLinearOpMode!!.isStarted;
 
     /**
      * @return If the OpMode has been requested to stop or not.
      */
     @Suppress( "unused" )
-    fun isStopRequested() = AddOpModeRegister.CurrentLinearOpMode.isStopRequested;
+    fun isStopRequested() = AddOpModeRegister.currentLinearOpMode!!.isStopRequested;
 
 }

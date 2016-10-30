@@ -40,11 +40,11 @@ class KOpModeWrapper( private val clazz: Class< out KOpMode > ) : OpMode()
     /**
      * The instance we're wrapping around.
      */
-    private lateinit var instance: KOpMode;
+    internal lateinit var instance: KOpMode;
 
     override fun init()
     {
-        AddOpModeRegister.CurrentOpMode = this; // set the current opmode to us, so the KOpMode can call methods on us
+        AddOpModeRegister.currentOpMode = this; // set the current opmode to us, so the KOpMode can call methods on us
 
         unhookRobotIcon(); // Unhooks the listener because we're running now
         updateUtilities( this );
@@ -76,6 +76,8 @@ class KOpModeWrapper( private val clazz: Class< out KOpMode > ) : OpMode()
     {
         updateUtilities( this );
         instance.stop();
+
+        AddOpModeRegister.currentOpMode = null;
     }
 
 }
@@ -94,16 +96,18 @@ class KLinearOpModeWrapper( private val clazz: Class< out KLinearOpMode > ) : Li
     /**
      * The actual instance of the KLinearOpMode that we're wrapping around.
      */
-    private lateinit var instance: KLinearOpMode;
+    internal lateinit var instance: KLinearOpMode;
 
     override fun runOpMode()
     {
-        AddOpModeRegister.CurrentLinearOpMode = this; // update this reference so the KLinearOpMode can call us
+        AddOpModeRegister.currentLinearOpMode = this; // update this reference so the KLinearOpMode can call us
 
         unhookRobotIcon(); // Unhooks the listener because we're running now
         updateUtilities( this );
         instance = clazz.newInstance();
         instance.runOpMode();
+
+        AddOpModeRegister.currentLinearOpMode = null; // we're no longer running
     }
 
 }

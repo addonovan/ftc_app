@@ -37,7 +37,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  * @author addonovan
  * @since 8/22/2016
  */
-abstract class KAbstractOpMode : IConfigurable, ILog
+abstract class KAbstractOpMode : ILog, IConfigurable
 {
 
     //
@@ -46,11 +46,14 @@ abstract class KAbstractOpMode : IConfigurable, ILog
 
     init
     {
-        // if we aren't configuring outselves, then add the [profile] text to
+        // if we aren't configuring ourselves, then add the [profile] text to
         // the end of the OpModeLabel
         if ( !System.getProperty( "kftc.inConfig", "false" ).toBoolean() )
         {
-            TaskManager.prepareFor( this );
+            // grab the currently running OpMode from the OpModeRegister
+            TaskManager.prepareFor(
+                    AddOpModeRegister.currentOpMode?.instance ?:
+                    AddOpModeRegister.currentLinearOpMode!!.instance );
 
             val name = javaClass.getAnnotatedName();
             val profileName = Configurations.profileFor( javaClass ).Name;
@@ -129,7 +132,7 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * is generally discourages as the other `get` methods should
      * be used instead for simpler access.
      */
-    override val ConfigProfile: Profile = Configurations.profileFor( javaClass );
+    final override val ConfigProfile: Profile = Configurations.profileFor( javaClass );
 
     //
     // ILog
@@ -141,6 +144,6 @@ abstract class KAbstractOpMode : IConfigurable, ILog
      * "kftc.${YourOpModeClassName}.${ActiveProfileName}"
      * ```
      */
-    override val LogTag: String = getLogTag( javaClass.kotlin, ConfigProfile.Name );
+    final override val LogTag: String = getLogTag( javaClass.kotlin, ConfigProfile.Name );
 
 }
