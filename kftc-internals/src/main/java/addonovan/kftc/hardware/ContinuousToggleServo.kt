@@ -54,7 +54,8 @@ import kotlin.concurrent.thread
  * @see [ContinuousServo]
  */
 @Suppress( "unused" )
-class ContinuousToggleServo( servo: Servo ) : ContinuousServo( servo )
+@HardwareExtension( Servo::class )
+class ContinuousToggleServo( servo: Servo, name: String ) : ContinuousServo( servo, name )
 {
 
     //

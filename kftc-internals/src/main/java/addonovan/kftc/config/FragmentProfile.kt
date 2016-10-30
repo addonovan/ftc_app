@@ -290,7 +290,7 @@ class FragmentProfile : CustomFragment()
         // be set if they aren't already
         try
         {
-            Configurations.RegisteredOpModes[ OpModeName ]!!.newInstance(); // create the instance of the OpMode
+            Configurations.RegisteredOpModes[ OpModeName ].newInstance(); // create the instance of the OpMode
         }
         catch ( e: Throwable )
         {

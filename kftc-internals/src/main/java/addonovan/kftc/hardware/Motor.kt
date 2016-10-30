@@ -47,6 +47,7 @@ import com.qualcomm.robotcore.hardware.*
  * @author addonovan
  * @since 6/27/16
  */
+@Suppress( "unused" )
 @HardwareExtension( DcMotor::class )
 class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller, dcMotor.portNumber, dcMotor.direction )
 {

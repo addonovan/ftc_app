@@ -45,6 +45,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImpl
  * @author addonovan
  * @since 10/27/2016
  */
+@Suppress( "unused" )
 @HardwareExtension( DcMotor::class )
 class RpmLockedMotor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller, dcMotor.portNumber, dcMotor.direction )
 {
