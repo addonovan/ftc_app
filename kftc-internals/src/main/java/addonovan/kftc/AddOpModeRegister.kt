@@ -39,8 +39,6 @@ class AddOpModeRegister : OpModeRegister, ILog by getLog( AddOpModeRegister::cla
     // OpModeRegister
     //
 
-    val a: Int by loggedVariable( 5 );
-
     override fun register( manager: OpModeManager )
     {
         initSystems(); // initialize all of the systems that need to be
