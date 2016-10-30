@@ -136,7 +136,7 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
     private val blackList: LinkedHashSet< String > =
             linkedSetOf( "com.google", "com.android", "dalvik", "android", // android packages
                     "java", "kotlin",                                      // language packages
-                    "com.ftdi", "addonovan" );                             // some FTC packages
+                    "com.ftdi" );                                          // some FTC packages
 
     //
     // Constructors
