@@ -58,7 +58,7 @@ interface LoggedVariable< T >
  *
  * @return The value of this [LoggedVariable].
  */
-operator fun < T > LoggedVariable<T>.getValue(thisRef: Any?, property: KProperty<*>): T
+operator fun < T > LoggedVariable< T >.getValue( thisRef: Any?, property: KProperty< * > ): T
 {
     VariableTraceLog.d( "${property.name} accessed: value = ($value)" );
     return value;
@@ -75,7 +75,7 @@ operator fun < T > LoggedVariable<T>.getValue(thisRef: Any?, property: KProperty
  * @param[value]
  *          The new value of the variable.
  */
-operator fun < T > LoggedVariable<T>.setValue(thisRef: Any?, property: KProperty<*>, value: T )
+operator fun < T > LoggedVariable< T >.setValue( thisRef: Any?, property: KProperty< * >, value: T )
 {
     VariableTraceLog.d( "${property.name} modified: value was ${this.value}, now $value" );
     this.value = value;
@@ -105,9 +105,9 @@ private object VariableTraceLog : ILog by getLog( VariableTraceLog::class );
  *
  * @return The created [LoggedVariable].
  */
-fun < T > loggedVariable( initialValue: T ): LoggedVariable<T>
+fun < T > loggedVariable( initialValue: T ): LoggedVariable< T >
 {
-    return object : LoggedVariable<T>
+    return object : LoggedVariable< T >
     {
         override var value: T = initialValue;
     }
@@ -122,7 +122,7 @@ fun < T > loggedVariable( initialValue: T ): LoggedVariable<T>
  *
  * @return The created [LoggedVariable].
  */
-fun < T > loggedVariable( initialization: () -> T ): LoggedVariable<T>
+fun < T > loggedVariable( initialization: () -> T ): LoggedVariable< T >
 {
     return loggedVariable( initialization.invoke() );
 }
