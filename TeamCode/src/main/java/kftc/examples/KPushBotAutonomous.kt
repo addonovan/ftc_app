@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
  * @author addonovan
  * @since 10/14/2016
  */
-@Autonomous( name= "KPushBotAutnomous" )
+@Autonomous( name= "KPushBotAutonomous" )
 @Disabled
 @Suppress( "unused" )
 class KPushBotAutonomous : KOpMode()
