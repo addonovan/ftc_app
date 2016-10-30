@@ -95,6 +95,8 @@ import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import addonovan.kftc.AddOpModeRegister;
+
 public class FtcRobotControllerActivity extends Activity {
 
   public static final String TAG = "RCActivity";
@@ -194,6 +196,7 @@ public class FtcRobotControllerActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    RobotLog.writeLogcatToDisk();
     RobotLog.vv(TAG, "onCreate()");
 
     receivedUsbAttachmentNotifications = new ConcurrentLinkedQueue<UsbDevice>();
@@ -252,8 +255,6 @@ public class FtcRobotControllerActivity extends Activity {
 
     if (USE_DEVICE_EMULATION) { HardwareFactory.enableDeviceEmulation(); }
 
-    // save 4MB of logcat to the SD card
-    RobotLog.writeLogcatToDisk(this, 4 * 1024);
     wifiLock.acquire();
     callback.networkConnectionUpdate(WifiDirectAssistant.Event.DISCONNECTED);
     bindToService();
@@ -326,7 +327,7 @@ public class FtcRobotControllerActivity extends Activity {
 
     unbindFromService();
     wifiLock.release();
-    RobotLog.cancelWriteLogcatToDisk(this);
+    RobotLog.cancelWriteLogcatToDisk();
   }
 
   protected void bindToService() {
@@ -396,10 +397,16 @@ public class FtcRobotControllerActivity extends Activity {
     int id = item.getItemId();
 
     if (id == R.id.action_programming_mode) {
-      Intent programmingModeIntent = new Intent(ProgrammingModeActivity.launchIntent);
-      programmingModeIntent.putExtra(
-          LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_NETWORK_TYPE, networkType);
-      startActivity(programmingModeIntent);
+      if (cfgFileMgr.getActiveConfig().isNoConfig()) {
+        // Tell the user they must configure the robot before starting programming mode.
+        AppUtil.getInstance().showToast(
+            context, context.getString(R.string.toastConfigureRobotBeforeProgrammingMode));
+      } else {
+        Intent programmingModeIntent = new Intent(ProgrammingModeActivity.launchIntent);
+        programmingModeIntent.putExtra(
+            LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_NETWORK_TYPE, networkType);
+        startActivity(programmingModeIntent);
+      }
       return true;
     } else if (id == R.id.action_inspection_mode) {
       Intent inspectionModeIntent = new Intent(RcInspectionActivity.rcLaunchIntent);
@@ -496,7 +503,7 @@ public class FtcRobotControllerActivity extends Activity {
   }
 
   protected OpModeRegister createOpModeRegister() {
-    return new FtcOpModeRegister();
+    return new AddOpModeRegister();
   }
 
   private void requestRobotShutdown() {

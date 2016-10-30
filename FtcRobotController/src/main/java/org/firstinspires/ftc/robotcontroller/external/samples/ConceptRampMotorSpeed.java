@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * This OpMode ramps a single motor speed up and down repeatedly until Stop is pressed.
  * The code is structured as a LinearOpMode
  *
- * This code assumes a DC motor configured with the name "left motor" as is found on a pushbot.
+ * This code assumes a DC motor configured with the name "left_drive" as is found on a pushbot.
  *
  * INCREMENT sets how much to increase/decrease the power each cycle
  * CYCLE_MS sets the update period.
@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Concept: Ramp Motor Speed", group = "Concept")
+@Autonomous(name = "Concept: Ramp motor Speed", group = "Concept")
 @Disabled
 public class ConceptRampMotorSpeed extends LinearOpMode {
 
@@ -33,13 +33,13 @@ public class ConceptRampMotorSpeed extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
         // Connect to motor (Assume standard left wheel)
         // Change the text in quotes to match any motor name on your robot.
-        motor = hardwareMap.dcMotor.get("left motor");
+        motor = hardwareMap.dcMotor.get("left_drive");
 
-        // Wait for the start button
+        // Wait for the onStart button
         telemetry.addData(">", "Press Start to run Motors." );
         telemetry.update();
         waitForStart();
@@ -66,7 +66,7 @@ public class ConceptRampMotorSpeed extends LinearOpMode {
             }
 
             // Display the current value
-            telemetry.addData("Motor Power", "%5.2f", power);
+            telemetry.addData("motor Power", "%5.2f", power);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 

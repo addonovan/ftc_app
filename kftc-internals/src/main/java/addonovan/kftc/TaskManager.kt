@@ -68,7 +68,11 @@ object TaskManager : ILog by getLog( TaskManager::class )
     //
 
     /** If this is a linear opmode, then we'll need to treat some things differently. */
-    private var isLinear: Boolean = false;
+    private var _isLinearOpMode: Boolean = false;
+
+    /** If the currently running OpMode is a linear one or not.*/
+    val isLinearOpMode: Boolean
+        get() = _isLinearOpMode;
 
     /** The tasks enqueued in the manager for execution later. */
     private val tasks: LinkedList< TaskWrapper > = LinkedList();
@@ -82,7 +86,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      */
     internal fun prepareFor( opMode: KAbstractOpMode )
     {
-        isLinear = opMode is KLinearOpMode;
+        _isLinearOpMode = opMode is KLinearOpMode;
         // TODO anything else that requires initialization now
     }
 
@@ -93,7 +97,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
     /**
      * Registers a task to be executed asynchronously as the match proceeds. If the
      * OpMode this is running for is a [KLinearOpMode], then this task will be executed
-     * immediately, from start to finish.
+     * immediately, from onStart to finish.
      *
      * @param[task]
      *          The task to complete.
@@ -102,7 +106,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      */
     fun registerTask( task: Task, name: String )
     {
-        if ( isLinear )
+        if (_isLinearOpMode)
         {
             runTaskLinearly( task, name );
         }
@@ -118,7 +122,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
     //
 
     /**
-     * Runs the given task from start to end, for a linear OpMode.
+     * Runs the given task from onStart to end, for a linear OpMode.
      *
      * @param[task]
      *          The task to complete.
@@ -130,11 +134,13 @@ object TaskManager : ILog by getLog( TaskManager::class )
         i( "Running task: \"$name\"" );
 
         v( "Waiting until task can start..." );
-        // every 10 milliseconds, check to see if the task can start or not
+        // every 10 milliseconds, check to see if the task can onStart or not
         while ( !task.canStart() )
         {
             Thread.sleep( 10 );
         }
+
+        task.onStart();
 
         v( "Running task until completion..." );
         // continually tick it until it's finished
@@ -159,7 +165,7 @@ object TaskManager : ILog by getLog( TaskManager::class )
      */
     internal fun tick()
     {
-        if ( isLinear ) throw UnsupportedOperationException( "TaskManagers cannot be ticked in LinearOpModes!" );
+        if (_isLinearOpMode) throw UnsupportedOperationException( "TaskManagers cannot be ticked in LinearOpModes!" );
 
         val iter = tasks.iterator();
         while ( iter.hasNext() )
@@ -177,12 +183,13 @@ object TaskManager : ILog by getLog( TaskManager::class )
                 {
                     if ( !task.canStart() )
                     {
-                        v( "Task \"$name\" cannot start, skipping." );
+                        v( "Task \"$name\" cannot onStart, skipping." );
                         continue; // skip to the next task
                     }
 
                     i( "Task \"$name\" has started" );
                     wrapper.Started = true; // once the task is started, this method won't be called anymore
+                    task.onStart();
                 }
 
                 v( "Ticking task: \"$name\"" );

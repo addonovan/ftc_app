@@ -25,6 +25,8 @@
 package addonovan.kftc.hardware
 
 import addonovan.kftc.*
+import addonovan.kftc.util.MotorAssembly
+import addonovan.kftc.util.MotorType
 import com.qualcomm.robotcore.hardware.*
 
 /**
@@ -54,18 +56,22 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     //
 
     /** The name of this motor in the hardware map */
-    val Name = "Motor: $name";
+    val Name = "motor: $name";
 
     //
-    // Motor Assembly
+    // motor Assembly
     //
+
+    /** The backing field for [assembly]. */
+    private var _assembly = MotorAssembly( MotorType.TETRIX )
 
     /**
      * The motor assembly that this motor is a part of. By default,
      * this represents an assembly with a tetrix motor, with a 4 inch
      * (10.16 cm) wheel, and a 1:1 gear ratio.
      */
-    private var assembly: MotorAssembly = MotorAssembly( MotorType.TETRIX );
+    val assembly: MotorAssembly
+        get() = _assembly;
 
     /**
      * @param[assembly]
@@ -74,14 +80,9 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
      */
     fun setAssembly( assembly: MotorAssembly ): Motor
     {
-        this.assembly = assembly;
+        _assembly = assembly;
         return this;
     }
-
-    /**
-     * @return The current motor assembly.
-     */
-    fun getAssembly() = assembly;
 
     //
     // Encoders
@@ -120,7 +121,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
         resetEncoders(); // register the task for resetting the encoders
 
         // create the task
-        val task = object : SimpleTask()
+        val task = object : Task
         {
 
             override fun tick()
@@ -157,19 +158,5 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     {
         power = 0.0;
     }
-
-    /**
-     * @param[power]
-     *          The power to set the motor at [-100,100].
-     */
-    override fun setPower( power: Double )
-    {
-        super.setPower( power / 100.0 );
-    }
-
-    /**
-     * @return The power, on a scale of [-100,100].
-     */
-    override fun getPower() = super.getPower() * 100;
 
 }

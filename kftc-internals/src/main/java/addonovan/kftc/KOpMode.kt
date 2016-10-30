@@ -44,12 +44,12 @@ abstract class KOpMode : KAbstractOpMode()
     open fun init_loop() {}
 
     /**
-     * This is called immediately after the start button has been pressed.
+     * This is called immediately after the onStart button has been pressed.
      */
     open fun start() {}
 
     /**
-     * This is called repeatedly after the start button has been pressed,
+     * This is called repeatedly after the onStart button has been pressed,
      * but not yet stopped.
      */
     abstract fun loop();

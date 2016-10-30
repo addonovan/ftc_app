@@ -135,7 +135,7 @@ public class TestMotorControllerFlavors extends LinearOpMode
 
     void reportMotors()
         {
-        telemetry.addData("Motor Report", "");
+        telemetry.addData("motor Report", "");
         reportMotor("legacy motor: ", legacyMotor);
         reportMotor("v1.5 motor: ", v15Motor);
         reportMotor("v2 motor: ", v2Motor);

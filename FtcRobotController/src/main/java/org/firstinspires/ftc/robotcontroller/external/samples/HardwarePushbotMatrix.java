@@ -20,11 +20,11 @@ import com.qualcomm.robotcore.hardware.ServoController;
  *
  * Matrix Controller has been assigned the name:  "matrix controller"
  *
- * Motor channel:  Left  drive motor:        "left motor"
- * Motor channel:  Right drive motor:        "right motor"
- * Motor channel:  Manipulator drive motor:  "arm motor"
- * Servo channel:  Servo to open left claw:  "left claw"
- * Servo channel:  Servo to open right claw: "right claw"
+ * motor channel:  Left  drive motor:        "left_drive"
+ * motor channel:  Right drive motor:        "right_drive"
+ * motor channel:  Manipulator drive motor:  "left_arm"
+ * Servo channel:  Servo to open left claw:  "left_hand"
+ * Servo channel:  Servo to open right claw: "right_hand"
  *
  * In addition, the Matrix Controller has been assigned the name:  "matrix controller"
  */
@@ -42,7 +42,7 @@ public class HardwarePushbotMatrix extends HardwarePushbot
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
 
-        // Initialize base Motor and Servo objects
+        // Initialize base motor and Servo objects
         super.init(ahwMap);
 
         /*
@@ -52,21 +52,21 @@ public class HardwarePushbotMatrix extends HardwarePushbot
          * but software wants to treat it as two distinct controllers, one
          * DcMotorController, and one ServoController.
          *
-         * We accomplish this by initializing Motor and Servo controller with the same name
+         * We accomplish this by initializing motor and Servo controller with the same name
          * given in the configuration.  In the example below the name of the controller is
          * "MatrixController"
          *
          * Normally we don't need to access the controllers themselves, we deal directly with
-         * the Motor and Servo objects, but the Matrix interface is different.
+         * the motor and Servo objects, but the Matrix interface is different.
          *
          * In order to activate the servos, they need to be enabled on the controller with
          * a call to pwmEnable() and disabled with a call to pwmDisable()
          *
-         * Also, the Matrix Motor controller interface provides a call that enables all motors to
+         * Also, the Matrix motor controller interface provides a call that enables all motors to
          * updated simultaneously (with the same value).
          */
 
-        // Initialize Matrix Motor and Servo objects
+        // Initialize Matrix motor and Servo objects
         matrixMotorController = (MatrixDcMotorController)ahwMap.dcMotorController.get("matrix controller");
         matrixServoController = ahwMap.servoController.get("matrix controller");
 

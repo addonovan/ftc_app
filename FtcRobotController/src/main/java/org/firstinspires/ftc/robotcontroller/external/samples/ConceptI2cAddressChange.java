@@ -99,7 +99,7 @@ public class ConceptI2cAddressChange extends LinearOpMode {
   DeviceInterfaceModule dim;
 
   @Override
-  public void runOpMode() throws InterruptedException {
+  public void runOpMode() {
 
     // set up the hardware devices we are going to use
     dim = hardwareMap.deviceInterfaceModule.get("dim");
@@ -114,7 +114,7 @@ public class ConceptI2cAddressChange extends LinearOpMode {
     // Be sure to read the requirements for the hardware you're using!
     ModernRoboticsUsbDeviceInterfaceModule.throwIfModernRoboticsI2cAddressIsInvalid(newAddress);
 
-    // wait for the start button to be pressed
+    // wait for the onStart button to be pressed
     waitForStart();
 
     performAction("read", port, currentAddress, ADDRESS_MEMORY_START, TOTAL_MEMORY_LENGTH);
