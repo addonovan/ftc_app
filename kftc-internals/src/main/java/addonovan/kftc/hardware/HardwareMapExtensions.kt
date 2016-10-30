@@ -164,7 +164,10 @@ fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String
         throw IllegalArgumentException( "No hardware device mapping for type: ${type.canonicalName}!" );
     }
 
-    val deviceMapping = deviceClassMap[ type ]!!; // we're ensured that one exists by the previous block
+    // yes, we should grab the device mapping for the BASE TYPE, not the original type
+    // That makes much more sense than just ignoring baseType when we went through so much
+    // effort to find it...
+    val deviceMapping = deviceClassMap[ baseType ]!!; // we're ensured that one exists by the previous block
 
     try
     {
