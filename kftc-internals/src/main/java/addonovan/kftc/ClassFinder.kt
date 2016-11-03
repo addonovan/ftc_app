@@ -79,7 +79,7 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
         list;
     }
 
-    class HardwareExtensionMap : HashMap< Class< out HardwareExtension< * > >, Constructor< out HardwareExtension< * > > >();
+    class HardwareExtensionMap : HashMap< Class< * >, Constructor< * > >();
 
     /**
      * The classes that fit all of the criteria to be hardware extensions.
@@ -109,7 +109,7 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
                         continue;
                     }
 
-                    // check to make sure that the constrcutro has the correct parameters
+                    // check to make sure that the constructor has the correct parameters
                     if ( !params[ 0 ].isOfType( HardwareExtension::class ) ) continue;
                     if ( !params[ 1 ].isOfType( String::class ) ) continue;
 

@@ -24,6 +24,7 @@
 package addonovan.kftc.hardware
 
 import addonovan.kftc.*
+import addonovan.kftc.ClassFinder.HardwareExtensions
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.HardwareMap.DeviceMapping
@@ -129,35 +130,29 @@ private val HardwareMap.deviceClassMap: DeviceClassMap
 @Suppress( "unchecked_cast" )
 fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String ): HardwareDevice
 {
-    var baseType = type;
-    val isExtension = type.isHardwareExtension();
-    var constructor: Constructor< out HardwareDevice >? = null;
-
-    if ( isExtension )
+    // if we're a Hardware Extension as well, then redirect to that
+    if ( type.isOfType( HardwareExtension::class ) )
     {
-        constructor = type.getConstructor( type.getHardwareMapType().java, String::class.java );
-        baseType = type.getHardwareMapType().java;
+        val device = getDevice( type, name );
+        val constructor = HardwareExtensions[ type ]!!;
+        return constructor.newInstance( device, name ) as HardwareDevice;
     }
     else
     {
-        // keep going up the hierarchy for hardware devices until:
-        // 1. the base type is in the class map
-        // 2. the base type's superclass is HardwareDevice itself
-        //
-        // after the loop breaks we know that:
-        // if there's a key for "baseType" that we can find the correct device mapping for the type
-        // otherwise, we need to throw an exception because there's no map for the given type
-
-        while ( !deviceClassMap.containsKey( baseType ) && baseType.superclass != HardwareDevice::class.java )
-        {
-            baseType = baseType.superclass as Class< out HardwareDevice >;
-        }
+        return getDevice( type, name );
     }
+}
 
+/**
+ * The underlying function that gets the correct device mapping for the given
+ * type and returns the correct value from it.
+ */
+private fun HardwareMap.getDevice( type: Class< out HardwareDevice >, name: String ): HardwareDevice
+{
     // the second condition was met, but the device is still not a
     // direct descendant of anything in the hardware device mappings
     // so we can't find the correct map for it
-    if ( !deviceClassMap.containsKey( baseType ) )
+    if ( !deviceClassMap.containsKey( type ) )
     {
         HardwareMapExtension.e( "Can't find a device mapping for the given type: ${type.name}" );
         HardwareMapExtension.e( "This means that there's no way to get the hardware device from the hardware map!" );
@@ -166,39 +161,5 @@ fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String
 
     val deviceMapping = deviceClassMap[ type ]!!; // we're ensured that one exists by the previous block
 
-    try
-    {
-        val device = deviceMapping[ name ]!!;
-
-        if ( isExtension )
-        {
-            // if it's an extension, create the extension object and return it
-            return constructor!!.newInstance( device, name );
-        }
-        else
-        {
-            // if it's not an extension, just return the value from the map
-            return device;
-        }
-    }
-    // catch an IllegalArgumentException from the deviceMapping.get() method
-    catch ( ex: IllegalArgumentException )
-    {
-        HardwareMapExtension.e( "Failed to find the device by name $name!", ex );
-        throw NullPointerException( "No device with the type ${type.simpleName} by the name \"$name\"" );
-    }
-    // catch the other exceptions
-    catch ( ex: Throwable )
-    {
-        if ( ex is InvocationTargetException )
-        {
-            HardwareMapExtension.e( "Exception while invoking HardwareExtension constructor: ${ex.javaClass.name}" );
-        }
-        else
-        {
-            HardwareMapExtension.wtf( "This exception was already checked for! Well That's Fascinating!", ex );
-        }
-
-        throw ex; // throw it again
-    }
+    return deviceMapping[ name ];
 }

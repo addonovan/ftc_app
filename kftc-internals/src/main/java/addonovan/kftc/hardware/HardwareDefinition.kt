@@ -24,6 +24,7 @@
 package addonovan.kftc.hardware
 
 import addonovan.kftc.UtilityContainer
+import addonovan.kftc.isOfType
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
 
