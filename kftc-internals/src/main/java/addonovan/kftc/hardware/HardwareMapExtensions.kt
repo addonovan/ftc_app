@@ -130,17 +130,16 @@ private val HardwareMap.deviceClassMap: DeviceClassMap
 @Suppress( "unchecked_cast" )
 fun HardwareMap.getDeviceByType( type: Class< out HardwareDevice >, name: String ): HardwareDevice
 {
+    val device = getDevice( type, name );
+
     // if we're a Hardware Extension as well, then redirect to that
     if ( type.isOfType( HardwareExtension::class ) )
     {
-        val device = getDevice( type, name );
         val constructor = HardwareExtensions[ type ]!!;
         return constructor.newInstance( device, name ) as HardwareDevice;
     }
-    else
-    {
-        return getDevice( type, name );
-    }
+
+    return device;
 }
 
 /**
