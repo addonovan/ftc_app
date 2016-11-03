@@ -33,8 +33,7 @@ import com.qualcomm.robotcore.hardware.ServoImpl
  * @author addonovan
  * @since 6/26/16
  */
-@HardwareExtension( Servo::class )
-class ToggleServo( servo: Servo ) : ServoImpl( servo.controller, servo.portNumber )
+class ToggleServo( servo: Servo ) : HardwareExtension< Servo >( servo ), Servo by servo
 {
 
     //

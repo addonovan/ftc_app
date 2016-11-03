@@ -62,4 +62,10 @@ import kotlin.reflect.KClass
  * @author addonovan
  * @since 8/27/16
  */
-annotation class HardwareExtension( val hardwareMapType: KClass< out HardwareDevice > );
+//annotation class HardwareExtension( val hardwareMapType: KClass< out HardwareDevice > );
+
+abstract class HardwareExtension< out T : HardwareDevice >( _baseDevice: T )
+{
+    /** The device this is based around. */
+    protected val baseDevice = _baseDevice;
+}

@@ -47,9 +47,10 @@ import com.qualcomm.robotcore.hardware.DcMotorImpl
  * @author addonovan
  * @since 10/27/2016
  */
-@HardwareExtension( DcMotor::class )
+@Suppress( "unused" )
 class RpmLockedMotor( dcMotor: DcMotor, name: String ) :
-        DcMotorImpl( dcMotor.controller, dcMotor.portNumber, dcMotor.direction ),
+        HardwareExtension< DcMotor >( dcMotor ),
+        DcMotor by dcMotor,
         ILog by getLog( RpmLockedMotor::class, name )
 {
 
@@ -178,19 +179,19 @@ class RpmLockedMotor( dcMotor: DcMotor, name: String ) :
     override fun setPower( power: Double )
     {
         if ( !updatesPermitted ) throwModifiedException( "power" );
-        super.setPower( power );
+        baseDevice.power = power;
     }
 
     override fun setMode( mode: DcMotor.RunMode )
     {
         if ( !updatesPermitted ) throwModifiedException( "run mode" );
-        super.setMode( mode );
+        baseDevice.mode = mode;
     }
 
     override fun setZeroPowerBehavior( zeroPowerBehavior: DcMotor.ZeroPowerBehavior )
     {
         if ( !updatesPermitted ) throwModifiedException( "zero power behavior" );
-        super.setZeroPowerBehavior( zeroPowerBehavior );
+        baseDevice.zeroPowerBehavior = zeroPowerBehavior;
     }
 
     override fun setPowerFloat()
@@ -201,13 +202,13 @@ class RpmLockedMotor( dcMotor: DcMotor, name: String ) :
     override fun setMaxSpeed( encoderTicksPerSecond: Int )
     {
         if ( !updatesPermitted ) throwModifiedException( "max speed" );
-        super.setMaxSpeed( encoderTicksPerSecond );
+        baseDevice.maxSpeed = encoderTicksPerSecond;
     }
 
     override fun setTargetPosition( position: Int )
     {
         if ( !updatesPermitted ) throwModifiedException( "target position" );
-        super.setTargetPosition( position );
+        baseDevice.targetPosition = position;
     }
 
     /**

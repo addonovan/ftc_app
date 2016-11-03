@@ -47,8 +47,7 @@ import com.qualcomm.robotcore.hardware.*
  * @author addonovan
  * @since 6/27/16
  */
-@HardwareExtension( DcMotor::class )
-class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller, dcMotor.portNumber, dcMotor.direction )
+class Motor( dcMotor: DcMotor, name: String ) : HardwareExtension< DcMotor >( dcMotor ), DcMotor by dcMotor
 {
 
     //
@@ -94,7 +93,7 @@ class Motor( dcMotor: DcMotor, name: String ) : DcMotorImpl( dcMotor.controller,
     fun resetEncoders()
     {
         // this is guaranteed since they finally made the SDK synchronous
-        setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+        mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER;
     }
 
     /**
