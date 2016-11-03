@@ -26,6 +26,7 @@ package addonovan.kftc
 import addonovan.kftc.hardware.HardwareExtension
 import com.qualcomm.robotcore.eventloop.opmode.*
 import com.qualcomm.robotcore.hardware.HardwareDevice
+import kotlin.reflect.KClass
 
 /**
  * A file for extension methods.
@@ -79,18 +80,11 @@ fun Class< out KAbstractOpMode >.getAnnotatedGroup(): String =
         // throw an exception
         else throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
 
-//
-// HardwareExtension
-//
-
 /**
- * @return `true` if this class has the [HardwareExtension] annotation on it.
+ * @param[kClass]
+ *              The class to test against.
+ * @return If this object is a subtype of the given class.
  */
-fun Class< out HardwareDevice >.isHardwareExtension() = isAnnotationPresent( HardwareExtension::class.java );
+fun Class< * >.isOfType( kClass: KClass< * > ) =  kClass.java.isAssignableFrom( this );
 
-/**
- * @return The value of the `hardwareMapType` parameter on the [HardwareExtension] annotation.
- */
-fun Class< out HardwareDevice >.getHardwareMapType() =
-        if ( !this.isHardwareExtension() ) throw IllegalArgumentException( "No @HardwareExtension annotation on $canonicalName!" );
-        else getAnnotation( HardwareExtension::class.java ).hardwareMapType;
+fun KClass< * >.isOfType( kClass: KClass< * > ) = this.java.isOfType( kClass );

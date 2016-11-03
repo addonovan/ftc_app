@@ -23,8 +23,10 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.hardware.HardwareExtension
 import com.qualcomm.robotcore.hardware.*
 import dalvik.system.DexFile
+import java.lang.reflect.Constructor
 import java.lang.reflect.Modifier
 import java.util.*
 
@@ -77,59 +79,58 @@ internal object ClassFinder : ILog by getLog( ClassFinder::class )
         list;
     }
 
+    class HardwareExtensionMap : HashMap< Class< out HardwareExtension< * > >, Constructor< out HardwareExtension< * > > >();
+
     /**
      * The classes that fit all of the criteria to be hardware extensions.
      */
-    val HardwareExtensions: ArrayList< Class< out HardwareDevice > > by lazy {
-        val list = ArrayList< Class< out HardwareDevice > >();
-
-        // a list of all the types that _are_ allowed
-        val allowedTypes = listOf(
-                DcMotor::class, DcMotorController::class, ServoController::class, Servo::class,
-                LegacyModule::class, TouchSensorMultiplexer::class, DeviceInterfaceModule::class,
-                AnalogInput::class, AnalogOutput::class, DigitalChannel::class, LED::class,
-                OpticalDistanceSensor::class, TouchSensor::class, PWMOutput::class, I2cDevice::class,
-                ColorSensor::class, AccelerationSensor::class, CompassSensor::class, GyroSensor::class,
-                IrSeekerSensor::class, LightSensor::class, UltrasonicSensor::class, VoltageSensor::class
-        );
+    val HardwareExtensions: HardwareExtensionMap by lazy {
+        val map = HardwareExtensionMap();
 
         for ( clazz in classes )
         {
-            // ensure it's a subclass of HardwareDevice
-            if ( !HardwareDevice::class.java.isAssignableFrom( clazz ) ) continue;
+            // ensure it's a subclass of HardwareExtension
+            if ( !HardwareExtension::class.java.isAssignableFrom( clazz ) ) continue;
 
             // cast it for the rest
             @Suppress( "unchecked_cast" )
-            val casted = clazz as Class< out HardwareDevice >;
-
-            // if it doesn't have the annotation, it's worthless
-            if ( !casted.isHardwareExtension() ) continue;
-
-            // verify that it's hardwareMapType parameter is valid
-            val hardwareMapType = casted.getHardwareMapType();
-            if ( !allowedTypes.contains( hardwareMapType ) )
-            {
-                w( "${clazz.canonicalName} had an invalid parameter in its HardwareExtension annotation: ${casted.getHardwareMapType().java.simpleName}::class" );
-                continue;
-            }
+            val casted = clazz as Class< out HardwareExtension< HardwareDevice > >;
 
             // verify that is has an acceptable constructor
             try
             {
-                // MUST have the following parameters
-                casted.getConstructor( hardwareMapType.java, String::class.java );
+                for ( constructor in casted.declaredConstructors )
+                {
+                    val params = constructor.parameterTypes;
+
+                    if ( params.size != 2 )
+                    {
+                        w( "${casted.name} has an invalid constructor!" );
+                        continue;
+                    }
+
+                    // check to make sure that the constrcutro has the correct parameters
+                    if ( !params[ 0 ].isOfType( HardwareExtension::class ) ) continue;
+                    if ( !params[ 1 ].isOfType( String::class ) ) continue;
+
+                    // cast everything and add it to the map
+                    @Suppress( "unchecked_cast" )
+                    val castedConstructor = constructor as Constructor< out HardwareExtension< * > >;
+                    map[ casted ] = castedConstructor;
+                    d( "Loaded HardwareExtension: ${clazz.simpleName}" );
+
+                    break;
+                }
+
             }
             catch ( nsme: NoSuchMethodException )
             {
                 w( "${clazz.canonicalName} did not have a valid constructor to be a HardwareExtension", nsme );
                 continue;
             }
-
-            list.add( casted );
-            d( "Loaded HardwareExtension: ${clazz.simpleName}" );
         }
 
-        list;
+        map;
     }
 
     /** A list of packages that are blacklisted to save time when loading the baseClasses */
