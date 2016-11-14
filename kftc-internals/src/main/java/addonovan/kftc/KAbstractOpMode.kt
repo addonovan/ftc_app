@@ -27,6 +27,7 @@ import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
 import android.text.Editable
 import android.text.TextWatcher
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -37,7 +38,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  * @author addonovan
  * @since 8/22/2016
  */
-abstract class KAbstractOpMode : ILog, IConfigurable
+abstract class KAbstractOpMode() : ILog, IConfigurable
 {
 
     //
