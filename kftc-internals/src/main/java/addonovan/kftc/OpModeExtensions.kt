@@ -50,3 +50,7 @@ inline fun < reified T : HardwareDevice > OpMode.get( name: String ): Lazy< T >
 {
     return lazy { hardwareMap.getDeviceByType( T::class.java, name ) as T; };
 }
+
+//
+// Configuration Fetching
+//

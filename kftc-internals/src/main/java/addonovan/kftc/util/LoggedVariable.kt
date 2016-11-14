@@ -41,44 +41,40 @@ interface LoggedVariable< T >
     /** The underlying value of this delegate. */
     var value: T;
 
-}
+    /**
+     * Logs the access to the [LoggedVariable] and then returns
+     * the value the variable.
+     *
+     * @param[thisRef]
+     *          Ignored
+     * @param[property]
+     *          The property being accessed (the name is drawn from here).
+     *
+     * @return The value of this [LoggedVariable].
+     */
+    operator fun < T > LoggedVariable< T >.getValue( thisRef: Any?, property: KProperty< * > ): T
+    {
+        VariableTraceLog.d( "${property.name} accessed: value = ($value)" );
+        return value;
+    }
 
-//
-// Delegate Things
-//
+    /**
+     * Logs the modification to the [LoggedVariable] and then updates
+     * the value to the one given.
+     *
+     * @param[thisRef]
+     *          Ignored.
+     * @param[property]
+     *          The property being modified (the name is drawn from here).
+     * @param[value]
+     *          The new value of the variable.
+     */
+    operator fun < T > LoggedVariable< T >.setValue( thisRef: Any?, property: KProperty< * >, value: T )
+    {
+        VariableTraceLog.d( "${property.name} modified: value was ${this.value}, now $value" );
+        this.value = value;
+    }
 
-/**
- * Logs the access to the [LoggedVariable] and then returns
- * the value the variable.
- *
- * @param[thisRef]
- *          Ignored
- * @param[property]
- *          The property being accessed (the name is drawn from here).
- *
- * @return The value of this [LoggedVariable].
- */
-operator fun < T > LoggedVariable< T >.getValue( thisRef: Any?, property: KProperty< * > ): T
-{
-    VariableTraceLog.d( "${property.name} accessed: value = ($value)" );
-    return value;
-}
-
-/**
- * Logs the modification to the [LoggedVariable] and then updates
- * the value to the one given.
- *
- * @param[thisRef]
- *          Ignored.
- * @param[property]
- *          The property being modified (the name is drawn from here).
- * @param[value]
- *          The new value of the variable.
- */
-operator fun < T > LoggedVariable< T >.setValue( thisRef: Any?, property: KProperty< * >, value: T )
-{
-    VariableTraceLog.d( "${property.name} modified: value was ${this.value}, now $value" );
-    this.value = value;
 }
 
 //
