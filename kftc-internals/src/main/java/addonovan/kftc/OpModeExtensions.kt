@@ -23,6 +23,8 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.Configurations
+import addonovan.kftc.config.Profile
 import addonovan.kftc.hardware.getDeviceByType
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.HardwareDevice
@@ -54,3 +56,13 @@ inline fun < reified T : HardwareDevice > OpMode.get( name: String ): Lazy< T >
 //
 // Configuration Fetching
 //
+
+/**
+ * @return The profile for this OpMode.
+ */
+private fun OpMode.getProfile(): Profile = Configurations.profileFor( javaClass );
+
+fun OpMode.get( name: String, default: Boolean ): Boolean = getProfile()[ name, default ];
+fun OpMode.get( name: String, default: Long ): Long       = getProfile()[ name, default ];
+fun OpMode.get( name: String, default: Double ): Double   = getProfile()[ name, default ];
+fun OpMode.get( name: String, default: String ): String   = getProfile()[ name, default ];

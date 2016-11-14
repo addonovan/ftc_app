@@ -27,6 +27,7 @@ import addonovan.kftc.*
 import android.os.Environment
 import android.util.JsonWriter
 import android.widget.Toast
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.json.JSONObject
 import java.io.*
 import java.util.*
@@ -82,11 +83,11 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
      * Gets the active profile for the given OpMode.
      *
      * @param[clazz]
-     *          The class of the [KAbstractOpMode] to get the active profile for.
+     *          The class of the [OpMode] to get the active profile for.
      *
      * @return The active profile for the given OpMode.
      */
-    fun profileFor( clazz: Class< out KAbstractOpMode > ): Profile
+    fun profileFor( clazz: Class< out OpMode > ): Profile
     {
         val className = clazz.canonicalName;
         d( "Fetching active profile for $className" );
@@ -250,7 +251,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         private val names = ArrayList< String >();
 
         /** The classes of all the registered OpModes. */
-        private val classes = ArrayList< Class< out KAbstractOpMode > >();
+        private val classes = ArrayList< Class< out OpMode > >();
 
         /** All the names of the registered OpModes. */
         val Names: List< String >
@@ -262,7 +263,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
          * @param[clazz]
          *          The OpMode class to add to the map.
          */
-        operator fun plusAssign( clazz: Class< out KAbstractOpMode > )
+        operator fun plusAssign( clazz: Class< out OpMode > )
         {
             val name = clazz.getAnnotatedName();
             i( "Registering ${clazz.simpleName} as $name" );
@@ -307,8 +308,8 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
             classes.clear();
         }
 
-        operator fun get( clazz: Class< out KAbstractOpMode > ) = names[ classes.indexOf( clazz ) ];
-        operator fun contains( clazz: Class< out KAbstractOpMode > ) = clazz in classes;
+        operator fun get( clazz: Class< out OpMode > ) = names[ classes.indexOf( clazz ) ];
+        operator fun contains( clazz: Class< out OpMode > ) = clazz in classes;
 
         operator fun get( name: String ) = classes[ names.indexOf( name ) ];
         operator fun contains( name: String ) = name in names;
