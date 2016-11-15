@@ -25,7 +25,9 @@ package addonovan.kftc
 
 import addonovan.kftc.config.Configurations
 import addonovan.kftc.config.Profile
+import addonovan.kftc.hardware.getDeviceByType
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.hardware.HardwareDevice
 
 /**
  * A KOpMode is a special type of OpMode that manages a few extra
@@ -67,5 +69,22 @@ abstract class KOpMode : OpMode(), IConfigurable, ILog by getLog( KOpMode::class
     //
 
     abstract fun tick();
+
+    //
+    // Hardware
+    //
+
+    /**
+     * Gets the hardware with the given name. This is delegated to happen at a later
+     * time.
+     *
+     * @param[name]
+     *          The name of the hardware device.
+     * @return A lazy delegate so that the hardware is initialized on the first try.
+     */
+    inline fun < reified T : HardwareDevice> OpMode.get( name: String ): Lazy< T >
+    {
+        return lazy { hardwareMap.getDeviceByType( T::class.java, name ) as T; };
+    }
 
 }
