@@ -94,7 +94,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
                 val profile = Profile.fromJson( opModeConfig, profiles.getJSONObject( i ) );
 
                 // if it's the default profile, add it to the very beginning, as it should always be index 0
-                if ( profile.Name == Profile.DEFAULT_NAME )
+                if ( profile.name == Profile.DEFAULT_NAME )
                 {
                     opModeConfig.profiles.add( 0, profile );
                 }
@@ -104,7 +104,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
                     opModeConfig.profiles += profile;
                 }
 
-                opModeConfig.v( "Loaded Profile: ${profile.Name}" );
+                opModeConfig.v( "Loaded Profile: ${profile.name}" );
             }
 
             // if, somehow, we don't have the default profile, add it to the initial position
@@ -151,13 +151,13 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     private var activeProfileName = Profile.DEFAULT_NAME;
 
     /** The profile that's active and will be used by the OpMode. */
-    val ActiveProfile: Profile
+    val activeProfile: Profile
         get()
         {
             // find the matching one
             for ( profile in profiles )
             {
-                if ( profile.Name == activeProfileName )
+                if ( profile.name == activeProfileName )
                 {
                     return profile;
                 }
@@ -177,7 +177,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     {
         // if we need to insert the profile
         // (there're no profiles, or the first one isn't the default)
-        if ( profiles.size == 0 || profiles[ 0 ].Name != Profile.DEFAULT_NAME )
+        if ( profiles.size == 0 || profiles[ 0 ].name != Profile.DEFAULT_NAME )
         {
             v( "Inserting default profile!" );
             profiles.add( 0, Profile.fromRaw( this, Profile.DEFAULT_NAME ) );
@@ -202,7 +202,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     {
         for ( profile in profiles )
         {
-            if ( profile.Name == name )
+            if ( profile.name == name )
             {
                 return profile;
             }
@@ -226,13 +226,13 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
         for ( profile in profiles )
         {
             // if there's a match, the name is taken
-            if ( profile.Name == name )
+            if ( profile.name == name )
             {
                 return false;
             }
 
             // just warn them; hopefully, they'll realize this is a bad idea on their own
-            if ( profile.Name.equals( name, ignoreCase = true ) )
+            if ( profile.name.equals( name, ignoreCase = true ) )
             {
                 w( "Creating a profile with the same name but different case as another!" );
             }
@@ -259,7 +259,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
         for ( profile in profiles )
         {
             // we found a match, so switch the profile and exit
-            if ( profile.Name == name )
+            if ( profile.name == name )
             {
                 v( "Switching active profile to: $name" );
                 activeProfileName = name;
@@ -287,7 +287,7 @@ class OpModeConfig private constructor( val Name: String ) : Jsonable, ILog by g
     {
         for ( profile in profiles )
         {
-            if ( profile.Name == name )
+            if ( profile.name == name )
             {
                 i( "Deleting profile $name" );
                 profiles.remove( profile );

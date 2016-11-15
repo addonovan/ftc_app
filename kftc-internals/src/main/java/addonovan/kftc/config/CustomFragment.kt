@@ -23,7 +23,7 @@
  */
 package addonovan.kftc.config
 
-import addonovan.kftc.Activity
+import addonovan.kftc.activity
 import android.os.Bundle
 import android.preference.PreferenceFragment
 

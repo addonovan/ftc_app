@@ -67,9 +67,9 @@ class FragmentOpModeConfig : CustomFragment()
 
         // add action for clicking activate profile
         val chooseProfile = findPreference( "choose_profile" ) as ListPreference;
-        chooseProfile.entries = Array( profiles.size, { i -> profiles[ i ].Name } ); // create a list of all profiles to select from
+        chooseProfile.entries = Array( profiles.size, { i -> profiles[ i ].name } ); // create a list of all profiles to select from
         chooseProfile.entryValues = chooseProfile.entries; // so I don't have to deal with any nonsense.
-        chooseProfile.value = config.ActiveProfile.Name;
+        chooseProfile.value = config.activeProfile.name;
 
         // change the active profile when the preference is updated
         chooseProfile.setOnPreferenceChangeListener { preference, value ->
@@ -88,13 +88,13 @@ class FragmentOpModeConfig : CustomFragment()
         for( profile in profiles )
         {
             val profileScreen = preferenceManager.createPreferenceScreen( activity );
-            profileScreen.title = profile.Name;
+            profileScreen.title = profile.name;
 
             // when clicked...
             profileScreen.setOnPreferenceClickListener {
 
                 // ...switch to the profile fragment
-                switchTo( FragmentProfile(), OPMODE_NAME to OpModeName, PROFILE_NAME to profile.Name );
+                switchTo( FragmentProfile(), OPMODE_NAME to OpModeName, PROFILE_NAME to profile.name);
 
                 true;
             };

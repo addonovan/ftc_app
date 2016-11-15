@@ -39,7 +39,7 @@ abstract class KLinearOpMode : LinearOpMode(), IConfigurable, ILog by getLog( KL
 
     init
     {
-        // TODO hook the label and show our profile name
+
     }
 
     //

@@ -97,7 +97,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         v( "$className registered as '$name'" );
 
         // get the active profile
-        return opModeConfigFor( name ).ActiveProfile;
+        return opModeConfigFor( name ).activeProfile;
     }
 
     /**
@@ -271,7 +271,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
             // if there's a name conflict, that's a big problem!
             if ( name in this )
             {
-                e( "!!Name conflict!!" );
+                e( "!!name conflict!!" );
                 throw IllegalArgumentException(
                         "Two OpMode may not have the same name! Conflict: $name." +
                         "Shared by ${get( name ).canonicalName} and ${clazz.canonicalName}"

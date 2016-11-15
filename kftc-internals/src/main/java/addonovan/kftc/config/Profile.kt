@@ -47,7 +47,7 @@ import java.util.*
  *
  * @param[opModeConfig]
  *          The OpModeConfig that this Profile is a member of.
- * @param[Name]
+ * @param[name]
  *          The name of this profile.
  *
  * @author addonovan
@@ -56,7 +56,7 @@ import java.util.*
 /* Each profile gets its own logger so that it's easier to tell which one had a problem. */
 class Profile(
         private val opModeConfig: OpModeConfig,
-        val Name: String ) : Jsonable, ILog by getLog( Profile::class, "$Name(${opModeConfig.Name}" )
+        val name: String ) : Jsonable, ILog by getLog( Profile::class, "$name(${opModeConfig.Name}" )
 {
 
     companion object
@@ -148,26 +148,26 @@ class Profile(
      *
      * Cover method for
      * ```kotlin
-     * opModeConfig.deleteProfile( Name )
+     * opModeConfig.deleteProfile( name )
      * ```
      *
      * @return `true` if the profile was removed from the configuration list,
      *         `false` if it already was.
      */
-    fun delete() = opModeConfig.deleteProfile( Name );
+    fun delete() = opModeConfig.deleteProfile(name);
 
     /**
      * Sets the active profile for the OpModeConfig to this.
      *
      * Cover method for
      * ```kotlin
-     * opModeConfig.setActiveProfile( Name )
+     * opModeConfig.setActiveProfile( name )
      * ```
      *
      * @return `true` if the active profile has been switched to this,
      *         `false` if it was set to the default.
      */
-    fun activate() = opModeConfig.setActiveProfile( Name );
+    fun activate() = opModeConfig.setActiveProfile(name);
 
     //
     // Getters
@@ -292,7 +292,7 @@ class Profile(
     {
         writer.beginObject();
 
-        writer.name( "name" ).value( Name );
+        writer.name( "name" ).value(name);
 
         // write the config list
         writer.name( "config" ).beginArray();
