@@ -52,17 +52,3 @@ inline fun < reified T : HardwareDevice > OpMode.get( name: String ): Lazy< T >
 {
     return lazy { hardwareMap.getDeviceByType( T::class.java, name ) as T; };
 }
-
-//
-// Configuration Fetching
-//
-
-/**
- * @return The profile for this OpMode.
- */
-private fun OpMode.getProfile(): Profile = Configurations.profileFor( javaClass );
-
-fun OpMode.get( name: String, default: Boolean ): Boolean = getProfile()[ name, default ];
-fun OpMode.get( name: String, default: Long ): Long       = getProfile()[ name, default ];
-fun OpMode.get( name: String, default: Double ): Double   = getProfile()[ name, default ];
-fun OpMode.get( name: String, default: String ): String   = getProfile()[ name, default ];

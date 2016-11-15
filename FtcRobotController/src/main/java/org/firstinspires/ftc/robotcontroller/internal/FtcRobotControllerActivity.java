@@ -95,8 +95,6 @@ import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import addonovan.kftc.AddOpModeRegister;
-
 public class FtcRobotControllerActivity extends Activity {
 
   public static final String TAG = "RCActivity";

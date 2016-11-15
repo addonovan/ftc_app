@@ -84,9 +84,9 @@ object TaskManager : ILog by getLog( TaskManager::class )
     /**
      * Prepares the Task Manager to use the given opmode.
      */
-    internal fun prepareFor( opMode: KAbstractOpMode )
+    internal fun prepareFor( opMode: OpMode )
     {
-        _isLinearOpMode = opMode is KLinearOpMode;
+        _isLinearOpMode = opMode is LinearOpMode;
         // TODO anything else that requires initialization now
     }
 
