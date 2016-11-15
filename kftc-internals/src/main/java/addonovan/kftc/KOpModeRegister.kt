@@ -23,6 +23,7 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.Configurations
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister
@@ -94,7 +95,10 @@ object KOpModeRegister : OpModeRegister, ILog by getLog( KOpModeRegister::class 
         hookRobotIcon();
 
         // register all the OpModes
-        opModes.forEach { clazz -> manager.register( clazz.getOpModeMeta(), clazz ) };
+        opModes.forEach { clazz ->
+            manager.register( clazz.getOpModeMeta(), clazz );
+            Configurations.registeredOpModes += clazz;
+        };
     }
 
 }

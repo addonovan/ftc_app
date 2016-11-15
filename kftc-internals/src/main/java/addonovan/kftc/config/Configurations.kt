@@ -73,7 +73,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     private val OpModeConfigs = HashMap< String, OpModeConfig >();
 
     /** A map of all the registered OpModes' names and their classes. */
-    val RegisteredOpModes = OpModeMap();
+    val registeredOpModes = OpModeMap();
 
     //
     // Shortcuts
@@ -93,7 +93,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         d( "Fetching active profile for $className" );
 
         // get the name from the registered OpModes
-        val name = RegisteredOpModes[ clazz ];
+        val name = registeredOpModes[ clazz ];
         v( "$className registered as '$name'" );
 
         // get the active profile
