@@ -108,13 +108,13 @@ private fun getView( name: String ): View
 }
 
 /** The robot icon ImageView */
-val robotIcon: ImageView by lazy()
+internal val robotIcon: ImageView by lazy()
 {
     getView( "robotIcon" ) as ImageView;
 }
 
 /** The label for the current OpMode.s */
-val opModeLabel: TextView by lazy()
+internal val opModeLabel: TextView by lazy()
 {
     getView( "textOpMode" ) as TextView;
 }
@@ -124,6 +124,8 @@ val opModeLabel: TextView by lazy()
 //
 
 /**
+ * !!DO NOT CALL THIS!!
+ *
  * Adds a click listener onto the robot icon that allows [ConfigActivity]
  * to be started when the icon is pressed.
  */
@@ -141,6 +143,8 @@ fun hookRobotIcon()
 }
 
 /**
+ * !!DO NOT CALL THIS!!
+ *
  * Removes the click listener from the robot icon so that [ConfigActivity]
  * can not be opened.
  */
@@ -159,6 +163,7 @@ fun unhookRobotIcon()
 // OpMode Profile Hooks
 //
 
+/** The name of the active profile for the running opmode. */
 private var opModeProfile: String = "";
 
 /**
