@@ -51,7 +51,7 @@ fun Class< out OpMode >.isAutonomous(): Boolean = isAnnotationPresent( Autonomou
 /**
  * @return If this has neither [Autonomous] nor [TeleOp] or is marked with [Disabled].
  */
-fun Class< out OpMode >.isNotRegisterable(): Boolean = !isAutonomous() && !isTeleOp() || isAnnotationPresent( Disabled::class.java );
+fun Class< out OpMode >.isNotRegisterable(): Boolean = ( !isAutonomous() && !isTeleOp() ) || isAnnotationPresent( Disabled::class.java );
 
 /**
  * @return The value from the "name" parameter on the annotation.
@@ -78,6 +78,25 @@ fun Class< out OpMode >.getAnnotatedGroup(): String =
 
         // throw an exception
         else throw IllegalStateException( "No @TeleOp or @Autonomous annotation on this class? Shame on you. $canonicalName" );
+
+/**
+ * @return The OpModeMeta object for this class.
+ */
+fun Class< out OpMode >.getOpModeMeta() : OpModeMeta
+{
+        val flavor =
+                if ( isTeleOp() )
+                {
+                        OpModeMeta.Flavor.TELEOP;
+                }
+                else
+                {
+                        OpModeMeta.Flavor.AUTONOMOUS;
+                }
+
+
+        return OpModeMeta( getAnnotatedName(), flavor, getAnnotatedGroup() );
+}
 
 //
 // HardwareExtension

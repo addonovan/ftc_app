@@ -95,6 +95,8 @@ import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import addonovan.kftc.AndroidKt;
+
 public class FtcRobotControllerActivity extends Activity {
 
   public static final String TAG = "RCActivity";
@@ -256,6 +258,10 @@ public class FtcRobotControllerActivity extends Activity {
     wifiLock.acquire();
     callback.networkConnectionUpdate(WifiDirectAssistant.Event.DISCONNECTED);
     bindToService();
+
+    // !!!kft modification!!!
+    AndroidKt.hookOpModeLabel();
+    AndroidKt.hookRobotIcon();
   }
 
   protected UpdateUI createUpdateUI() {
@@ -498,10 +504,13 @@ public class FtcRobotControllerActivity extends Activity {
     controllerService.setupRobot(eventLoop, idleLoop);
 
     passReceivedUsbAttachmentsToEventLoop();
+
+    // !!! kftc modification !!!
+    AndroidKt.hookRobotIcon();
   }
 
   protected OpModeRegister createOpModeRegister() {
-    return new AddOpModeRegister();
+    return new FtcOpModeRegister();
   }
 
   private void requestRobotShutdown() {

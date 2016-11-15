@@ -39,7 +39,7 @@ abstract class KOpMode : OpMode(), IConfigurable, ILog by getLog( KOpMode::class
 
     init
     {
-        // TODO hook the label and show our profile name
+        unhookRobotIcon();
     }
 
     //
