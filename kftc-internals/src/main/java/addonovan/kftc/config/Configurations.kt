@@ -33,7 +33,8 @@ import java.io.*
 import java.util.*
 
 /**
- * !Description!
+ * A singleton that allows access to all the [Profile]s, [OpModeConfig]s,
+ * and values for a OpMode and its configurations.
  *
  * Serializes to
  * ```json

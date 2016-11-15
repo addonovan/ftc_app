@@ -27,7 +27,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
 /**
- * !Description!
+ * The activity responsible for showing the profiles and allowing
+ * the user to configure them.
  *
  * @author addonovan
  * @since 8/27/16

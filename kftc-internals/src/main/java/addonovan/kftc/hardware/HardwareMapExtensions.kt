@@ -32,7 +32,7 @@ import java.lang.reflect.InvocationTargetException
 import java.util.*
 
 /**
- * !Description!
+ * Extension methods and classes related to the HardwareMap.
  *
  * @author addonovan
  * @since 8/27/16

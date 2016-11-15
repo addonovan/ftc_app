@@ -29,7 +29,8 @@ import android.preference.*
 import android.text.InputType
 
 /**
- * !Description!
+ * The fragment that allows the user to edit the values in a
+ * single profile.
  *
  * @author addonovan
  * @since 8/27/16
