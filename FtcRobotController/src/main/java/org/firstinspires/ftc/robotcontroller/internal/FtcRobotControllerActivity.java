@@ -96,6 +96,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import addonovan.kftc.AndroidKt;
+import addonovan.kftc.KOpModeRegister;
 
 public class FtcRobotControllerActivity extends Activity {
 
@@ -510,7 +511,8 @@ public class FtcRobotControllerActivity extends Activity {
   }
 
   protected OpModeRegister createOpModeRegister() {
-    return new FtcOpModeRegister();
+    /// !!! kftc modifiaction !!!
+    return KOpModeRegister.INSTANCE;
   }
 
   private void requestRobotShutdown() {
