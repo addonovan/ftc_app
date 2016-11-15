@@ -33,6 +33,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import org.firstinspires.ftc.robotcore.internal.AppUtil
 
 /**
  * File for assorted android access things.
@@ -42,41 +43,10 @@ import android.widget.*
  */
 
 /**
- * The current activity. Please don't look at the source for this.
- * Please please please please please.
+ * The current activity. Now with 100% less shit directly viewable!
  */
-val activity: Activity by lazy()
-{
-    // just ignore this please
-    val activityThreadClass = Class.forName( "android.app.ActivityThread" );
-    val activityThread = activityThreadClass.getMethod( "currentActivityThread" ).invoke( null );
-    val activitiesField = activityThreadClass.getDeclaredField( "mActivities" );
-    activitiesField.isAccessible = true;
-
-    // seriously, stop reading
-    var activity: Activity? = null;
-
-    val activities = activitiesField.get( activityThread ) as Map< *, * >;
-    for ( activityRecord in activities.values )
-    {
-        if ( activityRecord == null ) continue;
-
-        // it's only going to get worse
-        val activityRecordClass = activityRecord.javaClass;
-        val pausedField = activityRecordClass.getDeclaredField( "paused" );
-        pausedField.isAccessible = true;
-
-        if ( !pausedField.getBoolean( activityRecord ) )
-        {
-            val activityField = activityRecordClass.getDeclaredField( "activity" );
-            activityField.isAccessible = true;
-
-            activity = activityField.get( activityRecord ) as Activity;
-        }
-    }
-
-    activity ?: throw NullPointerException( "Failed to find activity!" ); // "not needed" my ass, it errors unless this is here
-}
+val activity: Activity
+    get() = AppUtil.getInstance().activity;
 
 /**
  * Shows a toast to the user.
