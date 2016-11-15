@@ -93,6 +93,7 @@ object KOpModeRegister : OpModeRegister, ILog by getLog( KOpModeRegister::class 
     override fun register( manager: OpModeManager )
     {
         hookRobotIcon();
+        Configurations.registeredOpModes.clear();
 
         // register all the OpModes
         opModes.forEach { clazz ->
