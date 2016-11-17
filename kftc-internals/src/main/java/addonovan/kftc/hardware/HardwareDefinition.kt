@@ -39,7 +39,7 @@ abstract class HardwareDefinition( opMode: OpMode )
 {
 
     /** The underlying HardwareMap for this definition.*/
-    val hardwareMap: HardwareMap = opMode.hardwareMap;
+    val hardwareMap: HardwareMap by lazy { opMode.hardwareMap };
 
     /**
      * Simple function to get all types of hardware by parameterization.
