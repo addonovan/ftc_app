@@ -23,7 +23,7 @@
  */
 package addonovan.kftc.hardware
 
-import addonovan.kftc.UtilityContainer
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
 
@@ -35,12 +35,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap
  * @author addonovan
  * @since 8/27/16
  */
-abstract class HardwareDefinition
+abstract class HardwareDefinition( opMode: OpMode )
 {
 
-    /** The hardware map used to form the hardware definition. */
-    protected val HardwareMap: HardwareMap
-            get() = UtilityContainer.HardwareMap;
+    /** The underlying HardwareMap for this definition.*/
+    val hardwareMap: HardwareMap = opMode.hardwareMap;
 
     /**
      * Simple function to get all types of hardware by parameterization.
@@ -48,21 +47,21 @@ abstract class HardwareDefinition
      * This method will return the correct device from the hardware device mappings
      * in the HardwareMap by using the parameterized type and the name given.
      * This can also create hardware extension classes on the go as well, so
-     * long as they are valid (and appear as loaded in LogCat).
+     * long as they are valid.
      *
-     * This is a convenience method for
+     * This will return a lazy initializer which will get the hardware device
+     * on its first access, and so properties using this must be written like so:
      * ```kotlin
-     * HardwareMap.getDeviceByType( T::class.java, name ) as T;
+     * val motorLeft by get< DcMotor >( "motor_left" );
      * ```
-     * Which is much uglier than simply allowing type inference take care
-     * of all that `T` stuff.
      *
      * @param[T]
      *          The type of hardware device to get.
      * @param[name]
      *          The name of the hardware device to return.
      *
-     * @return The hardware device with the given type, [T], and the name, [name].
+     * @return A lazy initializer for the hardware device with the given
+     *          type, [T], and the name, [name].
      *
      * @throws IllegalArgumentException
      *          If [T] had no DeviceMapping associated with it (i.e. no valid
@@ -70,6 +69,9 @@ abstract class HardwareDefinition
      * @throws NullPointerException
      *          If there was no entry for [name] with the type [T].
      */
-    inline fun < reified T : HardwareDevice > get( name: String ): T = HardwareMap.getDeviceByType( T::class.java, name ) as T;
+    inline fun < reified T : HardwareDevice > get( name: String ): Lazy< T >
+    {
+        return lazy { hardwareMap.getDeviceByType( T::class.java, name ) as T };
+    }
 
 }

@@ -54,22 +54,5 @@ abstract class KLinearOpMode : LinearOpMode(), IConfigurable, ILog by getLog( KL
      */
     override val ConfigProfile: Profile = Configurations.profileFor( javaClass );
 
-    //
-    // Hardware
-    //
-
-    /**
-     * Gets the hardware with the given name. This is delegated to happen at a later
-     * time.
-     *
-     * @param[name]
-     *          The name of the hardware device.
-     * @return A lazy delegate so that the hardware is initialized on the first try.
-     */
-    inline fun < reified T : HardwareDevice> OpMode.get( name: String ): Lazy< T >
-    {
-        return lazy { hardwareMap.getDeviceByType( T::class.java, name ) as T; };
-    }
-
 }
 
