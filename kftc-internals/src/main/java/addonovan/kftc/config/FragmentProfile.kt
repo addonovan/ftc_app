@@ -29,7 +29,8 @@ import android.preference.*
 import android.text.InputType
 
 /**
- * !Description!
+ * The fragment that allows the user to edit the values in a
+ * single profile.
  *
  * @author addonovan
  * @since 8/27/16
@@ -93,7 +94,7 @@ class FragmentProfile : CustomFragment()
 
             true;
         };
-        deleteProfile.isEnabled = CurrentProfile.Name != Profile.DEFAULT_NAME; // disabled for default profiles
+        deleteProfile.isEnabled = CurrentProfile.name != Profile.DEFAULT_NAME; // disabled for default profiles
 
         // set up the reset button
         val resetProfile = findPreference( "reset_profile" ) as PreferenceScreen;
@@ -279,7 +280,7 @@ class FragmentProfile : CustomFragment()
     private fun setDefaults()
     {
         System.setProperty( "kftc.inConfig", "true" ); // tell the created OpMode that it shouldn't try to do some things
-        val realActiveProfile = CurrentOpModeConfig.ActiveProfile; // saved for the end
+        val realActiveProfile = CurrentOpModeConfig.activeProfile; // saved for the end
 
         // active the profile so that it's chosen in initialization
         CurrentProfile.activate();
@@ -290,7 +291,7 @@ class FragmentProfile : CustomFragment()
         // be set if they aren't already
         try
         {
-            Configurations.RegisteredOpModes[ OpModeName ].newInstance(); // create the instance of the OpMode
+            Configurations.registeredOpModes[ OpModeName ].newInstance(); // create the instance of the OpMode
         }
         catch ( e: Throwable )
         {

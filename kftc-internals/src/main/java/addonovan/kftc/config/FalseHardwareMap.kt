@@ -23,7 +23,7 @@
  */
 package addonovan.kftc.config
 
-import addonovan.kftc.Activity
+import addonovan.kftc.activity
 import addonovan.kftc.UtilityContainer
 import com.qualcomm.robotcore.hardware.*
 import org.firstinspires.ftc.robotcore.internal.TelemetryImpl
@@ -35,7 +35,7 @@ import org.firstinspires.ftc.robotcore.internal.TelemetryImpl
  * @author addonovan
  * @since 8/28/16
  */
-internal class FalseHardwareMap private constructor() : HardwareMap( Activity )
+internal class FalseHardwareMap private constructor() : HardwareMap(activity)
 {
 
     companion object

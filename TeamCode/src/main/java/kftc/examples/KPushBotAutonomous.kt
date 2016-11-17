@@ -23,7 +23,6 @@
  */
 package kftc.examples
 
-import addonovan.kftc.KOpMode
 import addonovan.kftc.Task
 import addonovan.kftc.TaskManager
 import addonovan.kftc.util.Interval

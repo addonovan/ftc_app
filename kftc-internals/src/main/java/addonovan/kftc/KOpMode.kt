@@ -23,40 +23,68 @@
  */
 package addonovan.kftc
 
+import addonovan.kftc.config.Configurations
+import addonovan.kftc.config.Profile
+import addonovan.kftc.hardware.getDeviceByType
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.hardware.HardwareDevice
+
 /**
- * The kotlin equivalent of the Qualcomm OpMode.
+ * A KOpMode is a special type of OpMode that manages a few extra
+ * things for the user.
  *
  * @author addonovan
- * @since 8/22/2016
+ * @since 11/14/16
  */
-abstract class KOpMode : KAbstractOpMode()
+abstract class KOpMode : OpMode(), IConfigurable, ILog by getLog( KOpMode::class )
 {
 
-    /**
-     * This is called immediately after the init button has been pressed.
-     */
-    open fun init() {}
+    init
+    {
+        unhookRobotIcon();
+    }
+
+    //
+    // OpMode
+    //
+
+    final override fun loop()
+    {
+        // ensure that the TaskManager gets ticked, then tick the OpMode
+        TaskManager.tick();
+        tick();
+    }
+
+    //
+    // IConfigurable
+    //
 
     /**
-     * This is called repeatedly after the init button has been pressed,
-     * but not yet started.
+     * The configuration profile used for the configuration methods.
      */
-    open fun init_loop() {}
+    override val ConfigProfile: Profile = Configurations.profileFor( javaClass );
+
+    //
+    // Abstract
+    //
+
+    abstract fun tick();
+
+    //
+    // Hardware
+    //
 
     /**
-     * This is called immediately after the onStart button has been pressed.
+     * Gets the hardware with the given name. This is delegated to happen at a later
+     * time.
+     *
+     * @param[name]
+     *          The name of the hardware device.
+     * @return A lazy delegate so that the hardware is initialized on the first try.
      */
-    open fun start() {}
-
-    /**
-     * This is called repeatedly after the onStart button has been pressed,
-     * but not yet stopped.
-     */
-    abstract fun loop();
-
-    /**
-     * This is called immediately after the stop button has been pressed.
-     */
-    open fun stop() {}
+    inline fun < reified T : HardwareDevice> OpMode.get( name: String ): Lazy< T >
+    {
+        return lazy { hardwareMap.getDeviceByType( T::class.java, name ) as T; };
+    }
 
 }

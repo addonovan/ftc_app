@@ -23,7 +23,6 @@
  */
 package kftc.examples
 
-import addonovan.kftc.KLinearOpMode
 import addonovan.kftc.util.Interval
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled

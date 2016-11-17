@@ -33,7 +33,8 @@ import java.io.*
 import java.util.*
 
 /**
- * !Description!
+ * A singleton that allows access to all the [Profile]s, [OpModeConfig]s,
+ * and values for a OpMode and its configurations.
  *
  * Serializes to
  * ```json
@@ -73,7 +74,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
     private val OpModeConfigs = HashMap< String, OpModeConfig >();
 
     /** A map of all the registered OpModes' names and their classes. */
-    val RegisteredOpModes = OpModeMap();
+    val registeredOpModes = OpModeMap();
 
     //
     // Shortcuts
@@ -93,11 +94,11 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
         d( "Fetching active profile for $className" );
 
         // get the name from the registered OpModes
-        val name = RegisteredOpModes[ clazz ];
+        val name = registeredOpModes[ clazz ];
         v( "$className registered as '$name'" );
 
         // get the active profile
-        return opModeConfigFor( name ).ActiveProfile;
+        return opModeConfigFor( name ).activeProfile;
     }
 
     /**
@@ -271,7 +272,7 @@ object Configurations : Jsonable, ILog by getLog( Configurations::class )
             // if there's a name conflict, that's a big problem!
             if ( name in this )
             {
-                e( "!!Name conflict!!" );
+                e( "!!name conflict!!" );
                 throw IllegalArgumentException(
                         "Two OpMode may not have the same name! Conflict: $name." +
                         "Shared by ${get( name ).canonicalName} and ${clazz.canonicalName}"

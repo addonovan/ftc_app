@@ -24,12 +24,16 @@
 package addonovan.kftc
 
 import addonovan.kftc.config.ConfigActivity
+import addonovan.kftc.config.Configurations
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import org.firstinspires.ftc.robotcore.internal.AppUtil
 
 /**
  * File for assorted android access things.
@@ -39,51 +43,10 @@ import android.widget.*
  */
 
 /**
- * The current application context.
- * This is the equivalent of the HardwareMap.appContext; however, this
- * is intended to be used in places where there is no Hardware map available.
+ * The current activity. Now with 100% less shit directly viewable!
  */
-val Context: Context by lazy()
-{
-    Class.forName( "android.app.ActivityThread" ).getMethod( "currentApplication" ).invoke( null ) as Context;
-}
-
-/**
- * The current activity. Please don't look at the source for this.
- * Please please please please please.
- */
-val Activity: Activity by lazy()
-{
-    // just ignore this please
-    val activityThreadClass = Class.forName( "android.app.ActivityThread" );
-    val activityThread = activityThreadClass.getMethod( "currentActivityThread" ).invoke( null );
-    val activitiesField = activityThreadClass.getDeclaredField( "mActivities" );
-    activitiesField.isAccessible = true;
-
-    // seriously, stop reading
-    var activity: Activity? = null;
-
-    val activities = activitiesField.get( activityThread ) as Map< *, * >;
-    for ( activityRecord in activities.values )
-    {
-        if ( activityRecord == null ) continue;
-
-        // it's only going to get worse
-        val activityRecordClass = activityRecord.javaClass;
-        val pausedField = activityRecordClass.getDeclaredField( "paused" );
-        pausedField.isAccessible = true;
-
-        if ( !pausedField.getBoolean( activityRecord ) )
-        {
-            val activityField = activityRecordClass.getDeclaredField( "activity" );
-            activityField.isAccessible = true;
-
-            activity = activityField.get( activityRecord ) as Activity;
-        }
-    }
-
-    activity ?: throw NullPointerException( "Failed to find activity!" ); // "not needed" my ass, it errors unless this is here
-}
+val activity: Activity
+    get() = AppUtil.getInstance().activity;
 
 /**
  * Shows a toast to the user.
@@ -95,8 +58,8 @@ val Activity: Activity by lazy()
  */
 fun showToast( message: String, time: Int = Toast.LENGTH_SHORT )
 {
-    Activity.runOnUiThread {
-        Toast.makeText( Activity, message, time ).show();
+    activity.runOnUiThread {
+        Toast.makeText(activity, message, time ).show();
     }
 }
 
@@ -141,53 +104,101 @@ private fun getView( name: String ): View
     field.isAccessible = true; // just in case
     val viewId = field.get( null ) as Int; // should be static, so no instance is required
 
-    return Activity.findViewById( viewId );
+    return activity.findViewById( viewId );
 }
 
 /** The robot icon ImageView */
-val RobotIcon: ImageView by lazy()
+internal val robotIcon: ImageView by lazy()
 {
     getView( "robotIcon" ) as ImageView;
 }
 
 /** The label for the current OpMode.s */
-val OpModeLabel: TextView by lazy()
+internal val opModeLabel: TextView by lazy()
 {
     getView( "textOpMode" ) as TextView;
 }
 
 //
-// Actions
+// Robot Icon Hooks
 //
 
 /**
+ * !!DO NOT CALL THIS!!
+ *
  * Adds a click listener onto the robot icon that allows [ConfigActivity]
  * to be started when the icon is pressed.
  */
 fun hookRobotIcon()
 {
-    RobotIcon.setOnClickListener { view ->
-        Activity.startActivity( Intent( Activity, ConfigActivity::class.java ) );
+    robotIcon.setOnClickListener { view ->
+        activity.startActivity( Intent(activity, ConfigActivity::class.java ) );
     }
 
-    Activity.runOnUiThread {
-        RobotIcon.setBackgroundResource( R.drawable.animated_robot_icon );
+    activity.runOnUiThread {
+        robotIcon.setBackgroundResource( R.drawable.animated_robot_icon );
 
-        ( RobotIcon.background as AnimationDrawable ).start();
+        ( robotIcon.background as AnimationDrawable ).start();
     }
 }
 
 /**
+ * !!DO NOT CALL THIS!!
+ *
  * Removes the click listener from the robot icon so that [ConfigActivity]
  * can not be opened.
  */
 fun unhookRobotIcon()
 {
-    RobotIcon.setOnClickListener { view ->
+    robotIcon.setOnClickListener { view ->
         // do nothing!
     };
 
-    Activity.runOnUiThread {
-        RobotIcon.setBackgroundResource( R.drawable.robot_icon_off );
+    activity.runOnUiThread {
+        robotIcon.setBackgroundResource( R.drawable.robot_icon_off );
     }
+}
+
+//
+// OpMode Profile Hooks
+//
+
+/** The name of the active profile for the running opmode. */
+private var opModeProfile: String = "";
+
+/**
+ * !!DO NOT CALL THIS!!
+ *
+ * Attaches a TextListener to the OpMode label to enforce the
+ * current [opModeProfile] name to be shown.
+ */
+fun hookOpModeLabel()
+{
+    opModeLabel.addTextChangedListener( object : TextWatcher
+    {
+        override fun afterTextChanged( s: Editable? ) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged( s: CharSequence, start: Int, before: Int, count: Int )
+        {
+            if ( s.contains( "Stop Robot" ) )
+            {
+                opModeProfile = "";
+                return;
+            }
+
+            if ( !s.contains( "]" ) )
+            {
+                if ( opModeProfile.isBlank() )
+                {
+                    // get the active opmode from it
+                    val opModeName = s.substring( "Op Mode: ".length ).trim();
+                    opModeProfile = Configurations.opModeConfigFor( opModeName ).activeProfile.name;
+                }
+
+                opModeLabel.text = "$s [$opModeProfile]";
+            }
+        }
+
+    } );
 }
